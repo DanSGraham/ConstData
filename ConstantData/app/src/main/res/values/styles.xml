@@ -1,0 +1,34 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Widget.Button.Toggle.AtomWeight" parent="android:Widget">
+        <item name="android:background">@drawable/am_toggle_bg</item>
+        <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
+    </style>
+
+    <style name="atomicMassToggleButton">
+        <item name="android:buttonStyleToggle">@style/Widget.Button.Toggle.AtomWeight</item>
+    </style>
+
+    <style name="Widget.Button.Toggle.IonEnergy" parent="android:Widget">
+        <item name="android:background">@drawable/ie_toggle_bg</item>
+        <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
+    </style>
+
+    <style name="ionEnergyToggleButton">
+        <item name="android:buttonStyleToggle">@style/Widget.Button.Toggle.IonEnergy</item>
+    </style>
+
+    <style name="Widget.Button.Toggle.Constants" parent="android:Widget">
+        <item name="android:background">@drawable/con_toggle_bg</item>
+        <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
+    </style>
+
+    <style name="constantsToggleButton">
+        <item name="android:buttonStyleToggle">@style/Widget.Button.Toggle.Constants</item>
+    </style>
+</resources>

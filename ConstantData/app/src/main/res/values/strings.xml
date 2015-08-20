@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ConstantData</string>
+    <string name="atomic_weights">Atomic Weights and Isotopic Compositions Database</string>
+    <string name="ionization_energy">Ground Levels and Ionization Energies for Neutral Atoms Database</string>
+    <string name="physics_constants">CODATA Fundamental Physical Constants Database</string>
+    <string name="search_bar">Search Database Here!</string>
+    <string name="content">THIS IS WHERE SEARCH CONTENT WILL GO!</string>
+    <string name="action_settings">Settings</string>
+</resources>
