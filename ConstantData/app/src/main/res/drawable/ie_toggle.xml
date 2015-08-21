@@ -2,10 +2,10 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_checked="false"
-        android:drawable="@drawable/ion_energy_off" />
+        android:drawable="@drawable/ion_energy_toggle_off" />
 
     <item
         android:state_checked="true"
-        android:drawable="@drawable/ion_energy_on" />
+        android:drawable="@drawable/ion_energy_toggle_on" />
 
 </selector>
