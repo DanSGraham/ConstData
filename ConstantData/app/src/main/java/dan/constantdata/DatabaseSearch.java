@@ -1,6 +1,9 @@
 package dan.constantdata;
 
 import android.app.ActionBar;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,6 +14,8 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -37,7 +42,7 @@ public class DatabaseSearch extends AppCompatActivity {
 
 
     //Updates which databases are searched based on what toggles are selected
-    Set<String> selected_databases = new HashSet<String>();
+    /*Set<String> selected_databases = new HashSet<String>();
 
     Hashtable<String, JSONObject> loaded_databases = new Hashtable<String, JSONObject>();
 
@@ -230,18 +235,80 @@ public class DatabaseSearch extends AppCompatActivity {
 
     }
 
+
+
+
+    public boolean setupTabs(RadioGroup tab_group){
+        for (int i = 0; i < tab_group.getChildCount(); i++){
+            RadioButton currTab = (RadioButton) tab_group.getChildAt(i);
+            currTab.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    if (isChecked){
+                        selected_databases.add(buttonView.getText().toString());
+                        loadDatabase(buttonView.getText().toString(),currAdapter);
+
+                    }
+                    else {
+                        selected_databases.remove(buttonView.getText().toString());
+                    }
+                    //Refresh the query
+                    //System.out.println(selected_databases.toString());
+
+                }
+            });
+        }
+        return true;
+    }*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_database_search);
 
-        LinearLayout page_container = (LinearLayout) findViewById(R.id.page_layout);
-        LinearLayout database_toggle_container = (LinearLayout) findViewById(R.id.db_container);
-        EditText search_bar = (EditText) findViewById(R.id.search_bar);
-        TextView content_text = (TextView) findViewById(R.id.content);
-        JSON_Adapter json_adapter = new JSON_Adapter();
-        boolean test = setupToggleButtons(database_toggle_container, json_adapter);
-        boolean test2 = setupSearchBar(search_bar, page_container);
+        //Sets up the tabs to select different fragments. -D
+        RadioGroup tab_group = (RadioGroup) findViewById(R.id.db_tabs);
+        final Fragment molecule_data_frag = new MoleculeSearch();
+        final Fragment calculator_fragment = new ErrorCalculator();
+        final Fragment ir_fragment = new IRViewer();
+        final FragmentManager fm = getFragmentManager();
+
+        tab_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                Fragment frag_to_change;
+                switch(checkedId){
+
+                    case R.id.molecule_data:
+                        frag_to_change = molecule_data_frag;
+                        break;
+
+                    case R.id.calculator:
+                        frag_to_change = calculator_fragment;
+                        break;
+
+                    case R.id.IRView:
+                        frag_to_change = ir_fragment;
+                        break;
+
+                    default:
+                        frag_to_change = molecule_data_frag;
+                        break;
+
+                }
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.fragment_loc, frag_to_change);
+                ft.commit();
+            }
+        });
+        //LinearLayout page_container = (LinearLayout) findViewById(R.id.page_layout);
+        //LinearLayout database_toggle_container = (LinearLayout) findViewById(R.id.db_container);
+        //EditText search_bar = (EditText) findViewById(R.id.search_bar);
+        //TextView content_text = (TextView) findViewById(R.id.content);
+        //JSON_Adapter json_adapter = new JSON_Adapter();
+        //boolean test = setupToggleButtons(database_toggle_container, json_adapter);
+        //boolean test2 = setupSearchBar(search_bar, page_container);
     }
 
     @Override

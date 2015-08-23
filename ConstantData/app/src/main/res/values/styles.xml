@@ -5,22 +5,23 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Widget.Button.Toggle.AtomWeight" parent="android:Widget">
-        <item name="android:background">@drawable/am_toggle_bg</item>
+    <style name="Widget.Button.Toggle.MoleculeData" parent="android:Widget">
+        <item name="android:background">@drawable/molecule_data_tab_bg</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
     </style>
 
-    <style name="atomicMassToggleButton">
-        <item name="android:buttonStyleToggle">@style/Widget.Button.Toggle.AtomWeight</item>
+    <style name="MoleculeData">
+        <item name="android:buttonStyleToggle">@style/Widget.Button.Toggle.MoleculeData</item>
     </style>
 
-    <style name="Widget.Button.Toggle.IonEnergy" parent="android:Widget">
-        <item name="android:background">@drawable/ie_toggle_bg</item>
+    <style name="Widget.Button.RadioButton.MoleculeData" parent="android:Widget">
+        <item name="android:background">@drawable/molecule_data_tab_bg</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
+        <item name="android:button">@android:color/transparent</item>
     </style>
 
-    <style name="ionEnergyToggleButton">
-        <item name="android:buttonStyleToggle">@style/Widget.Button.Toggle.IonEnergy</item>
+    <style name="moleculeDataTab">
+        <item name="android:buttonStyleToggle">@style/Widget.Button.RadioButton.MoleculeData</item>
     </style>
 
     <style name="Widget.Button.Toggle.Constants" parent="android:Widget">

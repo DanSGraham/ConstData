@@ -18,73 +18,67 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true">
 
-        <LinearLayout
+        <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
-            android:id="@+id/db_container"
+            android:id="@+id/db_tabs"
             android:padding="0dp"
             android:layout_margin="0dp"
             android:background="@drawable/toggle_list_background">
 
-            <ToggleButton
-                android:id="@+id/atomic_weights"
+            <RadioButton
+                android:id="@+id/molecule_data"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:layout_weight=".25"
+                android:layout_weight=".33"
                 android:padding="0dp"
-                android:textOn="@string/atomic_weights"
-                android:textOff="@string/atomic_weights"
+                android:text=""
+                android:checked="true"
                 android:textSize="0sp"
-                style="@style/atomicMassToggleButton"
-                android:background="@drawable/am_toggle_bg"
+                android:button="@android:color/transparent"
+                style="@style/moleculeDataTab"
+                android:background="@drawable/molecule_data_tab_bg"
                 />
 
-            <ToggleButton
-                android:id="@+id/ionization_energy"
+            <RadioButton
+                android:id="@+id/calculator"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:layout_weight=".25"
+                android:layout_weight=".33"
                 android:padding="0dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginLeft="1dp"
-                android:textOn="@string/ionization_energy"
-                android:textOff="@string/ionization_energy"
+                android:text=""
                 android:textSize="0sp"
-                style="@style/ionEnergyToggleButton"
-                android:background="@drawable/ie_toggle_bg"
+                style="@style/moleculeDataTab"
+                android:background="@drawable/molecule_data_tab_bg"
                 />
 
-            <ToggleButton
-                android:id="@+id/physics_constants"
+            <RadioButton
+                android:id="@+id/IRView"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:layout_weight=".25"
+                android:layout_weight=".33"
                 android:padding="0dp"
                 android:layout_marginRight="1dp"
-                android:textOn="@string/physics_constants"
-                android:textOff="@string/physics_constants"
+                android:text=""
                 android:textSize="0sp"
-                style="@style/constantsToggleButton"
-                android:background="@drawable/con_toggle_bg"
+                style="@style/moleculeDataTab"
+                android:background="@drawable/molecule_data_tab_bg"
                 />
 
-            <ToggleButton
-                android:id="@+id/local_database"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight=".25"
-                android:padding="0dp"
-                android:textOn="@string/physics_constants"
-                android:textOff="@string/physics_constants"
-                android:textSize="0sp"
-                style="@style/constantsToggleButton"
-                android:background="@drawable/con_toggle_bg"
-                />
 
-        </LinearLayout>
+        </RadioGroup>
 
-        <EditText
+        <fragment
+            android:name="dan.constantdata.MoleculeSearch"
+            android:id="@+id/fragment_loc"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            tools:layout="@layout/fragment_molecule_search" />
+
+        <!--<EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/search_bar"
@@ -94,7 +88,7 @@
               <TextView android:id="@+id/content"
                   android:text="@string/content"
                   android:layout_width="wrap_content"
-                  android:layout_height="wrap_content" />
+                  android:layout_height="wrap_content" /> -->
 
     </LinearLayout>
 
