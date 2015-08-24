@@ -13,6 +13,10 @@ public class Data {
     private static JSONObject atomic_mass_data;
     private static JSONObject constants_data;
 
+    private static String url_atomic_mass = "http://www.nist.gov/srd/srd_data/srd144_Atomic_Weights_and_Isotopic_Compositions_for_All_Elements.json";
+    private static String url_ionization = "http://www.nist.gov/srd/srd_data/srd111_NIST_Atomic_Ionization_Energies_Output.json";
+    private static String url_constants = "http://www.nist.gov/srd/srd_data/srd121_allascii_2014.json";
+
     public JSONObject getIonization_data(){
         return ionization_data;
     }
@@ -36,4 +40,17 @@ public class Data {
     public void setConstants_data(JSONObject j){
         constants_data = j;
     }
+
+    public String getUrl_ionization(){
+        return url_ionization;
+    }
+
+    public String getUrl_atomic_mass(){
+        return url_atomic_mass;
+    }
+
+    public String getUrl_constants(){
+        return url_constants;
+    }
+
 }

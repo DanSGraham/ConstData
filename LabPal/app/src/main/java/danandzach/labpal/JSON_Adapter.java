@@ -1,6 +1,9 @@
 package danandzach.labpal;
 
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,18 +23,12 @@ public class JSON_Adapter {
 
     Adapter Class for handling JSON calls
      */
+    public String mUrl;
 
-
-    public JSONObject get_JSON_object(URL url){
+    public void get_JSON_object(URL url){
+        mUrl = url.toString();
         DownloadData downloadData = new DownloadData();
-        try {
-            return downloadData.execute(url).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
+        downloadData.execute(url);
     }
 
     private class DownloadData extends AsyncTask<URL, Void, JSONObject> {
@@ -71,6 +68,22 @@ public class JSON_Adapter {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
+            Data data = new Data();
+            if(mUrl.equalsIgnoreCase(data.getUrl_atomic_mass())){
+                data.setAtomic_mass_data(jsonObject);
+                Log.v("DB_LOAD", "Atomic Mass Database Loaded");
+            }else if(mUrl.equalsIgnoreCase(data.getUrl_ionization())){
+                data.setIonization_data(jsonObject);
+                Log.v("DB_LOAD", "Ionization Database Loaded");
+            }else if(mUrl.equalsIgnoreCase(data.getUrl_constants())){
+                data.setConstants_data(jsonObject);
+                Log.v("DB_LOAD", "Constants Database Loaded");
+            }
         }
     }
 
