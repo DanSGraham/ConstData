@@ -2,7 +2,24 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/NavBar</item>
+        <item name="actionBarStyle">@style/NavBar</item>
     </style>
+
+    <color name="action_bar_background">#19440C</color>
+
+
+    <style name="NavBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/action_bar_background</item>
+        <item name="background">@color/action_bar_background</item>
+
+        <item name="android:backgroundStacked">@color/action_bar_background</item>
+        <item name="backgroundStacked">@color/action_bar_background</item>
+
+        <!-- Light.DarkActionBar specific -->
+
+
+    </style>
+
 
 </resources>

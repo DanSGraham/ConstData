@@ -71,12 +71,7 @@
 
         </RadioGroup>
 
-        <fragment
-            android:name="dan.constantdata.MoleculeSearch"
-            android:id="@+id/fragment_loc"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            tools:layout="@layout/fragment_molecule_search" />
+
 
         <!--<EditText
             android:layout_width="match_parent"
