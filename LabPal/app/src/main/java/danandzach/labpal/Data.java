@@ -21,7 +21,7 @@ public class Data {
         return ionization_data;
     }
 
-    public JSONObject getAtomic_mass_data(){
+    public static JSONObject getAtomic_mass_data(){
         return atomic_mass_data;
     }
 

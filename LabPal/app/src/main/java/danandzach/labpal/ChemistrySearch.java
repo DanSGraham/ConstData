@@ -11,10 +11,13 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ActionMenuView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -48,19 +51,69 @@ public class ChemistrySearch extends Fragment {
         // Required empty public constructor
     }
 
-    /*public LinearLayout formatIsotopeResults(String databaseName, JSONObject databaseContent){
+    public LinearLayout formatIsotopeResults(String databaseName, JSONObject databaseContent){
         //Builds a layout for a result from the Atomic Mass and Isotopes Database -D
-        return new LinearLayout();
-    }*/
+        LinearLayout resultsContainer = new LinearLayout(getActivity());
+        resultsContainer.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams resultsLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        resultsContainer.setLayoutParams(resultsLayoutParams);
+
+        TextView title = new TextView(getActivity());
+        title.setText(databaseName);
+
+        TextView data = new TextView(getActivity());
+        try {
+            data.setText(databaseContent.getString("Atomic Symbol"));
+        }
+        catch (JSONException e){
+
+        }
+
+        resultsContainer.addView(title);
+        resultsContainer.addView(data);
+        return resultsContainer;
+    }
+
+    public LinearLayout formatIonizationEnergyResults(String databaseName, JSONObject databaseContent){
+        //Builds a layout for a result from the Ionization Energy Database -D
+        LinearLayout resultsContainer = new LinearLayout(getActivity());
+        resultsContainer.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams resultsLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        resultsContainer.setLayoutParams(resultsLayoutParams);
+
+        TextView title = new TextView(getActivity());
+        title.setText(databaseName);
+        resultsContainer.addView(title);
+        return resultsContainer;
+    }
+
+    public HashMap<String, JSONObject> queryDatabases(String query){
+        //This method will return the results of a search on all databases associated with the search.
+        HashMap<String, JSONObject> results = new HashMap<String, JSONObject>();
+
+        //The following is a dummy method just used for testing layout formatting. -D
+        try{
+            JSONArray testArray = (Data.getAtomic_mass_data()).getJSONArray("data");
+            results.put("Isotope Data", testArray.getJSONObject(0));
+        }
+
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return results;
+    }
 
     public boolean modifyContent(HashMap<String, JSONObject> searchResults, LinearLayout layoutToModify){
         //A method to modify a LinearLayout to display search results. Results must be
         //passed as key value pairs because the database associated with the content is not
         //in the JSONObject and the modifier needs the name of the database. -D
         layoutToModify.removeAllViews();
-        TextView test = new TextView(getActivity());
-        test.setText("It Works!");
-        layoutToModify.addView(test);
+
+        layoutToModify.addView(formatIsotopeResults("Isotope Database", searchResults.get("Isotope Data")));
+        layoutToModify.addView(formatIonizationEnergyResults("Ionization Energy", null));
 
 
         return true;
@@ -81,6 +134,7 @@ public class ChemistrySearch extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if( s.toString().equalsIgnoreCase("a")){
+                    resultMap = queryDatabases("TEST");
                     modifyContent(resultMap, (LinearLayout) content_display);
                 }
             }
