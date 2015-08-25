@@ -2,6 +2,9 @@ package danandzach.labpal;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import java.net.MalformedURLException;
@@ -13,6 +16,7 @@ public class SplashScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
         Data data = new Data();
         JSON_Adapter atomic_adapter = new JSON_Adapter();
         JSON_Adapter ion_adapter = new JSON_Adapter();
