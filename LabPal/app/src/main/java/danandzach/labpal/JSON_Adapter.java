@@ -40,7 +40,7 @@ public class JSON_Adapter {
                 final HttpURLConnection connection = (HttpURLConnection) nist_data.openConnection();
 
                 connection.setReadTimeout(10000);
-                connection.setConnectTimeout(10000);
+                connection.setConnectTimeout(4000);
                 connection.setRequestMethod("GET");
                 connection.setAllowUserInteraction(false);
                 connection.connect();
@@ -74,16 +74,30 @@ public class JSON_Adapter {
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
             Data data = new Data();
-            if(mUrl.equalsIgnoreCase(data.getUrl_atomic_mass())){
-                data.setAtomic_mass_data(jsonObject);
-                Log.v("DB_LOAD", "Atomic Mass Database Loaded");
-            }else if(mUrl.equalsIgnoreCase(data.getUrl_ionization())){
-                data.setIonization_data(jsonObject);
-                Log.v("DB_LOAD", "Ionization Database Loaded");
-            }else if(mUrl.equalsIgnoreCase(data.getUrl_constants())){
-                data.setConstants_data(jsonObject);
-                Log.v("DB_LOAD", "Constants Database Loaded");
+            if(jsonObject == null){
+                if(mUrl.equalsIgnoreCase(data.getUrl_atomic_mass())){
+                    data.setAtomic_mass_data(jsonObject);
+                    Log.v("DB_LOAD", "Atomic Mass Database Failed to Load");
+                }else if(mUrl.equalsIgnoreCase(data.getUrl_ionization())){
+                    data.setIonization_data(jsonObject);
+                    Log.v("DB_LOAD", "Ionization Database Failed to Load");
+                }else if(mUrl.equalsIgnoreCase(data.getUrl_constants())){
+                    data.setConstants_data(jsonObject);
+                    Log.v("DB_LOAD", "Constants Database Failed to Load");
+                }
+            }else{
+                if(mUrl.equalsIgnoreCase(data.getUrl_atomic_mass())){
+                    data.setAtomic_mass_data(jsonObject);
+                    Log.v("DB_LOAD", "Atomic Mass Database Loaded");
+                }else if(mUrl.equalsIgnoreCase(data.getUrl_ionization())){
+                    data.setIonization_data(jsonObject);
+                    Log.v("DB_LOAD", "Ionization Database Loaded");
+                }else if(mUrl.equalsIgnoreCase(data.getUrl_constants())){
+                    data.setConstants_data(jsonObject);
+                    Log.v("DB_LOAD", "Constants Database Loaded");
+                }
             }
+
         }
     }
 
