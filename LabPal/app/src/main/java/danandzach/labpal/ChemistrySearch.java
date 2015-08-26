@@ -2,12 +2,15 @@ package danandzach.labpal;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +68,9 @@ public class ChemistrySearch extends Fragment {
         TextView title = new TextView(getActivity());
         title.setText(databaseName);
 
+        View horLine = new View(getActivity());
+        horLine.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 5));
+        horLine.setBackgroundColor(Color.GRAY);
 
         //Format the Standard Atomic Weight Section. -D
         String stdWeightTag = "Standard Atomic Weight Unspecified";
@@ -94,6 +100,7 @@ public class ChemistrySearch extends Fragment {
         stdWeightText.setText(stdWeightTag + stdWeightDataStr);
 
         resultsContainer.addView(title);
+        resultsContainer.addView(horLine);
         resultsContainer.addView(stdWeightText);
         resultsContainer.addView(isotopetable);
         return resultsContainer;
@@ -218,8 +225,16 @@ public class ChemistrySearch extends Fragment {
         layoutToModify.removeAllViews();
 
         TextView queryTitle = new TextView(getActivity());
+        queryTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+        queryTitle.setTextColor(Color.BLACK);
         queryTitle.setText("Hydrogen");
+
+        View horLine = new View(getActivity());
+        horLine.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 5));
+        horLine.setBackgroundColor(Color.DKGRAY);
+
         layoutToModify.addView(queryTitle);
+        layoutToModify.addView(horLine);
         layoutToModify.addView(formatIsotopeResults("Isotope Database", searchResults.get("Isotope Data")));
         layoutToModify.addView(formatIonizationEnergyResults("Ionization Energy", null));
 
