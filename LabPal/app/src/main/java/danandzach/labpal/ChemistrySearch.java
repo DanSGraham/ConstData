@@ -14,11 +14,14 @@ import android.view.ViewGroup;
 import android.widget.ActionMenuView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 
@@ -62,17 +65,112 @@ public class ChemistrySearch extends Fragment {
         TextView title = new TextView(getActivity());
         title.setText(databaseName);
 
-        TextView data = new TextView(getActivity());
-        try {
-            data.setText(databaseContent.getString("Atomic Symbol"));
-        }
-        catch (JSONException e){
 
+        //Format the Standard Atomic Weight Section. -D
+        String stdWeightTag = "Standard Atomic Weight Unspecified";
+        String stdWeightDataStr = "";
+        String comIsotopeTag= "Common Isotopes";
+
+        if(databaseContent.has("Standard Atomic Weight")){
+            stdWeightDataStr = databaseContent.optString("Standard Atomic Weight");
+            stdWeightTag = "Standard Atomic Weight:";
+            if(stdWeightDataStr.indexOf("[") != -1){
+                stdWeightDataStr = stdWeightDataStr.replace("[", "");
+                stdWeightDataStr = stdWeightDataStr.replace("]", "");
+                //If there is a range of values.
+                if(stdWeightDataStr.indexOf(",") != -1){
+                    stdWeightDataStr = stdWeightDataStr.replace(",", " - ");
+                }
+                else{
+                    stdWeightTag = "Standard Atomic Weight of Stable Isotope: ";
+                }
+            }
         }
+
+        //Format the Common Isotopes table -D
+        TableLayout isotopetable = generateIsotopeTable(databaseContent);
+
+        TextView stdWeightText = new TextView(getActivity());
+        stdWeightText.setText(stdWeightTag + stdWeightDataStr);
 
         resultsContainer.addView(title);
-        resultsContainer.addView(data);
+        resultsContainer.addView(stdWeightText);
+        resultsContainer.addView(isotopetable);
         return resultsContainer;
+    }
+
+    public TableLayout generateIsotopeTable(JSONObject databaseContent){
+        //Returns the table with isotopes formatted.
+        TableLayout isotopeTable = new TableLayout(getActivity());
+        TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+        isotopeTable.setLayoutParams(tableParams);
+        TableRow tableLabels = new TableRow(getActivity());
+        tableLabels.setLayoutParams(tableParams);
+        TextView elementLabel = new TextView(getActivity());
+        elementLabel.setText("Atom Symbol");
+
+        TextView compositionLabel = new TextView(getActivity());
+        compositionLabel.setText("Isotopoic Composition");
+
+        TextView relativeMassLabel = new TextView(getActivity());
+        relativeMassLabel.setText("Relative Mass");
+
+        tableLabels.addView(elementLabel);
+        tableLabels.addView(relativeMassLabel);
+        tableLabels.addView(compositionLabel);
+        isotopeTable.addView(tableLabels);
+
+        try {
+            String atomicSymbol = databaseContent.getString("Atomic Symbol").trim();
+            int atomicNumber = Integer.parseInt(databaseContent.getString("Atomic Number"));
+            TableRow isotopeRow;
+
+            TextView atomicSymbolText;
+            TextView relativeMass;
+            TextView composition;
+            //Elements above 95 display all isotopes.
+            if(atomicNumber >= 0){
+                JSONArray isotopeArray = databaseContent.getJSONArray("isotopes");
+                //Iterate through and add all to table.
+                for(int i = 0; i < isotopeArray.length(); i++){
+                    isotopeRow = new TableRow(getActivity());
+                    isotopeRow.setLayoutParams(tableParams);
+
+                    atomicSymbolText = new TextView(getActivity());
+                    relativeMass = new TextView(getActivity());
+                    composition = new TextView(getActivity());
+
+                    atomicSymbolText.setText(atomicSymbol);
+                    relativeMass.setText(isotopeArray.getJSONObject(i).optString("Relative Atomic Mass"));
+                    composition.setText(isotopeArray.getJSONObject(i).optString("Isotopic Composition"));
+
+                    isotopeRow.addView(atomicSymbolText);
+                    isotopeRow.addView(relativeMass);
+                    isotopeRow.addView(composition);
+                    isotopeTable.addView(isotopeRow);
+                }
+            }
+            //Check if above 94
+
+            //Check if unstable radioactive isotope with [ but no ,
+
+
+            //If is not a radioactive isotope and below 93 then only display those with abundances.
+            if (atomicSymbol.equalsIgnoreCase("H")){
+                //Add T to normal output
+            }
+            else if(atomicSymbol.equalsIgnoreCase("C")){
+                //Add C14 to normal output
+            }
+
+        }
+
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return isotopeTable;
     }
 
     public LinearLayout formatIonizationEnergyResults(String databaseName, JSONObject databaseContent){
@@ -83,9 +181,15 @@ public class ChemistrySearch extends Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         resultsContainer.setLayoutParams(resultsLayoutParams);
 
+
+
         TextView title = new TextView(getActivity());
         title.setText(databaseName);
+
+
         resultsContainer.addView(title);
+
+
         return resultsContainer;
     }
 
@@ -100,6 +204,7 @@ public class ChemistrySearch extends Fragment {
         }
 
         catch (JSONException e){
+            System.out.println("THERE WAS AN ISSUE!!\n\n\n\n\n");
             e.printStackTrace();
         }
 
@@ -112,6 +217,9 @@ public class ChemistrySearch extends Fragment {
         //in the JSONObject and the modifier needs the name of the database. -D
         layoutToModify.removeAllViews();
 
+        TextView queryTitle = new TextView(getActivity());
+        queryTitle.setText("Hydrogen");
+        layoutToModify.addView(queryTitle);
         layoutToModify.addView(formatIsotopeResults("Isotope Database", searchResults.get("Isotope Data")));
         layoutToModify.addView(formatIonizationEnergyResults("Ionization Energy", null));
 
@@ -133,7 +241,7 @@ public class ChemistrySearch extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if( s.toString().equalsIgnoreCase("a")){
+                if(s.toString().equalsIgnoreCase("hydrogen")){
                     resultMap = queryDatabases("TEST");
                     modifyContent(resultMap, (LinearLayout) content_display);
                 }
