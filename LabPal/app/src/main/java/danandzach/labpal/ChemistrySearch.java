@@ -530,7 +530,7 @@ public class ChemistrySearch extends Fragment {
 
         //The following is a dummy method just used for testing layout formatting. -D
         try{
-            JSONArray testArray = (Data.getAtomic_mass_data()).getJSONArray("data");
+            JSONArray testArray = (Data.getAtomic_mass_data()).getJSONArray(Data.getAtomic_mass_array_name());
             results.put("Isotope Data", testArray.getJSONObject(100));
         }
 
@@ -617,8 +617,7 @@ public class ChemistrySearch extends Fragment {
         We can map the element symbol to the molecule name later if we have time, but this should suffice for now.
          */
 
-        final Data data = new Data();
-        JSONArray jsonArray = data.get_array(data.getIonization_data(), data.getIonization_array_name());
+        JSONArray jsonArray = Data.get_array(Data.getIonization_data(), Data.getIonization_array_name());
         String[] adapter_list = new String[jsonArray.length()];
 
         for(int i = 0; i < jsonArray.length(); i++){
@@ -644,12 +643,12 @@ public class ChemistrySearch extends Fragment {
                 Log.v("SYMBOL: ", symbol);
 
                 try {
-                    for (int i = 0; i < data.getIonization_data().getJSONArray(data.getIonization_array_name()).length(); i++) {
+                    for (int i = 0; i < Data.getIonization_data().getJSONArray(Data.getIonization_array_name()).length(); i++) {
                         try {
-                            if (data.getIonization_data().getJSONArray(data.getIonization_array_name())
+                            if (Data.getIonization_data().getJSONArray(Data.getIonization_array_name())
                                     .getJSONObject(i).optString("Element Name").trim().equalsIgnoreCase(element_name.trim())) {
-                                query_results.put("ionization_results", data.getIonization_data().getJSONArray(
-                                                data.getIonization_array_name()).getJSONObject(i)
+                                query_results.put("ionization_results", Data.getIonization_data().getJSONArray(
+                                                Data.getIonization_array_name()).getJSONObject(i)
                                 );
                             }
 
@@ -662,9 +661,9 @@ public class ChemistrySearch extends Fragment {
                 }
 
                 try {
-                    for (int z = 0; z < data.get_array(data.getAtomic_mass_data(), data.getAtomic_mass_array_name()).length(); z++) {
-                        if (data.getAtomic_mass_data().getJSONArray(data.getAtomic_mass_array_name()).getJSONObject(z).optString("Atomic Symbol").equalsIgnoreCase(symbol)) {
-                            query_results.put("atomic_results", data.getAtomic_mass_data().getJSONArray(data.getAtomic_mass_array_name()).getJSONObject(z));
+                    for (int z = 0; z < Data.get_array(Data.getAtomic_mass_data(), Data.getAtomic_mass_array_name()).length(); z++) {
+                        if (Data.getAtomic_mass_data().getJSONArray(Data.getAtomic_mass_array_name()).getJSONObject(z).optString("Atomic Symbol").equalsIgnoreCase(symbol)) {
+                            query_results.put("atomic_results", Data.getAtomic_mass_data().getJSONArray(Data.getAtomic_mass_array_name()).getJSONObject(z));
                         }
                     }
                 } catch (JSONException e) {

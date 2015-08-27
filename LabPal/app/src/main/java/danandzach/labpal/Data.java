@@ -30,13 +30,13 @@ public class Data {
     private static String url_ionization = "http://www.nist.gov/srd/srd_data/srd111_NIST_Atomic_Ionization_Energies_Output.json";
     private static String url_constants = "http://www.nist.gov/srd/srd_data/srd121_allascii_2014.json";
 
-    public void initPeriodicTable(){
+    public static void initPeriodicTable(){
         periodicTable = new PeriodicTable();
     }
 
     public PeriodicTable getPeriodicTable(){ return periodicTable; }
 
-    public JSONObject getIonization_data(){
+    public static JSONObject getIonization_data(){
         return ionization_data;
     }
 
@@ -44,35 +44,35 @@ public class Data {
         return atomic_mass_data;
     }
 
-    public JSONObject getConstants_data(){
+    public static JSONObject getConstants_data(){
         return constants_data;
     }
 
-    public void setIonization_data(JSONObject j){
+    public static void setIonization_data(JSONObject j){
         ionization_data = j;
     }
 
-    public void setAtomic_mass_data(JSONObject j){
+    public static void setAtomic_mass_data(JSONObject j){
         atomic_mass_data = j;
     }
 
-    public void setConstants_data(JSONObject j){
+    public static void setConstants_data(JSONObject j){
         constants_data = j;
     }
 
-    public String getUrl_ionization(){
+    public static String getUrl_ionization(){
         return url_ionization;
     }
 
-    public String getUrl_atomic_mass(){
+    public static String getUrl_atomic_mass(){
         return url_atomic_mass;
     }
 
-    public String getUrl_constants(){
+    public static String getUrl_constants(){
         return url_constants;
     }
 
-    public JSONArray get_array(JSONObject database, String identifier){
+    public static JSONArray get_array(JSONObject database, String identifier){
         try {
             return database.getJSONArray(identifier);
         } catch (JSONException e) {
@@ -81,15 +81,15 @@ public class Data {
         return null;
     }
 
-    public String getAtomic_mass_array_name(){
+    public static String getAtomic_mass_array_name(){
         return atomic_mass_array_name;
     }
 
-    public String getIonization_array_name(){
+    public static String getIonization_array_name(){
         return ionization_array_name;
     }
 
-    public String getConstants_array_name(){
+    public static String getConstants_array_name(){
         return constants_array_name;
     }
 }
