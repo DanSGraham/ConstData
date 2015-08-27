@@ -1,5 +1,7 @@
 package danandzach.labpal;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -17,6 +19,10 @@ public class Data {
     private static JSONObject ionization_data;
     private static JSONObject atomic_mass_data;
     private static JSONObject constants_data;
+
+    private static String atomic_mass_array_name = "data";
+    private static String ionization_array_name = "ionization energies data";
+    private static String constants_array_name = "constant";
 
     private static PeriodicTable periodicTable;
 
@@ -64,5 +70,26 @@ public class Data {
 
     public String getUrl_constants(){
         return url_constants;
+    }
+
+    public JSONArray get_array(JSONObject database, String identifier){
+        try {
+            return database.getJSONArray(identifier);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getAtomic_mass_array_name(){
+        return atomic_mass_array_name;
+    }
+
+    public String getIonization_array_name(){
+        return ionization_array_name;
+    }
+
+    public String getConstants_array_name(){
+        return constants_array_name;
     }
 }

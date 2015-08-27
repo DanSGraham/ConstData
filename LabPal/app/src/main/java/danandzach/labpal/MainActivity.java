@@ -55,9 +55,6 @@ public class MainActivity extends AppCompatActivity {
         notes_tab.setTabListener(new NavigationTabsListener(labNotes));
         actionBar.addTab(notes_tab);
 
-        //Start splash screen to load databases and display legal info -Z
-        Intent splash = new Intent(MainActivity.this, SplashScreen.class);
-        startActivity(splash);
     }
 
     @Override

@@ -166,11 +166,13 @@ public class PeriodicTable {
     }
 
     public String getElementName(String elementSymbol){
+
         for(Element element: PeriodicTableSet){
             if(elementSymbol.trim().equalsIgnoreCase(element.getElementSymbol())){
                 return element.getElementName();
             }
         }
+
         return null;
     }
 
@@ -184,6 +186,7 @@ public class PeriodicTable {
     }
 
     public String getElementSymbol(String elementName){
+
         for(Element element: PeriodicTableSet){
             if(elementName.trim().equalsIgnoreCase(element.getElementName())){
                 return element.getElementSymbol();
@@ -204,9 +207,9 @@ public class PeriodicTable {
 
 class Element{
     //A class to define elements and element values. -D
-    private static String elementName;
-    private static String elementSymbol;
-    private static int atomicNumber;
+    private String elementName;
+    private String elementSymbol;
+    private int atomicNumber;
 
     public Element(String initElementName, String initElementSymbol, int initAtomicNumber){
         setElementName(initElementName);

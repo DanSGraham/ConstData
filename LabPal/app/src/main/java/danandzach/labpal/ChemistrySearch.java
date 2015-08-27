@@ -10,11 +10,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ActionMenuView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -50,6 +54,9 @@ public class ChemistrySearch extends Fragment {
      * @return A new instance of fragment ChemistrySearch.
      */
     // TODO: Rename and change types and number of parameters
+
+    private static HashMap<String, JSONObject> search_results = new HashMap<String, JSONObject>();
+
     public static ChemistrySearch newInstance() {
         ChemistrySearch fragment = new ChemistrySearch();
         Bundle args = new Bundle();
@@ -597,12 +604,75 @@ public class ChemistrySearch extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_chemistry_search, container, false);
         LinearLayout contentArea = (LinearLayout) v.findViewById(R.id.mol_search_content_area);
-        EditText search_bar = (EditText) v.findViewById(R.id.search_field);
+        final AutoCompleteTextView search_bar = (AutoCompleteTextView) v.findViewById(R.id.search_field);
 
-        setupSearchBar(search_bar, contentArea);
+        /*
+        Zach
+
+        This is all the code neccessary for Autocomplete to work. Right now autocomplete works only by molecule name.
+        We can map the element symbol to the molecule name later if we have time, but this should suffice for now.
+         */
+
+        final Data data = new Data();
+        JSONArray jsonArray = data.get_array(data.getIonization_data(), data.getIonization_array_name());
+        String[] adapter_list = new String[jsonArray.length()];
+
+        for(int i = 0; i < jsonArray.length(); i++){
+            try {
+                adapter_list[i] = jsonArray.getJSONObject(i).optString("Element Name");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        final ArrayAdapter<String> auto_complete = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, adapter_list);
+        search_bar.setAdapter(auto_complete);
+        search_bar.setThreshold(1);
+
+        search_bar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                HashMap<String, JSONObject> query_results = new HashMap<String, JSONObject>();
+                PeriodicTable pt = new PeriodicTable();
+                String symbol = pt.getElementSymbol(search_bar.getText().toString());
+                String element_name = search_bar.getText().toString();
+                Log.v("Element Name: ", element_name);
+                Log.v("SYMBOL: ", symbol);
+
+                try {
+                    for (int i = 0; i < data.getIonization_data().getJSONArray(data.getIonization_array_name()).length(); i++) {
+                        try {
+                            if (data.getIonization_data().getJSONArray(data.getIonization_array_name())
+                                    .getJSONObject(i).optString("Element Name").trim().equalsIgnoreCase(element_name.trim())) {
+                                query_results.put("ionization_results", data.getIonization_data().getJSONArray(
+                                                data.getIonization_array_name()).getJSONObject(i)
+                                );
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    for (int z = 0; z < data.get_array(data.getAtomic_mass_data(), data.getAtomic_mass_array_name()).length(); z++) {
+                        if (data.getAtomic_mass_data().getJSONArray(data.getAtomic_mass_array_name()).getJSONObject(z).optString("Atomic Symbol").equalsIgnoreCase(symbol)) {
+                            query_results.put("atomic_results", data.getAtomic_mass_data().getJSONArray(data.getAtomic_mass_array_name()).getJSONObject(z));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            set_search_results(query_results);
+            }
+        });
 
         return v;
     }
@@ -617,6 +687,22 @@ public class ChemistrySearch extends Fragment {
         super.onDetach();
     }
 
+    public void set_search_results(HashMap<String, JSONObject> h){
+        search_results = h;
+    }
+
+    /*
+    Use this method to get the Hashmap you need. This is what happens:
+        1.) The user selects an autocomplete item.
+        2.) The JSONObject from the atomic mass database is saved with the key "atomic_results"
+        3.) The JSONObject from the ionization database is saved with the key "ionization_results"
+        4.) Call this method to get these objects as a hashmap and display the data how you please.
+
+        -Zach
+     */
+    public HashMap<String, JSONObject> get_search_results(){
+        return search_results;
+    }
 
 
 }
