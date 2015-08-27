@@ -12,12 +12,6 @@ import java.util.Map;
 
  */
 
-
-
-
-
-
-//Molecule Mapping.
 public class Data {
 
     private static JSONObject ionization_data;

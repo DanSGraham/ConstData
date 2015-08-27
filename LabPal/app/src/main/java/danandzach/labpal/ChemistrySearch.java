@@ -458,7 +458,7 @@ public class ChemistrySearch extends Fragment {
         //The following is a dummy method just used for testing layout formatting. -D
         try{
             JSONArray testArray = (Data.getAtomic_mass_data()).getJSONArray("data");
-            results.put("Isotope Data", testArray.getJSONObject(91));
+            results.put("Isotope Data", testArray.getJSONObject(100));
         }
 
         catch (JSONException e){
