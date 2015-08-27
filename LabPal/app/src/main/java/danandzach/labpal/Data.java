@@ -30,9 +30,11 @@ public class Data {
     private static String url_ionization = "http://www.nist.gov/srd/srd_data/srd111_NIST_Atomic_Ionization_Energies_Output.json";
     private static String url_constants = "http://www.nist.gov/srd/srd_data/srd121_allascii_2014.json";
 
-    public void setPeriodicTable(){
+    public void initPeriodicTable(){
         periodicTable = new PeriodicTable();
     }
+
+    public PeriodicTable getPeriodicTable(){ return periodicTable; }
 
     public JSONObject getIonization_data(){
         return ionization_data;
@@ -69,12 +71,4 @@ public class Data {
     public String getUrl_constants(){
         return url_constants;
     }
-
-
-
-
-
-
-
-
 }

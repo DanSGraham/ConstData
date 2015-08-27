@@ -18,6 +18,9 @@ public class SplashScreen extends Activity {
         setContentView(R.layout.activity_splash_screen);
 
         Data data = new Data();
+        //Initializes the periodic table -D
+        data.initPeriodicTable();
+
         JSON_Adapter atomic_adapter = new JSON_Adapter();
         JSON_Adapter ion_adapter = new JSON_Adapter();
         JSON_Adapter const_adapter = new JSON_Adapter();

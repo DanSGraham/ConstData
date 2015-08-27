@@ -15,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ActionMenuView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 
 /**
@@ -57,25 +60,51 @@ public class ChemistrySearch extends Fragment {
         // Required empty public constructor
     }
 
-    public LinearLayout formatIsotopeResults(String databaseName, JSONObject databaseContent){
+    public RelativeLayout formatIsotopeResults(String databaseName, JSONObject databaseContent){
         //Builds a layout for a result from the Atomic Mass and Isotopes Database -D
-        LinearLayout resultsContainer = new LinearLayout(getActivity());
-        resultsContainer.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams resultsLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        final int TITLE_ID = 1;
+        final int UNDERLINE_ID = 2;
+        final int STANDARD_WEIGHT_LABEL_ID = 3;
+        final int STANDARD_WEIGHT_VALUE_ID = 4;
+        final int COMMON_ISOTOPE_LABEL_ID = 5;
+        final int COMMON_ISOTOPE_TABLE_ID = 6;
+
+
+        //Setup data layout. -D
+        RelativeLayout resultsContainer = new RelativeLayout(getActivity());
+        RelativeLayout.LayoutParams resultsLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         resultsContainer.setLayoutParams(resultsLayoutParams);
 
-        TextView title = new TextView(getActivity());
-        title.setText(databaseName);
 
-        View horLine = new View(getActivity());
-        horLine.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 5));
-        horLine.setBackgroundColor(Color.GRAY);
+        //Setup section title. -D
+        TextView title = new TextView(getActivity());
+        RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        titleParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        titleParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        title.setText(databaseName);
+        title.setLayoutParams(titleParams);
+        title.setId(TITLE_ID);
+
+        //Setup expand section button -D
+        Button expandViewButton = new Button(getActivity());
+        //Needs to be on same line as title but parent align right
+
+        //Underline -D
+        View underline = new View(getActivity());
+        RelativeLayout.LayoutParams underlineParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 5);
+        underlineParams.addRule(RelativeLayout.BELOW, TITLE_ID);
+        underline.setBackgroundColor(Color.GRAY);
+        underline.setLayoutParams(underlineParams);
+        underline.setId(UNDERLINE_ID);
+
+
 
         //Format the Standard Atomic Weight Section. -D
         String stdWeightTag = "Standard Atomic Weight Unspecified";
         String stdWeightDataStr = "";
-        String comIsotopeTag= "Common Isotopes";
 
         if(databaseContent.has("Standard Atomic Weight")){
             stdWeightDataStr = databaseContent.optString("Standard Atomic Weight");
@@ -93,35 +122,71 @@ public class ChemistrySearch extends Fragment {
             }
         }
 
+        TextView stdWeightLabel = new TextView(getActivity());
+        stdWeightLabel.setText(stdWeightTag);
+        RelativeLayout.LayoutParams stdWeightLabelLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        stdWeightLabelLayoutParams.addRule(RelativeLayout.BELOW, UNDERLINE_ID);
+        stdWeightLabelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        stdWeightLabel.setLayoutParams(stdWeightLabelLayoutParams);
+        stdWeightLabel.setId(STANDARD_WEIGHT_LABEL_ID);
+
+        TextView stdWeightData = new TextView(getActivity());
+        stdWeightData.setText(stdWeightDataStr);
+        RelativeLayout.LayoutParams stdWeightDataLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        stdWeightDataLayoutParams.addRule(RelativeLayout.BELOW, UNDERLINE_ID);
+        stdWeightDataLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        stdWeightData.setLayoutParams(stdWeightDataLayoutParams);
+        stdWeightData.setId(STANDARD_WEIGHT_VALUE_ID);
+
+
         //Format the Common Isotopes table -D
-        TableLayout isotopetable = generateIsotopeTable(databaseContent);
+        String comIsotopes = "Common Isotopes";
 
-        TextView stdWeightText = new TextView(getActivity());
-        stdWeightText.setText(stdWeightTag + stdWeightDataStr);
+        TableLayout isotopeTable = generateIsotopeTable(databaseContent);
+        RelativeLayout.LayoutParams isotopeTableLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        isotopeTableLayoutParams.addRule(RelativeLayout.BELOW, STANDARD_WEIGHT_LABEL_ID);
+        isotopeTable.setLayoutParams(isotopeTableLayoutParams);
+        isotopeTable.setId(COMMON_ISOTOPE_TABLE_ID);
 
+        //Add all components to the layout -D
         resultsContainer.addView(title);
-        resultsContainer.addView(horLine);
-        resultsContainer.addView(stdWeightText);
-        resultsContainer.addView(isotopetable);
+        resultsContainer.addView(underline);
+        resultsContainer.addView(stdWeightLabel);
+        resultsContainer.addView(stdWeightData);
+        resultsContainer.addView(isotopeTable);
         return resultsContainer;
     }
 
     public TableLayout generateIsotopeTable(JSONObject databaseContent){
         //Returns the table with isotopes formatted.
+
+        final float COLUMN_ONE_WEIGHT = 0.2f;
+        final float COLUMN_TWO_WEIGHT = 0.4f;
+        final float COLUMN_THREE_WEIGHT = 0.4f;
         TableLayout isotopeTable = new TableLayout(getActivity());
-        TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
+        TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
         TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
         isotopeTable.setLayoutParams(tableParams);
+
         TableRow tableLabels = new TableRow(getActivity());
         tableLabels.setLayoutParams(tableParams);
+
         TextView elementLabel = new TextView(getActivity());
-        elementLabel.setText("Atom Symbol");
+        TableRow.LayoutParams firstColumnLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, COLUMN_ONE_WEIGHT);
+        elementLabel.setText(" ");
+        elementLabel.setLayoutParams(firstColumnLayoutParams);
 
         TextView compositionLabel = new TextView(getActivity());
+        TableRow.LayoutParams secondColumnLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, COLUMN_TWO_WEIGHT);
         compositionLabel.setText("Isotopoic Composition");
+        compositionLabel.setLayoutParams(secondColumnLayoutParams);
 
         TextView relativeMassLabel = new TextView(getActivity());
+        TableRow.LayoutParams thirdColumnLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, COLUMN_THREE_WEIGHT);
         relativeMassLabel.setText("Relative Mass");
+        relativeMassLabel.setLayoutParams(thirdColumnLayoutParams);
 
         tableLabels.addView(elementLabel);
         tableLabels.addView(relativeMassLabel);
@@ -133,12 +198,16 @@ public class ChemistrySearch extends Fragment {
             int atomicNumber = Integer.parseInt(databaseContent.getString("Atomic Number"));
             TableRow isotopeRow;
 
+            boolean symbolInTable = false;
+
             TextView atomicSymbolText;
             TextView relativeMass;
             TextView composition;
+
+            JSONArray isotopeArray = databaseContent.getJSONArray("isotopes");
+
             //Elements above 95 display all isotopes.
-            if(atomicNumber >= 0){
-                JSONArray isotopeArray = databaseContent.getJSONArray("isotopes");
+            if(atomicNumber >= 95){
                 //Iterate through and add all to table.
                 for(int i = 0; i < isotopeArray.length(); i++){
                     isotopeRow = new TableRow(getActivity());
@@ -148,9 +217,18 @@ public class ChemistrySearch extends Fragment {
                     relativeMass = new TextView(getActivity());
                     composition = new TextView(getActivity());
 
-                    atomicSymbolText.setText(atomicSymbol);
+                    atomicSymbolText.setText("");
+                    if(!symbolInTable){
+                        atomicSymbolText.setText(atomicSymbol);
+                        symbolInTable = true;
+                    }
+                    atomicSymbolText.setLayoutParams(firstColumnLayoutParams);
+
                     relativeMass.setText(isotopeArray.getJSONObject(i).optString("Relative Atomic Mass"));
+                    relativeMass.setLayoutParams(secondColumnLayoutParams);
+
                     composition.setText(isotopeArray.getJSONObject(i).optString("Isotopic Composition"));
+                    composition.setLayoutParams(thirdColumnLayoutParams);
 
                     isotopeRow.addView(atomicSymbolText);
                     isotopeRow.addView(relativeMass);
@@ -158,19 +236,192 @@ public class ChemistrySearch extends Fragment {
                     isotopeTable.addView(isotopeRow);
                 }
             }
-            //Check if above 94
 
-            //Check if unstable radioactive isotope with [ but no ,
+            else{
+                String standardWeightString = databaseContent.getString("Standard Atomic Weight").toString();
 
+                //Check if is a radioactive element.
+                if((standardWeightString.indexOf("[") != -1 && standardWeightString.indexOf(",") == -1) || atomicSymbol.equalsIgnoreCase("U") || atomicSymbol.equalsIgnoreCase("C")) {
+                    HashSet<Integer> commonIsotopeWeights = new HashSet<Integer>();
+                    //Common isotope weights are derived from the NIST isotope database.
+                    switch (atomicSymbol) {
+                        case "C":
+                            commonIsotopeWeights.add(12);
+                            commonIsotopeWeights.add(13);
+                            commonIsotopeWeights.add(14);
+                            break;
 
-            //If is not a radioactive isotope and below 93 then only display those with abundances.
-            if (atomicSymbol.equalsIgnoreCase("H")){
-                //Add T to normal output
+                        case "Tc":
+                            commonIsotopeWeights.add(97);
+                            commonIsotopeWeights.add(98);
+                            commonIsotopeWeights.add(99);
+                            break;
+
+                        case "Pm":
+                            commonIsotopeWeights.add(145);
+                            commonIsotopeWeights.add(147);
+                            break;
+
+                        case "Po":
+                            commonIsotopeWeights.add(209);
+                            commonIsotopeWeights.add(210);
+                            break;
+
+                        case "At":
+                            commonIsotopeWeights.add(210);
+                            commonIsotopeWeights.add(211);
+                            break;
+
+                        case "Rn":
+                            commonIsotopeWeights.add(211);
+                            commonIsotopeWeights.add(220);
+                            commonIsotopeWeights.add(222);
+                            break;
+
+                        case "Fr":
+                            commonIsotopeWeights.add(223);
+                            break;
+
+                        case "Ra":
+                            commonIsotopeWeights.add(223);
+                            commonIsotopeWeights.add(224);
+                            commonIsotopeWeights.add(226);
+                            commonIsotopeWeights.add(228);
+                            break;
+
+                        case "Ac":
+                            commonIsotopeWeights.add(227);
+                            break;
+
+                        case "U":
+                            commonIsotopeWeights.add(233);
+                            commonIsotopeWeights.add(234);
+                            commonIsotopeWeights.add(235);
+                            commonIsotopeWeights.add(236);
+                            commonIsotopeWeights.add(238);
+
+                        case "Np":
+                            commonIsotopeWeights.add(236);
+                            commonIsotopeWeights.add(237);
+                            break;
+
+                        case "Pu":
+                            commonIsotopeWeights.add(238);
+                            commonIsotopeWeights.add(239);
+                            commonIsotopeWeights.add(240);
+                            commonIsotopeWeights.add(241);
+                            commonIsotopeWeights.add(242);
+                            commonIsotopeWeights.add(244);
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    for (int i = 0; i < isotopeArray.length(); i++) {
+
+                        String relAtomicMassString = isotopeArray.getJSONObject(i).optString("Relative Atomic Mass");
+                        int approxAtomicMass = Math.round(Float.parseFloat(relAtomicMassString.split("\\(")[0]));
+
+                        if (commonIsotopeWeights.contains((Integer) approxAtomicMass)) {
+                            isotopeRow = new TableRow(getActivity());
+                            isotopeRow.setLayoutParams(tableParams);
+
+                            atomicSymbolText = new TextView(getActivity());
+                            relativeMass = new TextView(getActivity());
+                            composition = new TextView(getActivity());
+
+                            atomicSymbolText.setText("");
+                            if(!symbolInTable) {
+                                atomicSymbolText.setText(atomicSymbol);
+                                symbolInTable = true;
+                            }
+                            atomicSymbolText.setLayoutParams(firstColumnLayoutParams);
+
+                            relativeMass.setText(isotopeArray.getJSONObject(i).optString("Relative Atomic Mass"));
+                            relativeMass.setLayoutParams(secondColumnLayoutParams);
+
+                            composition.setText("");
+                            if (isotopeArray.getJSONObject(i).has("Isotopic Composition")) {
+                                composition.setText(isotopeArray.getJSONObject(i).optString("Isotopic Composition"));
+                            }
+                            composition.setLayoutParams(thirdColumnLayoutParams);
+
+                            isotopeRow.addView(atomicSymbolText);
+                            isotopeRow.addView(relativeMass);
+                            isotopeRow.addView(composition);
+                            isotopeTable.addView(isotopeRow);
+                        }
+                    }
+                }
+                else if(atomicSymbol.equalsIgnoreCase("H")) {
+                    //Display D and T
+                    for (int i = 0; i < isotopeArray.length(); i++) {
+
+                        String relAtomicMassString = isotopeArray.getJSONObject(i).optString("Relative Atomic Mass");
+                        int approxAtomicMass = Math.round(Float.parseFloat(relAtomicMassString.split("\\(")[0]));
+
+                        if (approxAtomicMass == 1 || approxAtomicMass == 2 || approxAtomicMass == 3) {
+                            isotopeRow = new TableRow(getActivity());
+                            isotopeRow.setLayoutParams(tableParams);
+
+                            atomicSymbolText = new TextView(getActivity());
+                            relativeMass = new TextView(getActivity());
+                            composition = new TextView(getActivity());
+
+                            atomicSymbol = isotopeArray.getJSONObject(i).optString("Atomic Symbol");
+                            atomicSymbolText.setText(atomicSymbol);
+                            atomicSymbolText.setLayoutParams(firstColumnLayoutParams);
+
+                            relativeMass.setText(isotopeArray.getJSONObject(i).optString("Relative Atomic Mass"));
+                            relativeMass.setLayoutParams(secondColumnLayoutParams);
+
+                            composition.setText("");
+                            if (isotopeArray.getJSONObject(i).has("Isotopic Composition")) {
+                                composition.setText(isotopeArray.getJSONObject(i).optString("Isotopic Composition"));
+                            }
+                            composition.setLayoutParams(thirdColumnLayoutParams);
+
+                            isotopeRow.addView(atomicSymbolText);
+                            isotopeRow.addView(relativeMass);
+                            isotopeRow.addView(composition);
+                            isotopeTable.addView(isotopeRow);
+                        }
+                    }
+                }
+                else{
+                    //Display only those isotopes with composition elements.
+                    for (int i = 0; i < isotopeArray.length(); i++) {
+                        if (isotopeArray.getJSONObject(i).has("Isotopic Composition")) {
+                            isotopeRow = new TableRow(getActivity());
+                            isotopeRow.setLayoutParams(tableParams);
+
+                            atomicSymbolText = new TextView(getActivity());
+                            relativeMass = new TextView(getActivity());
+                            composition = new TextView(getActivity());
+
+                            atomicSymbolText.setText("");
+                            if(!symbolInTable){
+                                atomicSymbolText.setText(atomicSymbol);
+                                symbolInTable = true;
+                            }
+                            atomicSymbolText.setLayoutParams(firstColumnLayoutParams);
+
+                            relativeMass.setText(isotopeArray.getJSONObject(i).optString("Relative Atomic Mass"));
+                            relativeMass.setLayoutParams(secondColumnLayoutParams);
+
+                            composition.setText(isotopeArray.getJSONObject(i).optString("Isotopic Composition"));
+                            composition.setLayoutParams(thirdColumnLayoutParams);
+
+                            isotopeRow.addView(atomicSymbolText);
+                            isotopeRow.addView(relativeMass);
+                            isotopeRow.addView(composition);
+                            isotopeTable.addView(isotopeRow);
+                        }
+                    }
+                }
+
             }
-            else if(atomicSymbol.equalsIgnoreCase("C")){
-                //Add C14 to normal output
-            }
-
         }
 
         catch (JSONException e){
@@ -207,7 +458,7 @@ public class ChemistrySearch extends Fragment {
         //The following is a dummy method just used for testing layout formatting. -D
         try{
             JSONArray testArray = (Data.getAtomic_mass_data()).getJSONArray("data");
-            results.put("Isotope Data", testArray.getJSONObject(0));
+            results.put("Isotope Data", testArray.getJSONObject(91));
         }
 
         catch (JSONException e){
