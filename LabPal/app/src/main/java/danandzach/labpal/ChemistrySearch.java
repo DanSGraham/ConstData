@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -63,12 +64,16 @@ public class ChemistrySearch extends Fragment {
     public RelativeLayout formatIsotopeResults(String databaseName, JSONObject databaseContent){
         //Builds a layout for a result from the Atomic Mass and Isotopes Database -D
 
+        final int HEADER_TEXT_SIZE = 18;
+
         final int TITLE_ID = 1;
         final int UNDERLINE_ID = 2;
         final int STANDARD_WEIGHT_LABEL_ID = 3;
         final int STANDARD_WEIGHT_VALUE_ID = 4;
         final int COMMON_ISOTOPE_LABEL_ID = 5;
         final int COMMON_ISOTOPE_TABLE_ID = 6;
+        final int CONTENT_CONTAINER_ID = 7;
+        final int EXPAND_VIEW_BUTTON_ID = 8;
 
 
         //Setup data layout. -D
@@ -85,12 +90,63 @@ public class ChemistrySearch extends Fragment {
         titleParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         titleParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         title.setText(databaseName);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, HEADER_TEXT_SIZE);
         title.setLayoutParams(titleParams);
+        title.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                TextView expandButton = (TextView) getActivity().findViewById(EXPAND_VIEW_BUTTON_ID);
+                final int status = (Integer) expandButton.getTag();
+                if (status == 1) {
+                    RelativeLayout contentShow = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
+                    contentShow.setVisibility(View.VISIBLE);
+                    expandButton.setText("-");
+                    expandButton.setTag(0);
+                } else {
+                    RelativeLayout contentHide = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
+                    contentHide.setVisibility(View.GONE);
+                    expandButton.setText("+");
+                    expandButton.setTag(1);
+                }
+            }
+        });
+
         title.setId(TITLE_ID);
 
         //Setup expand section button -D
-        Button expandViewButton = new Button(getActivity());
-        //Needs to be on same line as title but parent align right
+        final TextView expandViewButton = new TextView(getActivity());
+        expandViewButton.setText("+");
+        expandViewButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, HEADER_TEXT_SIZE);
+        expandViewButton.setTag(1);
+        expandViewButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                final int status = (Integer) v.getTag();
+                if (status == 1) {
+                    RelativeLayout contentShow = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
+                    contentShow.setVisibility(View.VISIBLE);
+                    expandViewButton.setText("-");
+                    expandViewButton.setTag(0);
+                } else {
+                    RelativeLayout contentHide = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
+                    contentHide.setVisibility(View.GONE);
+                    expandViewButton.setText("+");
+                    expandViewButton.setTag(1);
+                }
+            }
+        });
+
+        RelativeLayout.LayoutParams expandButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        expandButtonParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        expandButtonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        expandViewButton.setLayoutParams(expandButtonParams);
+        expandViewButton.setPadding(0, 0, 10, 0);
+        expandViewButton.setId(EXPAND_VIEW_BUTTON_ID);
+
+
 
         //Underline -D
         View underline = new View(getActivity());
@@ -101,6 +157,14 @@ public class ChemistrySearch extends Fragment {
         underline.setId(UNDERLINE_ID);
 
 
+        //Visibility section -D
+        RelativeLayout contentContainer = new RelativeLayout(getActivity());
+        RelativeLayout.LayoutParams contentLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        contentLayoutParams.addRule(RelativeLayout.BELOW, UNDERLINE_ID);
+        contentContainer.setLayoutParams(contentLayoutParams);
+        contentContainer.setVisibility(View.GONE);
+        contentContainer.setId(CONTENT_CONTAINER_ID);
 
         //Format the Standard Atomic Weight Section. -D
         String stdWeightTag = "Standard Atomic Weight Unspecified";
@@ -126,7 +190,7 @@ public class ChemistrySearch extends Fragment {
         stdWeightLabel.setText(stdWeightTag);
         RelativeLayout.LayoutParams stdWeightLabelLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        stdWeightLabelLayoutParams.addRule(RelativeLayout.BELOW, UNDERLINE_ID);
+        stdWeightLabelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         stdWeightLabelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         stdWeightLabel.setLayoutParams(stdWeightLabelLayoutParams);
         stdWeightLabel.setId(STANDARD_WEIGHT_LABEL_ID);
@@ -153,9 +217,11 @@ public class ChemistrySearch extends Fragment {
         //Add all components to the layout -D
         resultsContainer.addView(title);
         resultsContainer.addView(underline);
-        resultsContainer.addView(stdWeightLabel);
-        resultsContainer.addView(stdWeightData);
-        resultsContainer.addView(isotopeTable);
+        resultsContainer.addView(expandViewButton);
+        resultsContainer.addView(contentContainer);
+        contentContainer.addView(stdWeightLabel);
+        contentContainer.addView(stdWeightData);
+        contentContainer.addView(isotopeTable);
         return resultsContainer;
     }
 
