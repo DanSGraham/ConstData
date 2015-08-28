@@ -53,9 +53,12 @@ public class ChemistrySearch extends Fragment {
      *
      * @return A new instance of fragment ChemistrySearch.
      */
-    // TODO: Rename and change types and number of parameters
+
 
     private static HashMap<String, JSONObject> search_results = new HashMap<String, JSONObject>();
+
+    private final String ISOTOPE_DATABASE_NAME = "Atomic Weights and Isotopes";
+    private final String IONIZATION_ENERGY_DATABASE_NAME = "Ground Levels and Ionization Energy";
 
     public static ChemistrySearch newInstance() {
         ChemistrySearch fragment = new ChemistrySearch();
@@ -504,24 +507,189 @@ public class ChemistrySearch extends Fragment {
         return isotopeTable;
     }
 
-    public LinearLayout formatIonizationEnergyResults(String databaseName, JSONObject databaseContent){
-        //Builds a layout for a result from the Ionization Energy Database -D
-        LinearLayout resultsContainer = new LinearLayout(getActivity());
-        resultsContainer.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams resultsLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+    public RelativeLayout formatIonizationEnergyResults(String databaseName, JSONObject databaseContent){
+
+        //Builds a layout for a result from the Atomic Mass and Isotopes Database -D
+
+        final int HEADER_TEXT_SIZE = 18;
+
+        final int TITLE_ID = 101;
+        final int UNDERLINE_ID = 102;
+        final int ION_ENERGY_LABEL_ID = 103;
+        final int ION_ENERGY_VALUE_ID = 104;
+        final int CONTENT_CONTAINER_ID = 107;
+        final int EXPAND_VIEW_BUTTON_ID = 108;
+
+
+        //Setup data layout. -D
+        RelativeLayout resultsContainer = new RelativeLayout(getActivity());
+        RelativeLayout.LayoutParams resultsLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         resultsContainer.setLayoutParams(resultsLayoutParams);
 
 
-
+        //Setup section title. -D
         TextView title = new TextView(getActivity());
+        RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        titleParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        titleParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         title.setText(databaseName);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, HEADER_TEXT_SIZE);
+        title.setLayoutParams(titleParams);
+        title.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                TextView expandButton = (TextView) getActivity().findViewById(EXPAND_VIEW_BUTTON_ID);
+                final int status = (Integer) expandButton.getTag();
+                if (status == 1) {
+                    RelativeLayout contentShow = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
+                    contentShow.setVisibility(View.VISIBLE);
+                    expandButton.setText("-");
+                    expandButton.setTag(0);
+                } else {
+                    RelativeLayout contentHide = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
+                    contentHide.setVisibility(View.GONE);
+                    expandButton.setText("+");
+                    expandButton.setTag(1);
+                }
+            }
+        });
+
+        title.setId(TITLE_ID);
+
+        //Setup expand section button -D
+        final TextView expandViewButton = new TextView(getActivity());
+        expandViewButton.setText("+");
+        expandViewButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, HEADER_TEXT_SIZE);
+        expandViewButton.setTag(1);
+        expandViewButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                final int status = (Integer) v.getTag();
+                if (status == 1) {
+                    RelativeLayout contentShow = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
+                    contentShow.setVisibility(View.VISIBLE);
+                    expandViewButton.setText("-");
+                    expandViewButton.setTag(0);
+                } else {
+                    RelativeLayout contentHide = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
+                    contentHide.setVisibility(View.GONE);
+                    expandViewButton.setText("+");
+                    expandViewButton.setTag(1);
+                }
+            }
+        });
+
+        RelativeLayout.LayoutParams expandButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        expandButtonParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        expandButtonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        expandViewButton.setLayoutParams(expandButtonParams);
+        expandViewButton.setPadding(0, 0, 10, 0);
+        expandViewButton.setId(EXPAND_VIEW_BUTTON_ID);
 
 
+
+        //Underline -D
+        View underline = new View(getActivity());
+        RelativeLayout.LayoutParams underlineParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 5);
+        underlineParams.addRule(RelativeLayout.BELOW, TITLE_ID);
+        underline.setBackgroundColor(Color.GRAY);
+        underline.setLayoutParams(underlineParams);
+        underline.setId(UNDERLINE_ID);
+
+
+        //Visibility section -D
+        RelativeLayout contentContainer = new RelativeLayout(getActivity());
+        RelativeLayout.LayoutParams contentLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        contentLayoutParams.addRule(RelativeLayout.BELOW, UNDERLINE_ID);
+        contentContainer.setLayoutParams(contentLayoutParams);
+        contentContainer.setVisibility(View.GONE);
+        contentContainer.setId(CONTENT_CONTAINER_ID);
+
+        //Add ionizationTable to content container. -D
+        contentContainer.addView(generateIonizationTable(databaseContent));
+
+        //Add all components to the layout -D
         resultsContainer.addView(title);
-
+        resultsContainer.addView(underline);
+        resultsContainer.addView(expandViewButton);
+        resultsContainer.addView(contentContainer);
 
         return resultsContainer;
+    }
+
+    public TableLayout generateIonizationTable(JSONObject dbContent){
+
+        final float COLUMN_ONE_WEIGHT = 0.5f;
+        final float COLUMN_TWO_WEIGHT = 0.5f;
+        final int NUM_DATA_TYPES = 4;
+
+        TableRow.LayoutParams firstColumnLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, COLUMN_ONE_WEIGHT);
+        TableRow.LayoutParams secondColumnLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, COLUMN_TWO_WEIGHT);
+
+        TableLayout ionizationTable = new TableLayout(getActivity());
+        TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+        ionizationTable.setLayoutParams(tableParams);
+
+
+        //Add ground shell row. -D
+        TextView groundShellLabel = new TextView(getActivity());
+        groundShellLabel.setText("Ground Shells:");
+        groundShellLabel.setLayoutParams(firstColumnLayoutParams);
+
+        TextView groundShellData = new TextView(getActivity());
+        groundShellData.setText(dbContent.optString("Ground Shells"));
+        groundShellData.setLayoutParams(secondColumnLayoutParams);
+
+        TableRow groundShellRow = new TableRow(getActivity());
+        groundShellRow.setLayoutParams(tableParams);
+        groundShellRow.addView(groundShellLabel);
+        groundShellRow.addView(groundShellData);
+        ionizationTable.addView(groundShellRow);
+
+        //Add ground quantum level row. -D
+        TextView groundLevelLabel = new TextView(getActivity());
+        groundLevelLabel.setText("Ground Level:");
+        groundLevelLabel.setLayoutParams(firstColumnLayoutParams);
+
+        TextView groundLevelData = new TextView(getActivity());
+        groundLevelData.setText(dbContent.optString("Ground Level"));
+        groundLevelData.setLayoutParams(secondColumnLayoutParams);
+
+        TableRow groundLevelRow = new TableRow(getActivity());
+        groundLevelRow.setLayoutParams(tableParams);
+        groundLevelRow.addView(groundLevelLabel);
+        groundLevelRow.addView(groundLevelData);
+        ionizationTable.addView(groundLevelRow);
+
+        //Add ionization energy row. -D
+        TextView ionizationEnergyLabel = new TextView(getActivity());
+        ionizationEnergyLabel.setText("Ionization Energy:");
+        ionizationEnergyLabel.setLayoutParams(firstColumnLayoutParams);
+
+        TextView ionizationEnergyData = new TextView(getActivity());
+        ionizationEnergyData.setText(dbContent.optString("Ionization Energy (eV)") + "eV");
+        ionizationEnergyData.setLayoutParams(secondColumnLayoutParams);
+
+        TableRow ionizationEnergyRow = new TableRow(getActivity());
+        ionizationEnergyRow.setLayoutParams(tableParams);
+        ionizationEnergyRow.addView(ionizationEnergyLabel);
+        ionizationEnergyRow.addView(ionizationEnergyData);
+        ionizationTable.addView(ionizationEnergyRow);
+
+        //Add references row. -D
+        TextView refrencesLabel = new TextView(getActivity());
+        refrencesLabel.setText("References:");
+        refrencesLabel.setLayoutParams(firstColumnLayoutParams);
+
+
+        return ionizationTable;
     }
 
     public HashMap<String, JSONObject> queryDatabases(String query){
@@ -551,7 +719,8 @@ public class ChemistrySearch extends Fragment {
         TextView queryTitle = new TextView(getActivity());
         queryTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         queryTitle.setTextColor(Color.BLACK);
-        queryTitle.setText("Hydrogen");
+        String titleText = ((AutoCompleteTextView) getActivity().findViewById(R.id.search_field)).getText().toString();
+        queryTitle.setText(titleText);
 
         View horLine = new View(getActivity());
         horLine.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 5));
@@ -559,8 +728,20 @@ public class ChemistrySearch extends Fragment {
 
         layoutToModify.addView(queryTitle);
         layoutToModify.addView(horLine);
-        layoutToModify.addView(formatIsotopeResults("Isotope Database", searchResults.get("Isotope Data")));
-        layoutToModify.addView(formatIonizationEnergyResults("Ionization Energy", null));
+        for (HashMap.Entry<String, JSONObject> db: searchResults.entrySet()){
+            switch (db.getKey()){
+                case ISOTOPE_DATABASE_NAME:
+                    layoutToModify.addView(formatIsotopeResults(db.getKey(), db.getValue()));
+                    break;
+
+                case IONIZATION_ENERGY_DATABASE_NAME:
+                    layoutToModify.addView(formatIonizationEnergyResults(db.getKey(), db.getValue()));
+                    break;
+
+                default:
+                    break;
+            }
+        }
 
 
         return true;
@@ -568,32 +749,6 @@ public class ChemistrySearch extends Fragment {
 
     HashMap<String, JSONObject> resultMap = new HashMap<String, JSONObject>();
 
-
-    public boolean setupSearchBar(EditText searchBar, final ViewGroup content_display){
-        //Currently a test method. The result is hard coded in and in the actual app it will be variable.
-        searchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if(s.toString().equalsIgnoreCase("hydrogen")){
-                    resultMap = queryDatabases("TEST");
-                    modifyContent(resultMap, (LinearLayout) content_display);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        return true;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -607,7 +762,7 @@ public class ChemistrySearch extends Fragment {
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_chemistry_search, container, false);
-        LinearLayout contentArea = (LinearLayout) v.findViewById(R.id.mol_search_content_area);
+        final LinearLayout contentArea = (LinearLayout) v.findViewById(R.id.mol_search_content_area);
         final AutoCompleteTextView search_bar = (AutoCompleteTextView) v.findViewById(R.id.search_field);
 
         /*
@@ -635,6 +790,7 @@ public class ChemistrySearch extends Fragment {
         search_bar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 HashMap<String, JSONObject> query_results = new HashMap<String, JSONObject>();
                 PeriodicTable pt = new PeriodicTable();
                 String symbol = pt.getElementSymbol(search_bar.getText().toString());
@@ -643,11 +799,21 @@ public class ChemistrySearch extends Fragment {
                 Log.v("SYMBOL: ", symbol);
 
                 try {
+                    for (int z = 0; z < Data.get_array(Data.getAtomic_mass_data(), Data.getAtomic_mass_array_name()).length(); z++) {
+                        if (Data.getAtomic_mass_data().getJSONArray(Data.getAtomic_mass_array_name()).getJSONObject(z).optString("Atomic Symbol").equalsIgnoreCase(symbol)) {
+                            query_results.put(ISOTOPE_DATABASE_NAME, Data.getAtomic_mass_data().getJSONArray(Data.getAtomic_mass_array_name()).getJSONObject(z));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                try {
                     for (int i = 0; i < Data.getIonization_data().getJSONArray(Data.getIonization_array_name()).length(); i++) {
                         try {
                             if (Data.getIonization_data().getJSONArray(Data.getIonization_array_name())
                                     .getJSONObject(i).optString("Element Name").trim().equalsIgnoreCase(element_name.trim())) {
-                                query_results.put("ionization_results", Data.getIonization_data().getJSONArray(
+                                query_results.put(IONIZATION_ENERGY_DATABASE_NAME, Data.getIonization_data().getJSONArray(
                                                 Data.getIonization_array_name()).getJSONObject(i)
                                 );
                             }
@@ -660,16 +826,11 @@ public class ChemistrySearch extends Fragment {
                     e.printStackTrace();
                 }
 
-                try {
-                    for (int z = 0; z < Data.get_array(Data.getAtomic_mass_data(), Data.getAtomic_mass_array_name()).length(); z++) {
-                        if (Data.getAtomic_mass_data().getJSONArray(Data.getAtomic_mass_array_name()).getJSONObject(z).optString("Atomic Symbol").equalsIgnoreCase(symbol)) {
-                            query_results.put("atomic_results", Data.getAtomic_mass_data().getJSONArray(Data.getAtomic_mass_array_name()).getJSONObject(z));
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                set_search_results(query_results);
+                if (!query_results.isEmpty()) {
+                    modifyContent(query_results, contentArea);
                 }
-            set_search_results(query_results);
+
             }
         });
 
@@ -693,8 +854,8 @@ public class ChemistrySearch extends Fragment {
     /*
     Use this method to get the Hashmap you need. This is what happens:
         1.) The user selects an autocomplete item.
-        2.) The JSONObject from the atomic mass database is saved with the key "atomic_results"
-        3.) The JSONObject from the ionization database is saved with the key "ionization_results"
+        2.) The JSONObject from the atomic mass database is saved with the key ISOTOPE_DATABASE_NAME
+        3.) The JSONObject from the ionization database is saved with the key IONIZATION_ENERGY_DATABASE_NAME
         4.) Call this method to get these objects as a hashmap and display the data how you please.
 
         -Zach
