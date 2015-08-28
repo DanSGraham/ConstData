@@ -674,7 +674,7 @@ public class ChemistrySearch extends Fragment {
         ionizationEnergyLabel.setLayoutParams(firstColumnLayoutParams);
 
         TextView ionizationEnergyData = new TextView(getActivity());
-        ionizationEnergyData.setText(dbContent.optString("Ionization Energy (eV)") + "eV");
+        ionizationEnergyData.setText(dbContent.optString("Ionization Energy (eV)") + " eV");
         ionizationEnergyData.setLayoutParams(secondColumnLayoutParams);
 
         TableRow ionizationEnergyRow = new TableRow(getActivity());
