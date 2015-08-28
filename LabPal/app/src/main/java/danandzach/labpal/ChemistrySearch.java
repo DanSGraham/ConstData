@@ -719,7 +719,15 @@ public class ChemistrySearch extends Fragment {
         TextView queryTitle = new TextView(getActivity());
         queryTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         queryTitle.setTextColor(Color.BLACK);
-        String titleText = ((AutoCompleteTextView) getActivity().findViewById(R.id.search_field)).getText().toString();
+        //String titleText = ((AutoCompleteTextView) getActivity().findViewById(R.id.search_field)).getText().toString();
+        String titleText = null;
+        try {
+            //Added this to avoid null pointer exception when switching back to the tab
+            // - Zach
+            titleText = searchResults.get(IONIZATION_ENERGY_DATABASE_NAME).getString("Element Name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         queryTitle.setText(titleText);
 
         View horLine = new View(getActivity());
@@ -760,10 +768,18 @@ public class ChemistrySearch extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
+
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_chemistry_search, container, false);
         final LinearLayout contentArea = (LinearLayout) v.findViewById(R.id.mol_search_content_area);
         final AutoCompleteTextView search_bar = (AutoCompleteTextView) v.findViewById(R.id.search_field);
+
+
+
+        if(!get_search_results().isEmpty()){
+            modifyContent(get_search_results(), contentArea);
+        }
 
         /*
         Zach
@@ -827,8 +843,8 @@ public class ChemistrySearch extends Fragment {
                 }
 
                 set_search_results(query_results);
-                if (!query_results.isEmpty()) {
-                    modifyContent(query_results, contentArea);
+                if (!get_search_results().isEmpty()) {
+                    modifyContent(get_search_results(), contentArea);
                 }
 
             }
@@ -863,6 +879,5 @@ public class ChemistrySearch extends Fragment {
     public HashMap<String, JSONObject> get_search_results(){
         return search_results;
     }
-
 
 }
