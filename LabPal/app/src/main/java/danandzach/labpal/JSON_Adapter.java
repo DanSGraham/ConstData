@@ -1,5 +1,9 @@
 package danandzach.labpal;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -9,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -35,38 +40,64 @@ public class JSON_Adapter {
 
         @Override
         protected JSONObject doInBackground(URL... params) {
-            try {
-                URL nist_data = new URL(params[0].toString());
-                final HttpURLConnection connection = (HttpURLConnection) nist_data.openConnection();
 
-                connection.setReadTimeout(10000);
-                connection.setConnectTimeout(4000);
-                connection.setRequestMethod("GET");
-                connection.setAllowUserInteraction(false);
-                connection.connect();
+                try {
+                    if(Data.getNetwork_connection() == true){
+                        URL nist_data = new URL(params[0].toString());
+                        final HttpURLConnection connection = (HttpURLConnection) nist_data.openConnection();
 
-                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
+                        connection.setReadTimeout(4000);
+                        connection.setConnectTimeout(1000);
+                        connection.setRequestMethod("GET");
+                        connection.setAllowUserInteraction(false);
+                        connection.connect();
+
+                        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                            StringBuilder sb = new StringBuilder();
+                            String line;
+                            while ((line = br.readLine()) != null) {
+                                sb.append(line + "\n");
+                            }
+                            br.close();
+
+                            JSONObject json_data = new JSONObject(sb.toString());
+
+                            return json_data;
+                        }
+                    }else{
+                        Log.v("NO INTERNET:", "READING JSON FILE");
+                        if(mUrl.equalsIgnoreCase(Data.getUrl_constants())){
+                            is = Data.constants_is;
+                        }else if(mUrl.equalsIgnoreCase(Data.getUrl_ionization())){
+                            is = Data.ionization_is;
+                        }else if(mUrl.equalsIgnoreCase(Data.getUrl_atomic_mass())){
+                            is = Data.atomic_mass_is;
+                        }
+                        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                        StringBuilder sb = new StringBuilder();
+                        String line;
+                        while((line = br.readLine()) != null){
+                            sb.append(line + "\n");
+                        }
+                        br.close();
+                        JSONObject json_data = new JSONObject(sb.toString());
+                        return json_data;
+
                     }
-                    br.close();
 
-                    JSONObject json_data = new JSONObject(sb.toString());
 
-                    return json_data;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (ProtocolException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+
             return null;
         }
 
@@ -99,5 +130,7 @@ public class JSON_Adapter {
 
         }
     }
+
+    public InputStream is;
 
 }

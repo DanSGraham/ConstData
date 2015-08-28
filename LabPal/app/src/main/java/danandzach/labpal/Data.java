@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,13 @@ public class Data {
     private static JSONObject ionization_data;
     private static JSONObject atomic_mass_data;
     private static JSONObject constants_data;
+
+    private static boolean network_connection = false;
+
+    //I'm using these as a means of accessing raw resources while outside of an activity
+    public static InputStream constants_is;
+    public static InputStream ionization_is;
+    public static InputStream atomic_mass_is;
 
     private static String atomic_mass_array_name = "data";
     private static String ionization_array_name = "ionization energies data";
@@ -91,5 +99,13 @@ public class Data {
 
     public static String getConstants_array_name(){
         return constants_array_name;
+    }
+
+    public static void setNetwork_connection(boolean b){
+        network_connection = b;
+    }
+
+    public static boolean getNetwork_connection(){
+        return network_connection;
     }
 }
