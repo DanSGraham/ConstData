@@ -9,6 +9,8 @@ import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
@@ -45,6 +47,8 @@ import java.util.HashSet;
  * Use the {@link ChemistrySearch#newInstance} factory method to
  * create an instance of this fragment.
  */
+
+//TODO Add proper padding! -D
 public class ChemistrySearch extends Fragment {
 
     /**
@@ -644,7 +648,7 @@ public class ChemistrySearch extends Fragment {
         groundShellLabel.setLayoutParams(firstColumnLayoutParams);
 
         TextView groundShellData = new TextView(getActivity());
-        groundShellData.setText(dbContent.optString("Ground Shells"));
+        groundShellData.setText(formatHTMLStyle(dbContent.optString("Ground Shells")));
         groundShellData.setLayoutParams(secondColumnLayoutParams);
 
         TableRow groundShellRow = new TableRow(getActivity());
@@ -659,7 +663,7 @@ public class ChemistrySearch extends Fragment {
         groundLevelLabel.setLayoutParams(firstColumnLayoutParams);
 
         TextView groundLevelData = new TextView(getActivity());
-        groundLevelData.setText(dbContent.optString("Ground Level"));
+        groundLevelData.setText(formatHTMLStyle(dbContent.optString("Ground Level")));
         groundLevelData.setLayoutParams(secondColumnLayoutParams);
 
         TableRow groundLevelRow = new TableRow(getActivity());
@@ -690,6 +694,75 @@ public class ChemistrySearch extends Fragment {
 
 
         return ionizationTable;
+    }
+
+    public Spanned formatHTMLStyle(String stringToFormat){
+        String htmlString = "";
+
+        boolean openSuperScript = false;
+        boolean openSubScript = false;
+        boolean openBracket = false;
+
+        for (int i = 0; i < stringToFormat.length(); i++){
+            if(stringToFormat.charAt(i) == '^'){
+                htmlString += "<sup>";
+                openSuperScript = true;
+            }
+            else if (stringToFormat.charAt(i) == '{'){
+                openBracket = true;
+            }
+            else if (stringToFormat.charAt(i) == '}' && openSuperScript){
+                htmlString += "</sup>";
+                openBracket = false;
+                openSuperScript = false;
+            }
+            else if (stringToFormat.charAt(i) == '}' && openSubScript){
+                htmlString += "</sub>";
+                openBracket = false;
+                openSubScript = false;
+            }
+            else if (stringToFormat.charAt(i) == '_'){
+                htmlString += "<sub>";
+                openSubScript = true;
+            }
+            else if(!openBracket && openSuperScript){
+                htmlString += stringToFormat.charAt(i);
+                htmlString += "</sup>";
+                openSuperScript = false;
+            }
+            else if(openBracket && openSuperScript){
+                htmlString += stringToFormat.charAt(i);
+            }
+            else if(!openBracket && openSubScript){
+                htmlString += stringToFormat.charAt(i);
+                htmlString += "</sub>";
+                openSubScript = false;
+            }
+            else if(openBracket && openSubScript){
+                htmlString += stringToFormat.charAt(i);
+            }
+            else{
+                htmlString += stringToFormat.charAt(i);
+            }
+        }
+        if (openSuperScript){
+            htmlString += "</sup>";
+            openSuperScript = false;
+        }
+        if(openSubScript){
+            htmlString += "</sub>";
+            openSubScript = false;
+        }
+
+        System.out.println(htmlString);
+        return Html.fromHtml(htmlString);
+    }
+
+    public Spanned formatReferenceLink(String stringToFormat){
+        //This will format the references link on the page.
+        String htmlString = "";
+
+        return Html.fromHtml(htmlString);
     }
 
     public HashMap<String, JSONObject> queryDatabases(String query){
@@ -736,21 +809,17 @@ public class ChemistrySearch extends Fragment {
 
         layoutToModify.addView(queryTitle);
         layoutToModify.addView(horLine);
-        for (HashMap.Entry<String, JSONObject> db: searchResults.entrySet()){
-            switch (db.getKey()){
-                case ISOTOPE_DATABASE_NAME:
-                    layoutToModify.addView(formatIsotopeResults(db.getKey(), db.getValue()));
-                    break;
 
-                case IONIZATION_ENERGY_DATABASE_NAME:
-                    layoutToModify.addView(formatIonizationEnergyResults(db.getKey(), db.getValue()));
-                    break;
-
-                default:
-                    break;
-            }
+        JSONObject objectToAdd;
+        objectToAdd = searchResults.get(ISOTOPE_DATABASE_NAME);
+        if (objectToAdd != null){
+            layoutToModify.addView(formatIsotopeResults(ISOTOPE_DATABASE_NAME, objectToAdd));
         }
 
+        objectToAdd = searchResults.get(IONIZATION_ENERGY_DATABASE_NAME);
+        if (objectToAdd != null){
+            layoutToModify.addView(formatIonizationEnergyResults(IONIZATION_ENERGY_DATABASE_NAME, objectToAdd));
+        }
 
         return true;
     }
