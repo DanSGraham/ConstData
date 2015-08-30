@@ -941,7 +941,9 @@ public class ChemistrySearch extends Fragment {
         TextView queryTitle = new TextView(getActivity());
         queryTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         queryTitle.setTextColor(Color.BLACK);
-        //String titleText = ((AutoCompleteTextView) getActivity().findViewById(R.id.search_field)).getText().toString();
+        String titleText = ((AutoCompleteTextView) getActivity().findViewById(R.id.search_field)).getText().toString();
+
+        /*
         String titleText = null;
         try {
             //Added this to avoid null pointer exception when switching back to the tab
@@ -950,6 +952,7 @@ public class ChemistrySearch extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        */
         queryTitle.setText(titleText);
 
         View horLine = new View(getActivity());
@@ -1042,6 +1045,8 @@ public class ChemistrySearch extends Fragment {
                     e.printStackTrace();
                 }
 
+
+                boolean found = false;
                 try {
                     for (int i = 0; i < Data.getIonization_data().getJSONArray(Data.getIonization_array_name()).length(); i++) {
                         try {
@@ -1050,11 +1055,15 @@ public class ChemistrySearch extends Fragment {
                                 query_results.put(IONIZATION_ENERGY_DATABASE_NAME, Data.getIonization_data().getJSONArray(
                                                 Data.getIonization_array_name()).getJSONObject(i)
                                 );
+                                found = true;
                             }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                    }
+                    if(found == false){
+                        query_results.put(IONIZATION_ENERGY_DATABASE_NAME, null);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
