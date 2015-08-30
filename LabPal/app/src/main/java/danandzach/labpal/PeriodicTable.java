@@ -14,6 +14,7 @@ import java.util.Iterator;
 public class PeriodicTable {
     //A class to store basic atomic values. -D
     private static HashSet<Element> PeriodicTableSet;
+    public static int periodic_table_size;
 
     public PeriodicTable(){
         //Initializes the set and adds all elements
@@ -136,6 +137,8 @@ public class PeriodicTable {
         PeriodicTableSet.add(new Element("Livermorium", "Lv", 116));
         PeriodicTableSet.add(new Element("Ununseptium", "Uus", 117));
         PeriodicTableSet.add(new Element("Ununoctium", "Uuo", 118));
+        periodic_table_size = PeriodicTableSet.size();
+
     }
 
     public boolean isElementName(String nameToCheck){
@@ -202,6 +205,10 @@ public class PeriodicTable {
             }
         }
         return -1;
+    }
+
+    public static HashSet<Element> getPeriodicTableSet(){
+        return PeriodicTableSet;
     }
 }
 

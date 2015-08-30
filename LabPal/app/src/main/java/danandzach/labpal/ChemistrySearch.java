@@ -1008,14 +1008,13 @@ public class ChemistrySearch extends Fragment {
          */
 
         JSONArray jsonArray = Data.get_array(Data.getIonization_data(), Data.getIonization_array_name());
-        String[] adapter_list = new String[jsonArray.length()];
+        String[] adapter_list = new String[PeriodicTable.periodic_table_size];
+        Log.v("SIZE: ", String.valueOf(PeriodicTable.periodic_table_size));
 
-        for(int i = 0; i < jsonArray.length(); i++){
-            try {
-                adapter_list[i] = jsonArray.getJSONObject(i).optString("Element Name");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        int temp = 0;
+        for(Element e: PeriodicTable.getPeriodicTableSet()){
+            adapter_list[temp] = e.getElementName();
+            temp++;
         }
 
         final ArrayAdapter<String> auto_complete = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, adapter_list);
@@ -1037,6 +1036,8 @@ public class ChemistrySearch extends Fragment {
                     for (int z = 0; z < Data.get_array(Data.getAtomic_mass_data(), Data.getAtomic_mass_array_name()).length(); z++) {
                         if (Data.getAtomic_mass_data().getJSONArray(Data.getAtomic_mass_array_name()).getJSONObject(z).optString("Atomic Symbol").equalsIgnoreCase(symbol)) {
                             query_results.put(ISOTOPE_DATABASE_NAME, Data.getAtomic_mass_data().getJSONArray(Data.getAtomic_mass_array_name()).getJSONObject(z));
+                        }{
+                            query_results.put(ISOTOPE_DATABASE_NAME, null);
                         }
                     }
                 } catch (JSONException e) {
@@ -1051,6 +1052,8 @@ public class ChemistrySearch extends Fragment {
                                 query_results.put(IONIZATION_ENERGY_DATABASE_NAME, Data.getIonization_data().getJSONArray(
                                                 Data.getIonization_array_name()).getJSONObject(i)
                                 );
+                            }else{
+                                query_results.put(IONIZATION_ENERGY_DATABASE_NAME, null);
                             }
 
                         } catch (JSONException e) {
