@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -52,7 +53,7 @@ import java.util.HashSet;
  * create an instance of this fragment.
  */
 
-//TODO Add proper padding! -D
+//TODO Add show more to isotope and add citation button to both db -D
 public class ChemistrySearch extends Fragment {
 
     /**
@@ -67,6 +68,10 @@ public class ChemistrySearch extends Fragment {
 
     private final String ISOTOPE_DATABASE_NAME = "Atomic Weights and Isotopes";
     private final String IONIZATION_ENERGY_DATABASE_NAME = "Ground Levels and Ionization Energy";
+
+
+    private final String ISOTOPE_DATABASE_CITATION = "Citation goes here";
+    private final String IONIZATION_DATABASE_CITATION = "Kramida, A., Ralchenko, Yu., Reader, J., and NIST ASD Team (2014). NIST Atomic Spectra Database (ver. 5.2), [Online]. Available: http://physics.nist.gov/asd [2015, August 29]. National Institute of Standards and Technology, Gaithersburg, MD. ";
 
     private static String saved_search_term;
 
@@ -260,34 +265,85 @@ public class ChemistrySearch extends Fragment {
         //Format the Common Isotopes table -D
         String comIsotopes = "Common Isotopes";
 
-        TableLayout isotopeTable = generateIsotopeTable(databaseContent);
+        RelativeLayout isotopeTable = generateIsotopeTable(databaseContent);
         RelativeLayout.LayoutParams isotopeTableLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        isotopeTableLayoutParams.setMargins(0, contentMarginPx, 0, contentMarginPx);
         isotopeTableLayoutParams.addRule(RelativeLayout.BELOW, STANDARD_WEIGHT_LABEL_ID);
         isotopeTable.setLayoutParams(isotopeTableLayoutParams);
+        isotopeTable.setPadding(0, contentMarginPx, 0, contentMarginPx);
         isotopeTable.setId(COMMON_ISOTOPE_TABLE_ID);
 
+
+        //Format the Citation data -D
+        TextView citationLabel = new TextView(getActivity());
+        citationLabel.setText("Citation (NIST SRD 144):");
+
+        RelativeLayout.LayoutParams citationLabelLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        citationLabelLayoutParams.addRule(RelativeLayout.BELOW, COMMON_ISOTOPE_TABLE_ID);
+        citationLabelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        citationLabel.setLayoutParams(citationLabelLayoutParams);
+
+
+        TextView citationButton = new TextView(getActivity());
+        citationButton.setText("Cite");
+
+        //Text border -D
+        citationButton.setPadding(5, 5, 5, 5);
+        GradientDrawable border = new GradientDrawable();
+        border.setColor(Color.TRANSPARENT);
+        //border.setCornerRadius(5);
+        border.setStroke(1, citationButton.getCurrentTextColor());
+        citationButton.setBackgroundDrawable(border);
+
+        //Right side of button border missing.
+        RelativeLayout.LayoutParams citationButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        citationButtonLayoutParams.addRule(RelativeLayout.BELOW, COMMON_ISOTOPE_TABLE_ID);
+        citationButtonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        citationButton.setLayoutParams(citationButtonLayoutParams);
+
+
         //Add all components to the layout -D
+        contentContainer.addView(stdWeightLabel);
+        contentContainer.addView(stdWeightData);
+        contentContainer.addView(isotopeTable);
+        contentContainer.addView(citationLabel);
+        contentContainer.addView(citationButton);
+
         resultsContainer.addView(title);
         resultsContainer.addView(underline);
         resultsContainer.addView(expandViewButton);
         resultsContainer.addView(contentContainer);
-        contentContainer.addView(stdWeightLabel);
-        contentContainer.addView(stdWeightData);
-        contentContainer.addView(isotopeTable);
+
         return resultsContainer;
     }
 
-    public TableLayout generateIsotopeTable(JSONObject databaseContent){
+    public RelativeLayout generateIsotopeTable(JSONObject databaseContent){
         //Returns the table with isotopes formatted.
 
+        Resources r = getActivity().getResources();
 
+        int contentMarginPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                CONTENT_LINE_MARGIN_DIP,
+                r.getDisplayMetrics()
+        );
 
+        final int tableId = 301;
+        final int exceptionId = 302;
+
+        boolean hashtag = false;
+
+        RelativeLayout fullLayout = new RelativeLayout(getActivity());
+        RelativeLayout.LayoutParams fullLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         final float COLUMN_ONE_WEIGHT = 0.2f;
         final float COLUMN_TWO_WEIGHT = 0.4f;
         final float COLUMN_THREE_WEIGHT = 0.4f;
         TableLayout isotopeTable = new TableLayout(getActivity());
-        TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+        isotopeTable.setId(tableId);
+
+        RelativeLayout.LayoutParams tableParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        tableParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
         isotopeTable.setLayoutParams(tableParams);
 
@@ -347,7 +403,11 @@ public class ChemistrySearch extends Fragment {
                     }
                     atomicSymbolText.setLayoutParams(firstColumnLayoutParams);
 
-                    relativeMass.setText(isotopeArray.getJSONObject(i).optString("Relative Atomic Mass"));
+                    String relativeMassString = isotopeArray.getJSONObject(i).optString("Relative Atomic Mass");
+                    if(relativeMassString.indexOf('#') != -1){
+                        hashtag = true;
+                    }
+                    relativeMass.setText(relativeMassString);
                     relativeMass.setLayoutParams(secondColumnLayoutParams);
 
                     composition.setText(isotopeArray.getJSONObject(i).optString("Isotopic Composition"));
@@ -461,7 +521,11 @@ public class ChemistrySearch extends Fragment {
                             }
                             atomicSymbolText.setLayoutParams(firstColumnLayoutParams);
 
-                            relativeMass.setText(isotopeArray.getJSONObject(i).optString("Relative Atomic Mass"));
+                            String relativeMassString = isotopeArray.getJSONObject(i).optString("Relative Atomic Mass");
+                            if(relativeMassString.indexOf('#') != -1){
+                                hashtag = true;
+                            }
+                            relativeMass.setText(relativeMassString);
                             relativeMass.setLayoutParams(secondColumnLayoutParams);
 
                             composition.setText("");
@@ -496,7 +560,11 @@ public class ChemistrySearch extends Fragment {
                             atomicSymbolText.setText(atomicSymbol);
                             atomicSymbolText.setLayoutParams(firstColumnLayoutParams);
 
-                            relativeMass.setText(isotopeArray.getJSONObject(i).optString("Relative Atomic Mass"));
+                            String relativeMassString = isotopeArray.getJSONObject(i).optString("Relative Atomic Mass");
+                            if(relativeMassString.indexOf('#') != -1){
+                                hashtag = true;
+                            }
+                            relativeMass.setText(relativeMassString);
                             relativeMass.setLayoutParams(secondColumnLayoutParams);
 
                             composition.setText("");
@@ -530,7 +598,12 @@ public class ChemistrySearch extends Fragment {
                             }
                             atomicSymbolText.setLayoutParams(firstColumnLayoutParams);
 
-                            relativeMass.setText(isotopeArray.getJSONObject(i).optString("Relative Atomic Mass"));
+
+                            String relativeMassString = isotopeArray.getJSONObject(i).optString("Relative Atomic Mass");
+                            if(relativeMassString.indexOf('#') != -1){
+                                hashtag = true;
+                            }
+                            relativeMass.setText(relativeMassString);
                             relativeMass.setLayoutParams(secondColumnLayoutParams);
 
                             composition.setText(isotopeArray.getJSONObject(i).optString("Isotopic Composition"));
@@ -551,7 +624,20 @@ public class ChemistrySearch extends Fragment {
             e.printStackTrace();
         }
 
-        return isotopeTable;
+        fullLayout.addView(isotopeTable);
+
+        if(hashtag){
+            TextView exception = new TextView(getActivity());
+            RelativeLayout.LayoutParams exceptionParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            exceptionParams.addRule(RelativeLayout.BELOW, tableId);
+            exceptionParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            exception.setPadding(0, contentMarginPx, 0, contentMarginPx);
+            exception.setText("#Value derived partly from systematic trends");
+            exception.setLayoutParams(exceptionParams);
+            fullLayout.addView(exception);
+        }
+
+        return fullLayout;
     }
 
     public RelativeLayout formatIonizationEnergyResults(String databaseName, JSONObject databaseContent){
@@ -566,6 +652,7 @@ public class ChemistrySearch extends Fragment {
         final int ION_ENERGY_VALUE_ID = 104;
         final int CONTENT_CONTAINER_ID = 107;
         final int EXPAND_VIEW_BUTTON_ID = 108;
+        final int ION_TABLE_ID = 109;
 
         Resources r = getActivity().getResources();
         int topMarginPx = (int) TypedValue.applyDimension(
@@ -674,7 +761,25 @@ public class ChemistrySearch extends Fragment {
         contentContainer.setId(CONTENT_CONTAINER_ID);
 
         //Add ionizationTable to content container. -D
-        contentContainer.addView(generateIonizationTable(databaseContent));
+        RelativeLayout ionTable = generateIonizationTable(databaseContent);
+        ionTable.setId(ION_TABLE_ID);
+        RelativeLayout.LayoutParams ionTableParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ionTableParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        ionTable.setLayoutParams(ionTableParams);
+        contentContainer.addView(ionTable);
+
+
+        //Format the Citation data -D
+        TextView citationLabel = new TextView(getActivity());
+        citationLabel.setText("Citation for NIST SRD 111:");
+
+        RelativeLayout.LayoutParams citationLabelLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        citationLabelLayoutParams.addRule(RelativeLayout.BELOW, ION_TABLE_ID);
+        citationLabelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        citationLabel.setLayoutParams(citationLabelLayoutParams);
+
+
+        contentContainer.addView(citationLabel);
 
         //Add all components to the layout -D
         resultsContainer.addView(title);
@@ -907,31 +1012,6 @@ public class ChemistrySearch extends Fragment {
         }
 
         return Html.fromHtml(htmlString);
-    }
-
-    public Spanned formatReferenceLink(String stringToFormat){
-        //This will format the references link on the page.
-        String htmlString = "";
-
-        return Html.fromHtml(htmlString);
-    }
-
-    public HashMap<String, JSONObject> queryDatabases(String query){
-        //This method will return the results of a search on all databases associated with the search.
-        HashMap<String, JSONObject> results = new HashMap<String, JSONObject>();
-
-        //The following is a dummy method just used for testing layout formatting. -D
-        try{
-            JSONArray testArray = (Data.getAtomic_mass_data()).getJSONArray(Data.getAtomic_mass_array_name());
-            results.put("Isotope Data", testArray.getJSONObject(100));
-        }
-
-        catch (JSONException e){
-            System.out.println("THERE WAS AN ISSUE!!\n\n\n\n\n");
-            e.printStackTrace();
-        }
-
-        return results;
     }
 
     public boolean modifyContent(HashMap<String, JSONObject> searchResults, LinearLayout layoutToModify){
