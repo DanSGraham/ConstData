@@ -68,6 +68,8 @@ public class ChemistrySearch extends Fragment {
     private final String ISOTOPE_DATABASE_NAME = "Atomic Weights and Isotopes";
     private final String IONIZATION_ENERGY_DATABASE_NAME = "Ground Levels and Ionization Energy";
 
+    private static String saved_search_term;
+
 
     private final int SECTION_TITLE_TOP_MARGIN_DIP = 10;
     private final int SECTION_TITLE_BOTTOM_MARGIN_DIP = 0;
@@ -941,18 +943,8 @@ public class ChemistrySearch extends Fragment {
         TextView queryTitle = new TextView(getActivity());
         queryTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         queryTitle.setTextColor(Color.BLACK);
-        String titleText = ((AutoCompleteTextView) getActivity().findViewById(R.id.search_field)).getText().toString();
+        String titleText = saved_search_term;
 
-        /*
-        String titleText = null;
-        try {
-            //Added this to avoid null pointer exception when switching back to the tab
-            // - Zach
-            titleText = searchResults.get(IONIZATION_ENERGY_DATABASE_NAME).getString("Element Name");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        */
         queryTitle.setText(titleText);
 
         View horLine = new View(getActivity());
@@ -1034,6 +1026,7 @@ public class ChemistrySearch extends Fragment {
                 String element_name = search_bar.getText().toString();
                 Log.v("Element Name: ", element_name);
                 Log.v("SYMBOL: ", symbol);
+                saved_search_term = element_name;
 
                 try {
                     for (int z = 0; z < Data.get_array(Data.getAtomic_mass_data(), Data.getAtomic_mass_array_name()).length(); z++) {
@@ -1076,6 +1069,7 @@ public class ChemistrySearch extends Fragment {
 
             }
         });
+
 
         return v;
     }
