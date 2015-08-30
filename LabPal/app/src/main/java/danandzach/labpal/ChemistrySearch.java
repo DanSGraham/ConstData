@@ -1036,8 +1036,6 @@ public class ChemistrySearch extends Fragment {
                     for (int z = 0; z < Data.get_array(Data.getAtomic_mass_data(), Data.getAtomic_mass_array_name()).length(); z++) {
                         if (Data.getAtomic_mass_data().getJSONArray(Data.getAtomic_mass_array_name()).getJSONObject(z).optString("Atomic Symbol").equalsIgnoreCase(symbol)) {
                             query_results.put(ISOTOPE_DATABASE_NAME, Data.getAtomic_mass_data().getJSONArray(Data.getAtomic_mass_array_name()).getJSONObject(z));
-                        }{
-                            query_results.put(ISOTOPE_DATABASE_NAME, null);
                         }
                     }
                 } catch (JSONException e) {
@@ -1052,8 +1050,6 @@ public class ChemistrySearch extends Fragment {
                                 query_results.put(IONIZATION_ENERGY_DATABASE_NAME, Data.getIonization_data().getJSONArray(
                                                 Data.getIonization_array_name()).getJSONObject(i)
                                 );
-                            }else{
-                                query_results.put(IONIZATION_ENERGY_DATABASE_NAME, null);
                             }
 
                         } catch (JSONException e) {
