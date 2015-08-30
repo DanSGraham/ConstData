@@ -3,7 +3,9 @@ package danandzach.labpal;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -12,6 +14,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -34,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.awt.font.TextAttribute;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +68,12 @@ public class ChemistrySearch extends Fragment {
     private final String ISOTOPE_DATABASE_NAME = "Atomic Weights and Isotopes";
     private final String IONIZATION_ENERGY_DATABASE_NAME = "Ground Levels and Ionization Energy";
 
+
+    private final int SECTION_TITLE_TOP_MARGIN_DIP = 10;
+    private final int SECTION_TITLE_BOTTOM_MARGIN_DIP = 0;
+    private final int CONTENT_LINE_MARGIN_DIP = 2;
+
+
     public static ChemistrySearch newInstance() {
         ChemistrySearch fragment = new ChemistrySearch();
         Bundle args = new Bundle();
@@ -90,11 +100,35 @@ public class ChemistrySearch extends Fragment {
         final int EXPAND_VIEW_BUTTON_ID = 8;
 
 
+
+        //Set Margin value -D
+        Resources r = getActivity().getResources();
+        int topMarginPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                SECTION_TITLE_TOP_MARGIN_DIP,
+                r.getDisplayMetrics()
+        );
+
+        int bottomMarginPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                SECTION_TITLE_BOTTOM_MARGIN_DIP,
+                r.getDisplayMetrics()
+        );
+
+        int contentMarginPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                CONTENT_LINE_MARGIN_DIP,
+                r.getDisplayMetrics()
+        );
+
         //Setup data layout. -D
         RelativeLayout resultsContainer = new RelativeLayout(getActivity());
         RelativeLayout.LayoutParams resultsLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        resultsLayoutParams.setMargins(0, topMarginPx, 0, bottomMarginPx);
         resultsContainer.setLayoutParams(resultsLayoutParams);
+        resultsContainer.setPadding(0, topMarginPx, 0, bottomMarginPx);
 
 
         //Setup section title. -D
@@ -176,7 +210,9 @@ public class ChemistrySearch extends Fragment {
         RelativeLayout.LayoutParams contentLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         contentLayoutParams.addRule(RelativeLayout.BELOW, UNDERLINE_ID);
+        contentLayoutParams.setMargins(0, contentMarginPx, 0, contentMarginPx);
         contentContainer.setLayoutParams(contentLayoutParams);
+        contentContainer.setPadding(0, contentMarginPx, 0, contentMarginPx);
         contentContainer.setVisibility(View.GONE);
         contentContainer.setId(CONTENT_CONTAINER_ID);
 
@@ -242,6 +278,9 @@ public class ChemistrySearch extends Fragment {
     public TableLayout generateIsotopeTable(JSONObject databaseContent){
         //Returns the table with isotopes formatted.
 
+
+
+
         final float COLUMN_ONE_WEIGHT = 0.2f;
         final float COLUMN_TWO_WEIGHT = 0.4f;
         final float COLUMN_THREE_WEIGHT = 0.4f;
@@ -261,11 +300,13 @@ public class ChemistrySearch extends Fragment {
         TextView compositionLabel = new TextView(getActivity());
         TableRow.LayoutParams secondColumnLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, COLUMN_TWO_WEIGHT);
         compositionLabel.setText("Isotopoic Composition");
+        compositionLabel.setPaintFlags(compositionLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         compositionLabel.setLayoutParams(secondColumnLayoutParams);
 
         TextView relativeMassLabel = new TextView(getActivity());
         TableRow.LayoutParams thirdColumnLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, COLUMN_THREE_WEIGHT);
         relativeMassLabel.setText("Relative Mass");
+        relativeMassLabel.setPaintFlags(relativeMassLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         relativeMassLabel.setLayoutParams(thirdColumnLayoutParams);
 
         tableLabels.addView(elementLabel);
@@ -524,12 +565,27 @@ public class ChemistrySearch extends Fragment {
         final int CONTENT_CONTAINER_ID = 107;
         final int EXPAND_VIEW_BUTTON_ID = 108;
 
+        Resources r = getActivity().getResources();
+        int topMarginPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                SECTION_TITLE_TOP_MARGIN_DIP,
+                r.getDisplayMetrics()
+        );
+
+        int bottomMarginPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                SECTION_TITLE_BOTTOM_MARGIN_DIP,
+                r.getDisplayMetrics()
+        );
 
         //Setup data layout. -D
         RelativeLayout resultsContainer = new RelativeLayout(getActivity());
         RelativeLayout.LayoutParams resultsLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        resultsLayoutParams.setMargins(0, topMarginPx, 0, bottomMarginPx);
         resultsContainer.setLayoutParams(resultsLayoutParams);
+        resultsContainer.setPadding(0, topMarginPx, 0, bottomMarginPx);
 
 
         //Setup section title. -D
@@ -627,17 +683,38 @@ public class ChemistrySearch extends Fragment {
         return resultsContainer;
     }
 
-    public TableLayout generateIonizationTable(JSONObject dbContent){
+    public RelativeLayout generateIonizationTable(JSONObject dbContent){
 
         final float COLUMN_ONE_WEIGHT = 0.5f;
         final float COLUMN_TWO_WEIGHT = 0.5f;
-        final int NUM_DATA_TYPES = 4;
+
+
+        final int TABLE_ID = 200;
+        final int EXCEPTION_ID = 201;
+
+        RelativeLayout.LayoutParams tableParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        tableParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        RelativeLayout.LayoutParams exceptionParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        exceptionParams.addRule(RelativeLayout.BELOW, TABLE_ID);
+        exceptionParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        RelativeLayout fullLayout = new RelativeLayout(getActivity());
+
+
 
         TableRow.LayoutParams firstColumnLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, COLUMN_ONE_WEIGHT);
+
+        //Set Margin value -D
+        Resources r = getActivity().getResources();
+        int marginPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                CONTENT_LINE_MARGIN_DIP,
+                r.getDisplayMetrics()
+        );
+        firstColumnLayoutParams.setMargins(0,marginPx,0,marginPx);
         TableRow.LayoutParams secondColumnLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, COLUMN_TWO_WEIGHT);
+        secondColumnLayoutParams.setMargins(0,marginPx,0,marginPx);
 
         TableLayout ionizationTable = new TableLayout(getActivity());
-        TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
         TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
         ionizationTable.setLayoutParams(tableParams);
 
@@ -645,10 +722,12 @@ public class ChemistrySearch extends Fragment {
         //Add ground shell row. -D
         TextView groundShellLabel = new TextView(getActivity());
         groundShellLabel.setText("Ground Shells:");
+        groundShellLabel.setPadding(0, marginPx, 0, marginPx);
         groundShellLabel.setLayoutParams(firstColumnLayoutParams);
 
         TextView groundShellData = new TextView(getActivity());
         groundShellData.setText(formatHTMLStyle(dbContent.optString("Ground Shells")));
+        groundShellData.setPadding(0, marginPx, 0, marginPx);
         groundShellData.setLayoutParams(secondColumnLayoutParams);
 
         TableRow groundShellRow = new TableRow(getActivity());
@@ -660,10 +739,12 @@ public class ChemistrySearch extends Fragment {
         //Add ground quantum level row. -D
         TextView groundLevelLabel = new TextView(getActivity());
         groundLevelLabel.setText("Ground Level:");
+        groundLevelLabel.setPadding(0, marginPx, 0, marginPx);
         groundLevelLabel.setLayoutParams(firstColumnLayoutParams);
 
         TextView groundLevelData = new TextView(getActivity());
         groundLevelData.setText(formatHTMLStyle(dbContent.optString("Ground Level")));
+        groundLevelData.setPadding(0, marginPx, 0, marginPx);
         groundLevelData.setLayoutParams(secondColumnLayoutParams);
 
         TableRow groundLevelRow = new TableRow(getActivity());
@@ -673,12 +754,30 @@ public class ChemistrySearch extends Fragment {
         ionizationTable.addView(groundLevelRow);
 
         //Add ionization energy row. -D
+
+        boolean theoreticalEnergy = false;
+        boolean approxFromExperiment = false;
         TextView ionizationEnergyLabel = new TextView(getActivity());
         ionizationEnergyLabel.setText("Ionization Energy:");
+        ionizationEnergyLabel.setPadding(0, marginPx, 0, marginPx);
         ionizationEnergyLabel.setLayoutParams(firstColumnLayoutParams);
 
         TextView ionizationEnergyData = new TextView(getActivity());
-        ionizationEnergyData.setText(dbContent.optString("Ionization Energy (eV)") + " eV");
+        String ionizationEnergyString = dbContent.optString("Ionization Energy (eV)");
+        ionizationEnergyString = ionizationEnergyString.replace("_", "");
+        if (ionizationEnergyString.charAt(0) == '('){
+            theoreticalEnergy = true;
+            ionizationEnergyString = ionizationEnergyString.substring(1,(ionizationEnergyString.length() - 1));
+            ionizationEnergyString += " eV*";
+        }
+        else if (ionizationEnergyString.charAt(0) == '['){
+            approxFromExperiment = true;
+            ionizationEnergyString = ionizationEnergyString.substring(1,(ionizationEnergyString.length() - 1));
+            ionizationEnergyString += " eV*";
+        }
+
+        ionizationEnergyData.setText(ionizationEnergyString);
+        ionizationEnergyData.setPadding(0, marginPx, 0, marginPx);
         ionizationEnergyData.setLayoutParams(secondColumnLayoutParams);
 
         TableRow ionizationEnergyRow = new TableRow(getActivity());
@@ -690,10 +789,61 @@ public class ChemistrySearch extends Fragment {
         //Add references row. -D
         TextView refrencesLabel = new TextView(getActivity());
         refrencesLabel.setText("References:");
+        refrencesLabel.setPadding(0, marginPx, 0, marginPx);
         refrencesLabel.setLayoutParams(firstColumnLayoutParams);
 
+        TextView referencesData = new TextView(getActivity());
+        String htmlString = "";
+        try {
+            JSONArray refStringArray = dbContent.getJSONArray("References");
+            JSONArray refStringURLArray = dbContent.getJSONArray("ReferencesURL");
 
-        return ionizationTable;
+
+            for (int i = 0; i < refStringArray.length(); i++) {
+                String urlString = refStringURLArray.getString(i);
+                urlString = urlString.replace("<", "");
+                urlString = urlString.replace(">", "");
+                htmlString += "<a href=" + urlString + ">" + refStringArray.getString(i);
+
+                htmlString += "</a>";
+
+                if (i != (refStringArray.length() - 1)) {
+                    htmlString += ", ";
+                }
+            }
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+        referencesData.setText(Html.fromHtml(htmlString));
+        referencesData.setPadding(0, marginPx, 0, marginPx);
+        referencesData.setLayoutParams(firstColumnLayoutParams);
+        referencesData.setMovementMethod(LinkMovementMethod.getInstance());
+
+        TableRow referencesRow = new TableRow(getActivity());
+        referencesRow.setLayoutParams(tableParams);
+        referencesRow.addView(refrencesLabel);
+        referencesRow.addView(referencesData);
+        ionizationTable.addView(referencesRow);
+        ionizationTable.setId(TABLE_ID);
+
+        fullLayout.addView(ionizationTable);
+
+        if(theoreticalEnergy){
+
+            TextView exceptText = new TextView(getActivity());
+            exceptText.setText("*Theoretical value");
+            exceptText.setLayoutParams(exceptionParams);
+            fullLayout.addView(exceptText);
+        }
+        if(approxFromExperiment){
+            TextView exceptText = new TextView(getActivity());
+            exceptText.setText("*Energy determined by interpolation or extrapolation of experimental values or by semiemperical calculation");
+            exceptText.setLayoutParams(exceptionParams);
+            fullLayout.addView(exceptText);
+        }
+
+        return fullLayout;
     }
 
     public Spanned formatHTMLStyle(String stringToFormat){
@@ -754,7 +904,6 @@ public class ChemistrySearch extends Fragment {
             openSubScript = false;
         }
 
-        System.out.println(htmlString);
         return Html.fromHtml(htmlString);
     }
 
@@ -830,6 +979,7 @@ public class ChemistrySearch extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
     }
 
