@@ -26,15 +26,16 @@ public class SplashScreen extends Activity {
         JSON_Adapter atomic_adapter = new JSON_Adapter();
         JSON_Adapter ion_adapter = new JSON_Adapter();
         JSON_Adapter const_adapter = new JSON_Adapter();
+
+        Data.constants_is = getResources().openRawResource(R.raw.constants);
+        Data.ionization_is = getResources().openRawResource(R.raw.ionizations);
+        Data.atomic_mass_is = getResources().openRawResource(R.raw.atomic_mass);
         try {
             if(isNetworkConnected()){
                     Data.setNetwork_connection(true);
                     Log.v("CONNECTION STATUS: ", "CONNECTED");
                 }else{
                     Log.v("CONNECTION STATUS: ", "NOT CONNECTED");
-                    Data.constants_is = getResources().openRawResource(R.raw.constants);
-                    Data.ionization_is = getResources().openRawResource(R.raw.ionizations);
-                    Data.atomic_mass_is = getResources().openRawResource(R.raw.atomic_mass);
                 }
 
             atomic_adapter.get_JSON_object(new URL(Data.getUrl_atomic_mass()));
