@@ -66,6 +66,7 @@ public class JSON_Adapter {
                             return json_data;
                         }
                     }else{
+                        InputStream is = null;
                         Log.v("NO INTERNET:", "READING JSON FILE");
                         if(mUrl.equalsIgnoreCase(Data.getUrl_constants())){
                             is = Data.constants_is;
@@ -80,6 +81,7 @@ public class JSON_Adapter {
                         while((line = br.readLine()) != null){
                             sb.append(line + "\n");
                         }
+                        is.close();
                         br.close();
                         JSONObject json_data = new JSONObject(sb.toString());
                         return json_data;
@@ -105,16 +107,40 @@ public class JSON_Adapter {
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
             if(jsonObject == null){
-                if(mUrl.equalsIgnoreCase(Data.getUrl_atomic_mass())){
-                    Data.setAtomic_mass_data(jsonObject);
-                    Log.v("DB_LOAD", "Atomic Mass Database Failed to Load");
+                InputStream is = null;
+                Log.v("NO INTERNET:", "READING JSON FILE");
+                if(mUrl.equalsIgnoreCase(Data.getUrl_constants())){
+                    is = Data.constants_is;
                 }else if(mUrl.equalsIgnoreCase(Data.getUrl_ionization())){
-                    Data.setIonization_data(jsonObject);
-                    Log.v("DB_LOAD", "Ionization Database Failed to Load");
-                }else if(mUrl.equalsIgnoreCase(Data.getUrl_constants())){
-                    Data.setConstants_data(jsonObject);
-                    Log.v("DB_LOAD", "Constants Database Failed to Load");
+                    is = Data.ionization_is;
+                }else if(mUrl.equalsIgnoreCase(Data.getUrl_atomic_mass())){
+                    is = Data.atomic_mass_is;
                 }
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                try {
+                    while((line = br.readLine()) != null){
+                        sb.append(line + "\n");
+                    }
+                    is.close();
+                    br.close();
+                    JSONObject json_data = new JSONObject(sb.toString());
+
+                    if(mUrl.equalsIgnoreCase(Data.getUrl_constants())){
+                        Data.setConstants_data(json_data);
+                    }else if(mUrl.equalsIgnoreCase(Data.getUrl_ionization())){
+                        Data.setIonization_data(json_data);
+                    }else if(mUrl.equalsIgnoreCase(Data.getUrl_atomic_mass())){
+                        Data.setAtomic_mass_data(json_data);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }else{
                 if(mUrl.equalsIgnoreCase(Data.getUrl_atomic_mass())){
                     Data.setAtomic_mass_data(jsonObject);
@@ -130,7 +156,5 @@ public class JSON_Adapter {
 
         }
     }
-
-    public InputStream is;
 
 }
