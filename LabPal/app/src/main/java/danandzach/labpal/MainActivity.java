@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         android.support.v4.app.Fragment chemSearch = new ChemistrySearch();
         android.support.v7.app.ActionBar.Tab mol_tab = actionBar.newTab();
-        mol_tab.setText("Mol Search");
+        mol_tab.setIcon(R.drawable.ic_search);
         mol_tab.setTabListener(new NavigationTabsListener(chemSearch));
         actionBar.addTab(mol_tab);
 

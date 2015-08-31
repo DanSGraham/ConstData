@@ -61,7 +61,8 @@ import java.util.HashSet;
  * create an instance of this fragment.
  */
 
-//TODO Add show more to isotope and format citation button correctly. Then Add Pop up window. -D
+//TODO Immediate: TEST ON DIFFERENT DISPLAYS AND WITH ALL ELEMENTS. -D
+//TODO Add show more to isotope and allow citation popup to be selectable. -D
 public class ChemistrySearch extends Fragment {
 
     /**
