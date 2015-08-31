@@ -50,7 +50,7 @@ public class SplashScreen extends Activity {
                 super.run();
                 try {
                     //5 and a half seconds to load the databases
-                    this.sleep(5500);
+                    this.sleep(6000);
                     Intent start = new Intent(SplashScreen.this, MainActivity.class);
                     start.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(start);

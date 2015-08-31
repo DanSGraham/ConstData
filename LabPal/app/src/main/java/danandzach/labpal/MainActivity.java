@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.FrameLayout;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         notes_tab.setText("Notes");
         notes_tab.setTabListener(new NavigationTabsListener(labNotes));
         actionBar.addTab(notes_tab);
-
+        ((FrameLayout) findViewById(R.id.mainscreen)).getForeground().setAlpha(0);
     }
 
     @Override
