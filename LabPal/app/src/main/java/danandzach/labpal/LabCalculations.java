@@ -60,4 +60,10 @@ public class LabCalculations extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Lab Calculator");
+    }
+
 }

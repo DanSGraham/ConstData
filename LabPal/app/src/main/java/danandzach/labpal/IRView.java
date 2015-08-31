@@ -59,5 +59,10 @@ public class IRView extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("IR Viewer");
+    }
 
 }

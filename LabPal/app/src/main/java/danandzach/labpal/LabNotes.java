@@ -58,4 +58,10 @@ public class LabNotes extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Lab Notes");
+    }
 }

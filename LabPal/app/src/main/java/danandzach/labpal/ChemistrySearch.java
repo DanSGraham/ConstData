@@ -1,6 +1,6 @@
 package danandzach.labpal;
 
-import android.app.ActionBar;
+
 import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -13,7 +13,10 @@ import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
 import android.os.Bundle;
 
+import  android.support.v7.app.ActionBar;
+
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -794,7 +797,7 @@ public class ChemistrySearch extends Fragment {
             default:
                 break;
         }
-        Spanned ION_DATABASE_CITATION = Html.fromHtml("Kramida, A., Ralchenko, Yu., Reader, J., and NIST ASD Team (2014). NIST Atomic Spectra Database (ver. 5.2), [Online]. Available: http://physics.nist.gov/asd [" + String.valueOf(citCalendar.get(Calendar.YEAR)) +
+        Spanned ION_DATABASE_CITATION = Html.fromHtml("Kramida, A., Ralchenko, Yu., Reader, J., and NIST ASD Team (2014). <i>NIST Atomic Spectra Database</i> (ver. 5.2), [Online]. Available: http://physics.nist.gov/asd [" + String.valueOf(citCalendar.get(Calendar.YEAR)) +
                 ", " + monthAccessed + " " + String.valueOf(citCalendar.get(Calendar.DATE)) + "]. National Institute of Standards and Technology, Gaithersburg, MD.");
 
         Resources r = getActivity().getResources();
@@ -1280,7 +1283,6 @@ public class ChemistrySearch extends Fragment {
         final AutoCompleteTextView search_bar = (AutoCompleteTextView) v.findViewById(R.id.search_field);
 
 
-
         if(!get_search_results().isEmpty()){
             modifyContent(get_search_results(), contentArea);
         }
@@ -1373,6 +1375,13 @@ public class ChemistrySearch extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Element Search");
+    }
+
 
     public void set_search_results(HashMap<String, JSONObject> h){
         search_results = h;
