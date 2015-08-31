@@ -117,6 +117,9 @@ public class ChemistrySearch extends Fragment {
         final int CONTENT_CONTAINER_ID = 7;
         final int EXPAND_VIEW_BUTTON_ID = 8;
 
+        final SharedPreferences prefs = getActivity().getSharedPreferences("expansions",Context.MODE_PRIVATE);
+        final SharedPreferences.Editor prefs_edit = prefs.edit();
+
 
         Calendar citCalendar = Calendar.getInstance();
         String monthAccessed = "";
@@ -183,6 +186,7 @@ public class ChemistrySearch extends Fragment {
                 r.getDisplayMetrics()
         );
 
+
         //Setup data layout. -D
         RelativeLayout resultsContainer = new RelativeLayout(getActivity());
         RelativeLayout.LayoutParams resultsLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -213,14 +217,19 @@ public class ChemistrySearch extends Fragment {
                     contentShow.setVisibility(View.VISIBLE);
                     expandButton.setText("-");
                     expandButton.setTag(0);
+                    prefs_edit.putBoolean(ISOTOPE_DATABASE_NAME, true);
+                    prefs_edit.commit();
                 } else {
                     RelativeLayout contentHide = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
                     contentHide.setVisibility(View.GONE);
                     expandButton.setText("+");
                     expandButton.setTag(1);
+                    prefs_edit.putBoolean(ISOTOPE_DATABASE_NAME, false);
+                    prefs_edit.commit();
                 }
             }
         });
+
 
         title.setId(TITLE_ID);
 
@@ -239,11 +248,15 @@ public class ChemistrySearch extends Fragment {
                     contentShow.setVisibility(View.VISIBLE);
                     expandViewButton.setText("-");
                     expandViewButton.setTag(0);
+                    prefs_edit.putBoolean(ISOTOPE_DATABASE_NAME, true);
+                    prefs_edit.commit();
                 } else {
                     RelativeLayout contentHide = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
                     contentHide.setVisibility(View.GONE);
                     expandViewButton.setText("+");
                     expandViewButton.setTag(1);
+                    prefs_edit.putBoolean(ISOTOPE_DATABASE_NAME, false);
+                    prefs_edit.commit();
                 }
             }
         });
@@ -275,7 +288,14 @@ public class ChemistrySearch extends Fragment {
         contentLayoutParams.setMargins(0, contentMarginPx, 0, contentMarginPx);
         contentContainer.setLayoutParams(contentLayoutParams);
         contentContainer.setPadding(0, contentMarginPx, 0, contentMarginPx);
-        contentContainer.setVisibility(View.GONE);
+        if(prefs.getBoolean(ISOTOPE_DATABASE_NAME, false) == true){
+            contentContainer.setVisibility(View.VISIBLE);
+            expandViewButton.setText("-");
+        }else{
+            contentContainer.setVisibility(View.GONE);
+            expandViewButton.setText("+");
+        }
+
         contentContainer.setId(CONTENT_CONTAINER_ID);
 
         //Format the Standard Atomic Weight Section. -D
@@ -754,6 +774,9 @@ public class ChemistrySearch extends Fragment {
         final int EXPAND_VIEW_BUTTON_ID = 108;
         final int ION_TABLE_ID = 109;
 
+        SharedPreferences prefs = getActivity().getSharedPreferences("expansions", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor prefs_edit = prefs.edit();
+
         Calendar citCalendar = Calendar.getInstance();
         String monthAccessed = "";
         String dayAccessed = "";
@@ -844,11 +867,15 @@ public class ChemistrySearch extends Fragment {
                     contentShow.setVisibility(View.VISIBLE);
                     expandButton.setText("-");
                     expandButton.setTag(0);
+                    prefs_edit.putBoolean(IONIZATION_ENERGY_DATABASE_NAME, true);
+                    prefs_edit.commit();
                 } else {
                     RelativeLayout contentHide = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
                     contentHide.setVisibility(View.GONE);
                     expandButton.setText("+");
                     expandButton.setTag(1);
+                    prefs_edit.putBoolean(IONIZATION_ENERGY_DATABASE_NAME, false);
+                    prefs_edit.commit();
                 }
             }
         });
@@ -870,11 +897,15 @@ public class ChemistrySearch extends Fragment {
                     contentShow.setVisibility(View.VISIBLE);
                     expandViewButton.setText("-");
                     expandViewButton.setTag(0);
+                    prefs_edit.putBoolean(IONIZATION_ENERGY_DATABASE_NAME, true);
+                    prefs_edit.commit();
                 } else {
                     RelativeLayout contentHide = (RelativeLayout) getActivity().findViewById(CONTENT_CONTAINER_ID);
                     contentHide.setVisibility(View.GONE);
                     expandViewButton.setText("+");
                     expandViewButton.setTag(1);
+                    prefs_edit.putBoolean(IONIZATION_ENERGY_DATABASE_NAME, false);
+                    prefs_edit.commit();
                 }
             }
         });
@@ -904,7 +935,13 @@ public class ChemistrySearch extends Fragment {
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         contentLayoutParams.addRule(RelativeLayout.BELOW, UNDERLINE_ID);
         contentContainer.setLayoutParams(contentLayoutParams);
-        contentContainer.setVisibility(View.GONE);
+        if(prefs.getBoolean(IONIZATION_ENERGY_DATABASE_NAME, false) == true){
+            contentContainer.setVisibility(View.VISIBLE);
+            expandViewButton.setText("-");
+        }else{
+            contentContainer.setVisibility(View.GONE);
+            expandViewButton.setText("+");
+        }
         contentContainer.setId(CONTENT_CONTAINER_ID);
 
         //Add ionizationTable to content container. -D
