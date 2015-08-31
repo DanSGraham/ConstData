@@ -6,8 +6,10 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,8 +17,14 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.FrameLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
 
+    private final String ISOTOPE_DATABASE_NAME = "Atomic Weights and Isotopes";
+    private final String IONIZATION_ENERGY_DATABASE_NAME = "Ground Levels and Ionization Energy";
+    private final String CONSTANTS_DATABASE_NAME = "Fundamental Physics Constants Database";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +64,36 @@ public class MainActivity extends AppCompatActivity {
         notes_tab.setTabListener(new NavigationTabsListener(labNotes));
         actionBar.addTab(notes_tab);
         ((FrameLayout) findViewById(R.id.mainscreen)).getForeground().setAlpha(0);
+
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ISOTOPE_DATABASE_NAME, Data.getAtomic_mass_data().toString());
+        outState.putString(IONIZATION_ENERGY_DATABASE_NAME, Data.getIonization_data().toString());
+        outState.putString(CONSTANTS_DATABASE_NAME, Data.getConstants_data().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        String temp_ionization_db = savedInstanceState.getString(IONIZATION_ENERGY_DATABASE_NAME);
+        String temp_atomic_db = savedInstanceState.getString(ISOTOPE_DATABASE_NAME);
+        String temp_constants_db = savedInstanceState.getString(CONSTANTS_DATABASE_NAME);
+
+        try {
+            JSONObject restored_ionization_db = new JSONObject(temp_ionization_db);
+            JSONObject restored_atomic_db = new JSONObject(temp_atomic_db);
+            JSONObject restored_constants_db = new JSONObject(temp_constants_db);
+
+            Data.setIonization_data(restored_ionization_db);
+            Data.setAtomic_mass_data(restored_atomic_db);
+            Data.setConstants_data(restored_constants_db);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

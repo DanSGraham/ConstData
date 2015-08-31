@@ -2,6 +2,8 @@ package danandzach.labpal;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -81,9 +83,8 @@ public class ChemistrySearch extends Fragment {
     private final String ISOTOPE_DATABASE_NAME = "Atomic Weights and Isotopes";
     private final String IONIZATION_ENERGY_DATABASE_NAME = "Ground Levels and Ionization Energy";
 
-
-
     private static String saved_search_term;
+
 
 
     private final int SECTION_TITLE_TOP_MARGIN_DIP = 10;
@@ -1267,8 +1268,6 @@ public class ChemistrySearch extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
     }
 
     @Override
@@ -1294,7 +1293,9 @@ public class ChemistrySearch extends Fragment {
         We can map the element symbol to the molecule name later if we have time, but this should suffice for now.
          */
 
-        JSONArray jsonArray = Data.get_array(Data.getIonization_data(), Data.getIonization_array_name());
+        //This is for when the static variables get popped from memory on long application resting periods.
+        Data.initPeriodicTable();
+
         String[] adapter_list = new String[PeriodicTable.periodic_table_size];
         Log.v("SIZE: ", String.valueOf(PeriodicTable.periodic_table_size));
 
@@ -1365,6 +1366,15 @@ public class ChemistrySearch extends Fragment {
 
         return v;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ISOTOPE_DATABASE_NAME, Data.getAtomic_mass_data().toString());
+        outState.putString(IONIZATION_ENERGY_DATABASE_NAME, Data.getIonization_data().toString());
+    }
+
+
 
     @Override
     public void onAttach(Activity activity) {
