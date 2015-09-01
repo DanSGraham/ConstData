@@ -48,6 +48,7 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -464,6 +465,7 @@ public class ChemistrySearch extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                         clipButtonContainer.setBackgroundColor(Color.TRANSPARENT);
+                        Toast.makeText(getActivity(), "Copied to Clipboard", Toast.LENGTH_SHORT).show();
                         return true;
                 }
                 return false;
@@ -1155,6 +1157,7 @@ public class ChemistrySearch extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                         clipButtonContainer.setBackgroundColor(Color.TRANSPARENT);
+                        Toast.makeText(getActivity(), "Copied to Clipboard", Toast.LENGTH_SHORT).show();
                         return true;
                 }
                 return false;
