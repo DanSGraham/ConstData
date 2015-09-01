@@ -211,8 +211,8 @@ public class ChemistrySearch extends Fragment {
 
         //Setup section title. -D
         TextView title = new TextView(getActivity());
-        RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
         titleParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         titleParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         title.setText(databaseName);
@@ -242,14 +242,14 @@ public class ChemistrySearch extends Fragment {
             }
         });
 
-        title.setTextIsSelectable(true);
+        //title.setTextIsSelectable(true);
         title.setId(TITLE_ID);
 
         //Setup expand section button -D
         final TextView expandViewButton = new TextView(getActivity());
         expandViewButton.setText("+");
         expandViewButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, HEADER_TEXT_SIZE);
-        expandViewButton.setTag(1);
+        //expandViewButton.setTag(1);
         expandViewButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -303,9 +303,13 @@ public class ChemistrySearch extends Fragment {
         if(prefs.getBoolean(ISOTOPE_DATABASE_NAME, false) == true){
             contentContainer.setVisibility(View.VISIBLE);
             expandViewButton.setText("-");
+            expandViewButton.setTag(0);
+            title.setTag(0);
         }else{
             contentContainer.setVisibility(View.GONE);
             expandViewButton.setText("+");
+            expandViewButton.setTag(1);
+            title.setTag(0);
         }
 
         contentContainer.setId(CONTENT_CONTAINER_ID);
@@ -956,12 +960,12 @@ public class ChemistrySearch extends Fragment {
 
         //Setup section title. -D
         TextView title = new TextView(getActivity());
-        RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
         titleParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         titleParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         title.setText(databaseName);
-        title.setTextIsSelectable(true);
+        //title.setTextIsSelectable(true);
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, HEADER_TEXT_SIZE);
         title.setLayoutParams(titleParams);
         title.setOnClickListener(new View.OnClickListener() {
@@ -994,7 +998,6 @@ public class ChemistrySearch extends Fragment {
         final TextView expandViewButton = new TextView(getActivity());
         expandViewButton.setText("+");
         expandViewButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, HEADER_TEXT_SIZE);
-        expandViewButton.setTag(1);
         expandViewButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -1046,9 +1049,13 @@ public class ChemistrySearch extends Fragment {
         if(prefs.getBoolean(IONIZATION_ENERGY_DATABASE_NAME, false) == true){
             contentContainer.setVisibility(View.VISIBLE);
             expandViewButton.setText("-");
+            expandViewButton.setTag(0);
+            title.setTag(0);
         }else{
             contentContainer.setVisibility(View.GONE);
             expandViewButton.setText("+");
+            expandViewButton.setTag(1);
+            title.setTag(1);
         }
         contentContainer.setId(CONTENT_CONTAINER_ID);
 
