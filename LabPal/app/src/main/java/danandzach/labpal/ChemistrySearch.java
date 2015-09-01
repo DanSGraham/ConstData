@@ -30,9 +30,11 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ActionMenuView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -426,7 +428,7 @@ public class ChemistrySearch extends Fragment {
 
         //Clipboard button. -D
 
-        FrameLayout clipButtonContainer = new FrameLayout(getActivity());
+        final FrameLayout clipButtonContainer = new FrameLayout(getActivity());
 
 
         TextView copyButton = new TextView(getActivity());
@@ -450,12 +452,21 @@ public class ChemistrySearch extends Fragment {
         clipButtonLayoutParams.setMargins(0, 0, 10, 10);
         clipButtonContainer.setLayoutParams(clipButtonLayoutParams);
 
-        clipButtonContainer.setOnClickListener(new View.OnClickListener() {
+        clipButtonContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Isotope Citation", CLIPBOARD_ISOTOPE_CITATION);
-                clipboard.setPrimaryClip(clip);
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        clipButtonContainer.setBackgroundColor(Color.GRAY);
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("Isotope Citation", CLIPBOARD_ISOTOPE_CITATION);
+                        clipboard.setPrimaryClip(clip);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        clipButtonContainer.setBackgroundColor(Color.TRANSPARENT);
+                        return true;
+                }
+                return false;
             }
         });
 
@@ -1109,7 +1120,7 @@ public class ChemistrySearch extends Fragment {
 
         //Clipboard button. -D
 
-        FrameLayout clipButtonContainer = new FrameLayout(getActivity());
+        final FrameLayout clipButtonContainer = new FrameLayout(getActivity());
 
 
         TextView copyButton = new TextView(getActivity());
@@ -1132,13 +1143,21 @@ public class ChemistrySearch extends Fragment {
         clipButtonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         clipButtonLayoutParams.setMargins(0, 0, 10, 10);
         clipButtonContainer.setLayoutParams(clipButtonLayoutParams);
-
-        clipButtonContainer.setOnClickListener(new View.OnClickListener() {
+        clipButtonContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Ionization Citaiton", ION_CLIP_CITATION);
-                clipboard.setPrimaryClip(clip);
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        clipButtonContainer.setBackgroundColor(Color.GRAY);
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("Ionization Citaiton", ION_CLIP_CITATION);
+                        clipboard.setPrimaryClip(clip);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        clipButtonContainer.setBackgroundColor(Color.TRANSPARENT);
+                        return true;
+                }
+                return false;
             }
         });
 
@@ -1551,6 +1570,14 @@ public class ChemistrySearch extends Fragment {
                 set_search_results(query_results);
                 if (!get_search_results().isEmpty()) {
                     modifyContent(get_search_results(), contentArea);
+
+
+                    //Hides the keyboard once item is selected. -D
+                    View view2 = getActivity().getCurrentFocus();
+                    if (view != null) {
+                        InputMethodManager imm = ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE));
+                        imm.hideSoftInputFromWindow(view2.getWindowToken(), 0);
+                    }
                 }
 
             }
