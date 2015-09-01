@@ -2,6 +2,8 @@ package danandzach.labpal;
 
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -117,7 +119,10 @@ public class ChemistrySearch extends Fragment {
         final int CONTENT_CONTAINER_ID = 7;
         final int EXPAND_VIEW_BUTTON_ID = 8;
 
-        final SharedPreferences prefs = getActivity().getSharedPreferences("expansions",Context.MODE_PRIVATE);
+        final int CITATION_TEXT_ID = 9;
+        final int CITATION_CLIPBOARD_BUTTON = 10;
+
+        final SharedPreferences prefs = getActivity().getSharedPreferences("expansions", Context.MODE_PRIVATE);
         final SharedPreferences.Editor prefs_edit = prefs.edit();
 
 
@@ -165,6 +170,10 @@ public class ChemistrySearch extends Fragment {
         }
         Spanned ISOTOPE_DATABASE_CITATION = Html.fromHtml("J. S. Coursey, D. J. Schwab, J. J. Tsai, and R. A. Dragoset (2015). <i>Atomic Weights and Isotopic Compositions Database</i>, [Online]. Available: http://nist.gov/pml/data/comp.cfm [" + String.valueOf(citCalendar.get(Calendar.YEAR)) +
                 ", " + monthAccessed + " " + String.valueOf(citCalendar.get(Calendar.DATE)) + "]. National Institute of Standards and Technology, Gaithersburg, MD.");
+
+        final String CLIPBOARD_ISOTOPE_CITATION = "J. S. Coursey, D. J. Schwab, J. J. Tsai, and R. A. Dragoset (2015). Atomic Weights and Isotopic Compositions Database, [Online]. Available: http://nist.gov/pml/data/comp.cfm [" + String.valueOf(citCalendar.get(Calendar.YEAR)) +
+                ", " + monthAccessed + " " + String.valueOf(citCalendar.get(Calendar.DATE)) + "]. National Institute of Standards and Technology, Gaithersburg, MD.";
+
 
         //Set Margin value -D
         Resources r = getActivity().getResources();
@@ -230,7 +239,7 @@ public class ChemistrySearch extends Fragment {
             }
         });
 
-
+        title.setTextIsSelectable(true);
         title.setId(TITLE_ID);
 
         //Setup expand section button -D
@@ -327,7 +336,10 @@ public class ChemistrySearch extends Fragment {
         stdWeightLabelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         stdWeightLabelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         stdWeightLabel.setLayoutParams(stdWeightLabelLayoutParams);
+
+        stdWeightLabel.setTextIsSelectable(true);
         stdWeightLabel.setId(STANDARD_WEIGHT_LABEL_ID);
+
 
         TextView stdWeightData = new TextView(getActivity());
         stdWeightData.setText(stdWeightDataStr);
@@ -336,6 +348,8 @@ public class ChemistrySearch extends Fragment {
         stdWeightDataLayoutParams.addRule(RelativeLayout.BELOW, UNDERLINE_ID);
         stdWeightDataLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         stdWeightData.setLayoutParams(stdWeightDataLayoutParams);
+
+        stdWeightData.setTextIsSelectable(true);
         stdWeightData.setId(STANDARD_WEIGHT_VALUE_ID);
 
 
@@ -359,6 +373,8 @@ public class ChemistrySearch extends Fragment {
         citationLabelLayoutParams.addRule(RelativeLayout.BELOW, COMMON_ISOTOPE_TABLE_ID);
         citationLabelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         citationLabel.setLayoutParams(citationLabelLayoutParams);
+
+        citationLabel.setTextIsSelectable(true);
 
 
         //To make the button frame work had to use a framelayout. -D
@@ -386,14 +402,67 @@ public class ChemistrySearch extends Fragment {
 
         //Citation popup -D
         final PopupWindow citationPopUp = new PopupWindow(getActivity());
-        FrameLayout citationLayout = new FrameLayout(getActivity());
-        FrameLayout.LayoutParams citationPopUpLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout citationLayout = new RelativeLayout(getActivity());
+        RelativeLayout.LayoutParams citationPopUpLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+
         citationPopUp.setFocusable(true);
         citationLayout.setLayoutParams(citationPopUpLayoutParams);
         citationLayout.setBackgroundColor(Color.WHITE);
+
+        FrameLayout citationTextContainer = new FrameLayout(getActivity());
+        RelativeLayout.LayoutParams citationTextContainerLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        citationTextContainerLayout.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        citationTextContainer.setLayoutParams(citationTextContainerLayout);
+        citationTextContainer.setId(CITATION_TEXT_ID);
+
+
         TextView citationText = new TextView(getActivity());
         citationText.setText(ISOTOPE_DATABASE_CITATION);
-        citationLayout.addView(citationText);
+        citationTextContainer.addView(citationText);
+
+
+        citationLayout.addView(citationTextContainer);
+
+        //Clipboard button. -D
+
+        FrameLayout clipButtonContainer = new FrameLayout(getActivity());
+
+
+        TextView copyButton = new TextView(getActivity());
+        copyButton.setText("Copy to Clipboard");
+
+        //Text border -D
+        copyButton.setPadding(5, 5, 5, 5);
+        ShapeDrawable clipBorder = new ShapeDrawable();
+        clipBorder.setShape(new RectShape());
+        clipBorder.getPaint().setColor(citationButton.getCurrentTextColor());
+        clipBorder.getPaint().setStrokeWidth(5f);
+        clipBorder.getPaint().setStyle(Paint.Style.STROKE);
+        copyButton.setBackgroundDrawable(clipBorder);
+        clipButtonContainer.addView(copyButton);
+
+
+
+        RelativeLayout.LayoutParams clipButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        clipButtonLayoutParams.addRule(RelativeLayout.BELOW, CITATION_TEXT_ID);
+        clipButtonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        clipButtonLayoutParams.setMargins(0, 0, 10, 10);
+        clipButtonContainer.setLayoutParams(clipButtonLayoutParams);
+
+        clipButtonContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Isotope Citation", CLIPBOARD_ISOTOPE_CITATION);
+                clipboard.setPrimaryClip(clip);
+            }
+        });
+
+
+        citationLayout.addView(clipButtonContainer);
+
+
         citationPopUp.setContentView(citationLayout);
         citationPopUp.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
         citationPopUp.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
@@ -478,12 +547,14 @@ public class ChemistrySearch extends Fragment {
         TextView compositionLabel = new TextView(getActivity());
         TableRow.LayoutParams secondColumnLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, COLUMN_TWO_WEIGHT);
         compositionLabel.setText("Isotopoic Composition");
+        compositionLabel.setTextIsSelectable(true);
         compositionLabel.setPaintFlags(compositionLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         compositionLabel.setLayoutParams(secondColumnLayoutParams);
 
         TextView relativeMassLabel = new TextView(getActivity());
         TableRow.LayoutParams thirdColumnLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, COLUMN_THREE_WEIGHT);
         relativeMassLabel.setText("Relative Mass");
+        relativeMassLabel.setTextIsSelectable(true);
         relativeMassLabel.setPaintFlags(relativeMassLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         relativeMassLabel.setLayoutParams(thirdColumnLayoutParams);
 
@@ -515,6 +586,10 @@ public class ChemistrySearch extends Fragment {
                     atomicSymbolText = new TextView(getActivity());
                     relativeMass = new TextView(getActivity());
                     composition = new TextView(getActivity());
+
+                    atomicSymbolText.setTextIsSelectable(true);
+                    relativeMass.setTextIsSelectable(true);
+                    composition.setTextIsSelectable(true);
 
                     atomicSymbolText.setText("");
                     if(!symbolInTable){
@@ -634,6 +709,10 @@ public class ChemistrySearch extends Fragment {
                             relativeMass = new TextView(getActivity());
                             composition = new TextView(getActivity());
 
+                            atomicSymbolText.setTextIsSelectable(true);
+                            relativeMass.setTextIsSelectable(true);
+                            composition.setTextIsSelectable(true);
+
                             atomicSymbolText.setText("");
                             if(!symbolInTable) {
                                 atomicSymbolText.setText(atomicSymbol);
@@ -676,6 +755,10 @@ public class ChemistrySearch extends Fragment {
                             relativeMass = new TextView(getActivity());
                             composition = new TextView(getActivity());
 
+                            atomicSymbolText.setTextIsSelectable(true);
+                            relativeMass.setTextIsSelectable(true);
+                            composition.setTextIsSelectable(true);
+
                             atomicSymbol = isotopeArray.getJSONObject(i).optString("Atomic Symbol");
                             atomicSymbolText.setText(atomicSymbol);
                             atomicSymbolText.setLayoutParams(firstColumnLayoutParams);
@@ -710,6 +793,10 @@ public class ChemistrySearch extends Fragment {
                             atomicSymbolText = new TextView(getActivity());
                             relativeMass = new TextView(getActivity());
                             composition = new TextView(getActivity());
+
+                            atomicSymbolText.setTextIsSelectable(true);
+                            relativeMass.setTextIsSelectable(true);
+                            composition.setTextIsSelectable(true);
 
                             atomicSymbolText.setText("");
                             if(!symbolInTable){
@@ -754,6 +841,7 @@ public class ChemistrySearch extends Fragment {
             exception.setPadding(0, contentMarginPx, 0, contentMarginPx);
             exception.setText("#Value derived partly from systematic trends");
             exception.setLayoutParams(exceptionParams);
+            exception.setTextIsSelectable(true);
             fullLayout.addView(exception);
         }
 
@@ -773,6 +861,8 @@ public class ChemistrySearch extends Fragment {
         final int CONTENT_CONTAINER_ID = 107;
         final int EXPAND_VIEW_BUTTON_ID = 108;
         final int ION_TABLE_ID = 109;
+
+        final int CITATION_TEXT_ID = 110;
 
         SharedPreferences prefs = getActivity().getSharedPreferences("expansions", Context.MODE_PRIVATE);
         final SharedPreferences.Editor prefs_edit = prefs.edit();
@@ -824,6 +914,10 @@ public class ChemistrySearch extends Fragment {
         Spanned ION_DATABASE_CITATION = Html.fromHtml("Kramida, A., Ralchenko, Yu., Reader, J., and NIST ASD Team (2014). <i>NIST Atomic Spectra Database</i> (ver. 5.2), [Online]. Available: http://physics.nist.gov/asd [" + String.valueOf(citCalendar.get(Calendar.YEAR)) +
                 ", " + monthAccessed + " " + String.valueOf(citCalendar.get(Calendar.DATE)) + "]. National Institute of Standards and Technology, Gaithersburg, MD.");
 
+        final String ION_CLIP_CITATION = "Kramida, A., Ralchenko, Yu., Reader, J., and NIST ASD Team (2014). NIST Atomic Spectra Database (ver. 5.2), [Online]. Available: http://physics.nist.gov/asd [" + String.valueOf(citCalendar.get(Calendar.YEAR)) +
+                ", " + monthAccessed + " " + String.valueOf(citCalendar.get(Calendar.DATE)) + "]. National Institute of Standards and Technology, Gaithersburg, MD.";
+
+
         Resources r = getActivity().getResources();
         int topMarginPx = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
@@ -854,6 +948,7 @@ public class ChemistrySearch extends Fragment {
         titleParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         titleParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         title.setText(databaseName);
+        title.setTextIsSelectable(true);
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, HEADER_TEXT_SIZE);
         title.setLayoutParams(titleParams);
         title.setOnClickListener(new View.OnClickListener() {
@@ -990,14 +1085,67 @@ public class ChemistrySearch extends Fragment {
 
         //Citation popup -D
         final PopupWindow citationPopUp = new PopupWindow(getActivity());
-        FrameLayout citationLayout = new FrameLayout(getActivity());
-        FrameLayout.LayoutParams citationPopUpLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout citationLayout = new RelativeLayout(getActivity());
+        RelativeLayout.LayoutParams citationPopUpLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+
         citationPopUp.setFocusable(true);
         citationLayout.setLayoutParams(citationPopUpLayoutParams);
         citationLayout.setBackgroundColor(Color.WHITE);
+
+        FrameLayout citationTextContainer = new FrameLayout(getActivity());
+        RelativeLayout.LayoutParams citationTextContainerLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        citationTextContainerLayout.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        citationTextContainer.setLayoutParams(citationTextContainerLayout);
+        citationTextContainer.setId(CITATION_TEXT_ID);
+
+
         TextView citationText = new TextView(getActivity());
         citationText.setText(ION_DATABASE_CITATION);
-        citationLayout.addView(citationText);
+        citationTextContainer.addView(citationText);
+
+
+        citationLayout.addView(citationTextContainer);
+
+        //Clipboard button. -D
+
+        FrameLayout clipButtonContainer = new FrameLayout(getActivity());
+
+
+        TextView copyButton = new TextView(getActivity());
+        copyButton.setText("Copy to Clipboard");
+
+        //Text border -D
+        copyButton.setPadding(5, 5, 5, 5);
+        ShapeDrawable clipBorder = new ShapeDrawable();
+        clipBorder.setShape(new RectShape());
+        clipBorder.getPaint().setColor(citationButton.getCurrentTextColor());
+        clipBorder.getPaint().setStrokeWidth(5f);
+        clipBorder.getPaint().setStyle(Paint.Style.STROKE);
+        copyButton.setBackgroundDrawable(clipBorder);
+        clipButtonContainer.addView(copyButton);
+
+
+
+        RelativeLayout.LayoutParams clipButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        clipButtonLayoutParams.addRule(RelativeLayout.BELOW, CITATION_TEXT_ID);
+        clipButtonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        clipButtonLayoutParams.setMargins(0, 0, 10, 10);
+        clipButtonContainer.setLayoutParams(clipButtonLayoutParams);
+
+        clipButtonContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Ionization Citaiton", ION_CLIP_CITATION);
+                clipboard.setPrimaryClip(clip);
+            }
+        });
+
+
+        citationLayout.addView(clipButtonContainer);
+
+
         citationPopUp.setContentView(citationLayout);
         citationPopUp.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
         citationPopUp.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
@@ -1075,11 +1223,13 @@ public class ChemistrySearch extends Fragment {
         //Add ground shell row. -D
         TextView groundShellLabel = new TextView(getActivity());
         groundShellLabel.setText("Ground Shells:");
+        groundShellLabel.setTextIsSelectable(true);
         groundShellLabel.setPadding(0, marginPx, 0, marginPx);
         groundShellLabel.setLayoutParams(firstColumnLayoutParams);
 
         TextView groundShellData = new TextView(getActivity());
         groundShellData.setText(formatHTMLStyle(dbContent.optString("Ground Shells")));
+        groundShellData.setTextIsSelectable(true);
         groundShellData.setPadding(0, marginPx, 0, marginPx);
         groundShellData.setLayoutParams(secondColumnLayoutParams);
 
@@ -1092,11 +1242,13 @@ public class ChemistrySearch extends Fragment {
         //Add ground quantum level row. -D
         TextView groundLevelLabel = new TextView(getActivity());
         groundLevelLabel.setText("Ground Level:");
+        groundLevelLabel.setTextIsSelectable(true);
         groundLevelLabel.setPadding(0, marginPx, 0, marginPx);
         groundLevelLabel.setLayoutParams(firstColumnLayoutParams);
 
         TextView groundLevelData = new TextView(getActivity());
         groundLevelData.setText(formatHTMLStyle(dbContent.optString("Ground Level")));
+        groundLevelData.setTextIsSelectable(true);
         groundLevelData.setPadding(0, marginPx, 0, marginPx);
         groundLevelData.setLayoutParams(secondColumnLayoutParams);
 
@@ -1112,10 +1264,12 @@ public class ChemistrySearch extends Fragment {
         boolean approxFromExperiment = false;
         TextView ionizationEnergyLabel = new TextView(getActivity());
         ionizationEnergyLabel.setText("Ionization Energy:");
+        ionizationEnergyLabel.setTextIsSelectable(true);
         ionizationEnergyLabel.setPadding(0, marginPx, 0, marginPx);
         ionizationEnergyLabel.setLayoutParams(firstColumnLayoutParams);
 
         TextView ionizationEnergyData = new TextView(getActivity());
+        ionizationEnergyData.setTextIsSelectable(true);
         String ionizationEnergyString = dbContent.optString("Ionization Energy (eV)");
         ionizationEnergyString = ionizationEnergyString.replace("_", "");
         if (ionizationEnergyString.charAt(0) == '('){
@@ -1189,12 +1343,14 @@ public class ChemistrySearch extends Fragment {
 
             TextView exceptText = new TextView(getActivity());
             exceptText.setText("*Theoretical value");
+            exceptText.setTextIsSelectable(true);
             exceptText.setLayoutParams(exceptionParams);
             fullLayout.addView(exceptText);
         }
         if(approxFromExperiment){
             TextView exceptText = new TextView(getActivity());
             exceptText.setText("*Energy determined by interpolation or extrapolation of experimental values or by semiemperical calculation");
+            exceptText.setTextIsSelectable(true);
             exceptText.setLayoutParams(exceptionParams);
             fullLayout.addView(exceptText);
         }
