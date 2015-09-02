@@ -1,12 +1,15 @@
 package danandzach.labpal;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 
 /**
@@ -24,6 +27,7 @@ public class LabNotes extends Fragment {
      *
      * @return A new instance of fragment LabNotes.
      */
+
     public static LabNotes newInstance() {
         LabNotes fragment = new LabNotes();
         Bundle args = new Bundle();
@@ -60,8 +64,33 @@ public class LabNotes extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences prefs = getActivity().getSharedPreferences("notes", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        EditText notepad = (EditText) getView().findViewById(R.id.notes_entry);
+        editor.putString("notepad", notepad.getText().toString());
+        editor.commit();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        SharedPreferences prefs = getActivity().getSharedPreferences("notes", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        EditText notepad = (EditText) getView().findViewById(R.id.notes_entry);
+        editor.putString("notepad", notepad.getText().toString());
+        editor.commit();
+    }
+
+    @Override
     public void onResume(){
         super.onResume();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Lab Notes");
+        SharedPreferences prefs = getActivity().getSharedPreferences("notes", Context.MODE_PRIVATE);
+        String notes = prefs.getString("notepad", "");
+        EditText notepad = (EditText) getView().findViewById(R.id.notes_entry);
+        notepad.setText(notes);
     }
+
 }
