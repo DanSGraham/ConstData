@@ -1,9 +1,100 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="danandzach.labpal.LabCalculations">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="TEST2" />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="number to perform current operation on"
+        android:layout_alignParentTop="true"
+        android:id="@+id/recentNumber"/>
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recentNumber"
+        android:orientation="horizontal"
+        android:id="@+id/displayScreen">
+        <EditText
+            android:layout_width= "0dp"
+            android:layout_weight=".9"
+            android:layout_height="wrap_content"
+            android:hint="Display number section"
+            android:id="@+id/displayNum"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".1"
+            android:layout_height="wrap_content"
+            android:text="Units"
+            android:id="@+id/displayUnits"/>
+    </LinearLayout>
+
+    <TableLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@id/displayScreen"
+        android:id="@+id/buttonPad">
+        <TableRow>
+            <Button
+                android:text="AC"/>
+            <Button
+                android:text="%"/>
+            <Button
+                android:text="/"/>
+            <Button
+                android:text="del"/>
+        </TableRow>
+
+        <TableRow>
+            <Button
+                android:text="7"/>
+            <Button
+                android:text="8"/>
+            <Button
+                android:text="9"/>
+            <Button
+                android:text="*"/>
+        </TableRow>
+
+        <TableRow>
+            <Button
+                android:text = "4"/>
+            <Button
+                android:text = "5" />
+            <Button
+                android:text="6"/>
+            <Button
+                android:text="-"/>
+        </TableRow>
+
+        <TableRow>
+            <Button
+                android:text = "1"/>
+            <Button
+                android:text="2"/>
+            <Button
+                android:text="3"/>
+            <Button
+                android:text="+"/>
+        </TableRow>
+
+        <TableRow>
+            <Button
+                android:text="0"/>
+            <Button
+                android:text="."/>
+            <Button
+                android:text="()"/>
+            <Button
+                android:text="="/>
+        </TableRow>
+    </TableLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonPad"
+        android:hint="Search the NIST SRD 121 for Constants"
+        android:id="@+id/calculator_search"/>
+
+</RelativeLayout>
