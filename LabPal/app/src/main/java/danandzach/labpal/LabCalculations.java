@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.Button;
 
 import org.json.JSONException;
@@ -37,7 +38,8 @@ public class LabCalculations extends Fragment {
      *
      * @return A new instance of fragment LabCalculations.
      */
-
+    
+    public EditText currModifyText;
     private static JSONObject data_constant;
 
     public static LabCalculations newInstance() {
@@ -607,6 +609,48 @@ public class LabCalculations extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+
+        //Setup Display -D
+        EditText displayValue = (EditText) v.findViewById(R.id.display_value);
+        currModifyText = displayValue;
+
+        EditText displayError = (EditText) v.findViewById(R.id.display_err);
+
+        //Prevents keyboard from coming up. -D
+        displayValue.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.requestFocus();
+                return true;
+            }
+        });
+
+        displayValue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    currModifyText = (EditText) v;
+                }
+            }
+        });
+
+        displayError.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.requestFocus();
+                return true;
+            }
+        });
+
+        displayError.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    currModifyText = (EditText) v;
+                }
+            }
+        });
 
         return v;
     }
