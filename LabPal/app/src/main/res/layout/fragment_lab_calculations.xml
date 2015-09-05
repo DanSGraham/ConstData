@@ -7,7 +7,8 @@
         android:text="number to perform current operation on"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:textSize="14sp"
+        android:gravity="right"
+        android:textSize="16sp"
         android:id="@+id/recent_number"/>
 
     <LinearLayout
