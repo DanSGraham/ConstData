@@ -143,6 +143,27 @@ public class LabCalculations extends Fragment {
                 if(!currModifyText.getText().toString().contains("."))
                     currModifyText.setText(preSelect + "." + postSelect);
                 break;
+
+            case R.id.power:
+                break;
+
+            case R.id.b_div:
+                break;
+
+            case R.id.b_star:
+                break;
+
+            case R.id.b_plus:
+                break;
+
+            case R.id.b_minus:
+                break;
+
+            case R.id.b_equals:
+                break;
+
+            case R.id.b_err:
+                break;
         }
         if(currModifyText.getId() == R.id.display_err){
             Selection.setSelection(currModifyText.getText(), currModifyText.getText().length() - 1);
@@ -164,9 +185,12 @@ public class LabCalculations extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_lab_calculations, container, false);
 
+        result = 0.0f;
+        value = 0.0f;
+
         //Set up the buttons
         Button ac = (Button)v.findViewById(R.id.b_AC);
-        Button power = (Button)v.findViewById(R.id.b_10x);
+        Button power = (Button)v.findViewById(R.id.power);
         Button b_div = (Button)v.findViewById(R.id.b_div);
         Button del = (Button)v.findViewById(R.id.b_del);
         Button b7 = (Button)v.findViewById(R.id.b7);
@@ -530,6 +554,7 @@ public class LabCalculations extends Fragment {
         final AutoCompleteTextView constants_search = (AutoCompleteTextView)v.findViewById(R.id.calculator_search);
         final TextView units = (TextView)v.findViewById(R.id.display_units);
         final EditText display_err = (EditText)v.findViewById(R.id.display_err);
+        final EditText main_display = (EditText)v.findViewById(R.id.display_value);
 
         /*
         //Hide the keybaord when loses focus -D
@@ -567,11 +592,12 @@ public class LabCalculations extends Fragment {
                             if (Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).
                                     getJSONObject(i).optString("Quantity ").equalsIgnoreCase(constants_search.getText().toString())) {
                                 data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
-                                currModifyText.setText("" + data_constant.optString("Value").replaceAll("\\s+" + "", ""));
+                                main_display.setText("" + data_constant.optString("Value").replaceAll("\\s+" + "", ""));
                                 units.setText(data_constant.optString("Unit"));
                                 display_err.setText(data_constant.optString("Uncertainty").replaceAll("\\s+" + "", ""));
-                                currModifyText.requestFocus();
-                                currModifyText.setSelection(currModifyText.getText().length());
+                                currModifyText = main_display;
+                                main_display.requestFocus();
+                                main_display.setSelection(currModifyText.getText().length());
 
                             }
 
@@ -615,7 +641,7 @@ public class LabCalculations extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 String errString = s.toString();
-                if(s.toString().charAt(0) != '('){
+                if(!s.toString().contains("(")){
                     errString = "(" + s.toString();
                     displayError.setText(errString);
                     Selection.setSelection(displayError.getText(), errString.length() - 1);
@@ -655,6 +681,7 @@ public class LabCalculations extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 v.requestFocus();
+                displayError.setSelection(displayError.getText().length() - 1);
                 return true;
             }
         });

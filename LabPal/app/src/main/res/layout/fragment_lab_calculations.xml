@@ -33,7 +33,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="U"
+            android:text=""
             android:layout_weight="10"
             android:layout_gravity="right"
             android:textSize="16sp"
@@ -96,7 +96,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
-                android:id="@+id/b_10x"
+                android:id="@+id/power"
                 android:text="^"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
