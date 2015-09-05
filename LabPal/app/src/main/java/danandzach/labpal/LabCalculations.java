@@ -214,7 +214,8 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
-                        modifyDisplay((Button) v);
+                        if(currModifyText.isFocused())
+                            modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -531,7 +532,8 @@ public class LabCalculations extends Fragment {
                             if (Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).
                                     getJSONObject(i).optString("Quantity ").equalsIgnoreCase(constants_search.getText().toString())) {
                                 data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
-                                currModifyText.setText(data_constant.optString("Value").replaceAll("\\s+", ""));
+                                currModifyText.setText("" + data_constant.optString("Value").replaceAll("\\s+" + "", ""));
+                                currModifyText.requestFocus();
 
                             }
 
@@ -647,6 +649,19 @@ public class LabCalculations extends Fragment {
     public void onResume(){
         super.onResume();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Lab Calculator");
+    }
+
+    public float compute(float result, float value, String button){
+        if(button == "+")
+            return result + value;
+        else if (button == "-")
+            return result - value;
+        else if (button == "*")
+            return result * value;
+        else if (button == "/")
+            return result / value;
+
+        return 0.0f;
     }
 
 }
