@@ -74,6 +74,10 @@ public class LabCalculations extends Fragment {
         //A class to modify the display depending on which button is pressed. -D
         String currDisplayString = currModifyText.getText().toString();
         int insertLocation = currModifyText.getSelectionStart();
+        EditText display_err = (EditText)getView().findViewById(R.id.display_err);
+        EditText main_display = (EditText)getView().findViewById(R.id.display_value);
+        TextView units_display = (TextView)getView().findViewById(R.id.display_units);
+        AutoCompleteTextView autocomplete = (AutoCompleteTextView)getView().findViewById(R.id.calculator_search);
         String preSelect = "";
         String postSelect = "";
         preSelect = currDisplayString.substring(0, insertLocation);
@@ -82,7 +86,6 @@ public class LabCalculations extends Fragment {
         }
         switch(buttonPressed.getId()){
             case R.id.b_del:
-
                 if(currModifyText.getText().length() > 2)
                     currModifyText.setText(preSelect.substring(0,preSelect.length() - 1));
                 if((currModifyText.getText().length() == 2 || currModifyText.getText().length() == 1) && currModifyText.getText().toString().charAt(0) != '('){
@@ -91,7 +94,10 @@ public class LabCalculations extends Fragment {
                 break;
 
             case R.id.b_AC:
-                currModifyText.setText("");
+                    display_err.setText("()");
+                    main_display.setText("");
+                    units_display.setText("");
+                    autocomplete.setText("");
                 break;
 
             case R.id.b0:
@@ -562,9 +568,10 @@ public class LabCalculations extends Fragment {
                                     getJSONObject(i).optString("Quantity ").equalsIgnoreCase(constants_search.getText().toString())) {
                                 data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
                                 currModifyText.setText("" + data_constant.optString("Value").replaceAll("\\s+" + "", ""));
-                                currModifyText.requestFocus();
                                 units.setText(data_constant.optString("Unit"));
                                 display_err.setText(data_constant.optString("Uncertainty").replaceAll("\\s+" + "", ""));
+                                currModifyText.requestFocus();
+                                currModifyText.setSelection(currModifyText.getText().length());
 
                             }
 
