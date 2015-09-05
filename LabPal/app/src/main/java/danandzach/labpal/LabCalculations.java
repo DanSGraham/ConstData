@@ -69,7 +69,8 @@ public class LabCalculations extends Fragment {
         }
         switch(buttonPressed.getId()){
             case R.id.b_del:
-                currModifyText.setText(preSelect.substring(0,preSelect.length() - 1));
+                if(currModifyText.getText().length() > 0)
+                    currModifyText.setText(preSelect.substring(0,preSelect.length() - 1));
                 break;
 
             case R.id.b0:
