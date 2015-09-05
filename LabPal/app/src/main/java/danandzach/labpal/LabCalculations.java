@@ -165,6 +165,7 @@ public class LabCalculations extends Fragment {
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currModifyText.setText(currModifyText.getText().toString() + "1");
 
             }
         });
@@ -172,6 +173,7 @@ public class LabCalculations extends Fragment {
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currModifyText.setText(currModifyText.getText().toString() + "2");
 
             }
         });
@@ -640,12 +642,14 @@ public class LabCalculations extends Fragment {
                 String errString = s.toString();
                 if(s.toString().charAt(0) != '('){
                     errString = "(" + s.toString();
+                    displayError.setText(errString);
+                    Selection.setSelection(displayError.getText(), errString.length() - 1);
                 }
                 if(!s.toString().endsWith(")")){
                     errString += ")";
+                    displayError.setText(errString);
+                    Selection.setSelection(displayError.getText(), errString.length() - 1);
                 }
-                displayError.setText(errString);
-                Selection.setSelection(displayError.getText(), (errString.length() - 1));
             }
         });
 
