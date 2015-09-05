@@ -69,6 +69,7 @@ public class LabCalculations extends Fragment {
         }
         switch(buttonPressed.getId()){
             case R.id.b_del:
+                //Crashes when try to delete empty error value or display value -D
                 currModifyText.setText(preSelect.substring(0,preSelect.length() - 1));
                 break;
 
