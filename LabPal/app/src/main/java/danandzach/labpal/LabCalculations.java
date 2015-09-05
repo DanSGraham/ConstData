@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.Html;
 import android.text.Selection;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -34,6 +35,9 @@ import org.json.JSONObject;
  * Use the {@link LabCalculations#newInstance} factory method to
  * create an instance of this fragment.
  */
+
+//ToDo: Standardize E, format units, calculate error, add negative sign, Stop delete bug, add icons.
+    //Make sure doesnt crash (mag. constant). One way someone could break is by pasting into the edit texts.
 public class LabCalculations extends Fragment {
 
     /**
@@ -99,7 +103,7 @@ public class LabCalculations extends Fragment {
                     main_display.setText("");
                     units_display.setText("");
                     autocomplete.setText("");
-                    recent_number.setText("0.0");
+                    recent_number.setText("");
                     operate = false;
                 break;
 
@@ -259,7 +263,7 @@ public class LabCalculations extends Fragment {
                 units_display.setText("");
                 break;
 
-            case R.id.b_err:
+            case R.id.b_neg:
                 break;
         }
         if(currModifyText.getId() == R.id.display_err){
@@ -304,7 +308,7 @@ public class LabCalculations extends Fragment {
         Button b_plus = (Button)v.findViewById(R.id.b_plus);
         Button b0 = (Button)v.findViewById(R.id.b0);
         Button b_dot = (Button)v.findViewById(R.id.b_dot);
-        Button b_err = (Button)v.findViewById(R.id.b_err);
+        Button b_neg = (Button)v.findViewById(R.id.b_neg);
         Button b_equals = (Button)v.findViewById(R.id.b_equals);
 
 
@@ -432,7 +436,7 @@ public class LabCalculations extends Fragment {
             }
         });
 
-        b_err.setOnTouchListener(new View.OnTouchListener() {
+        b_neg.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch(event.getAction()){
@@ -441,6 +445,7 @@ public class LabCalculations extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
+                        modifyDisplay((Button) v);
                         return true;
 
                 }
@@ -727,7 +732,7 @@ public class LabCalculations extends Fragment {
         final EditText displayError = (EditText) v.findViewById(R.id.display_err);
 
         //Allow persistent () in the error display. -D
-        displayError.setText("()");
+        displayError.setText(R.string.plus_minus_sign);
         Selection.setSelection(displayError.getText(), 1);
 
         displayError.addTextChangedListener(new TextWatcher() {
@@ -744,15 +749,10 @@ public class LabCalculations extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 String errString = s.toString();
-                if(!s.toString().contains("(")){
-                    errString = "(" + s.toString();
+                if(s.toString().charAt(0) != getString(R.string.plus_minus_sign).toCharArray()[0]){
+                    errString = getString(R.string.plus_minus_sign) + s.toString();
                     displayError.setText(errString);
-                    Selection.setSelection(displayError.getText(), errString.length() - 1);
-                }
-                if(!s.toString().endsWith(")")){
-                    errString += ")";
-                    displayError.setText(errString);
-                    Selection.setSelection(displayError.getText(), errString.length() - 1);
+                    Selection.setSelection(displayError.getText(), errString.length());
                 }
             }
         });
@@ -784,7 +784,7 @@ public class LabCalculations extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 v.requestFocus();
-                displayError.setSelection(displayError.getText().length() - 1);
+                Selection.setSelection(displayValue.getText(),displayValue.getText().length());
                 return true;
             }
         });

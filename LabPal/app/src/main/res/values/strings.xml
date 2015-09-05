@@ -6,5 +6,6 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="action_SMS">SMS</string>
     <string name="action_EMAIL">Email</string>
+    <string name="plus_minus_sign">±</string>
 
 </resources>

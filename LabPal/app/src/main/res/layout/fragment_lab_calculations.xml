@@ -4,7 +4,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="0.0"
+        android:text=""
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:gravity="right"
@@ -303,8 +303,8 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
-                android:id="@+id/b_err"
-                android:text="(err)"
+                android:id="@+id/b_neg"
+                android:text="(-)"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
                 android:layout_weight=".25"
