@@ -11,12 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Button;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -35,8 +37,9 @@ public class LabCalculations extends Fragment {
      *
      * @return A new instance of fragment LabCalculations.
      */
-
+    
     public EditText currModifyText;
+    private static JSONObject data_constant;
 
     public static LabCalculations newInstance() {
         LabCalculations fragment = new LabCalculations();
@@ -84,8 +87,9 @@ public class LabCalculations extends Fragment {
         Button b_equals = (Button)v.findViewById(R.id.b_equals);
 
 
-        AutoCompleteTextView constants_search = (AutoCompleteTextView)v.findViewById(R.id.calculator_search);
+        final AutoCompleteTextView constants_search = (AutoCompleteTextView)v.findViewById(R.id.calculator_search);
 
+        /*
         //Hide the keybaord when loses focus -D
         constants_search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -96,6 +100,14 @@ public class LabCalculations extends Fragment {
                 }
             }
         });
+        */
+
+        constants_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                constants_search.setText("");
+            }
+        });
         try {
             String [] adapter_list = new String[Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).length()];
             for(int i = 0; i < Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).length(); i++){
@@ -104,6 +116,28 @@ public class LabCalculations extends Fragment {
 
             final ArrayAdapter<String> auto_complete = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, adapter_list);
             constants_search.setAdapter(auto_complete);
+
+            constants_search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    try {
+                        for(int i = 0; i < Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).length(); i++){
+                        if(Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).
+                                getJSONObject(i).optString("Quantity ").equalsIgnoreCase(constants_search.getText().toString())){
+                            data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
+
+                        }
+
+                        }
+                        InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        in.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                });
         } catch (JSONException e) {
             e.printStackTrace();
         }
