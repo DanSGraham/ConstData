@@ -1511,6 +1511,16 @@ public class ChemistrySearch extends Fragment {
         final LinearLayout contentArea = (LinearLayout) v.findViewById(R.id.mol_search_content_area);
         final AutoCompleteTextView search_bar = (AutoCompleteTextView) v.findViewById(R.id.search_field);
 
+        search_bar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    InputMethodManager imm = ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE));
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        });
+
 
         if(!get_search_results().isEmpty()){
             modifyContent(get_search_results(), contentArea);
@@ -1593,8 +1603,7 @@ public class ChemistrySearch extends Fragment {
                     //Hides the keyboard once item is selected. -D
                     View view2 = getActivity().getCurrentFocus();
                     if (view != null) {
-                        InputMethodManager imm = ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE));
-                        imm.hideSoftInputFromWindow(view2.getWindowToken(), 0);
+                        search_bar.clearFocus();
                     }
                 }
 
