@@ -4,7 +4,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="number to perform current operation on"
+        android:text="0.0"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:gravity="right"

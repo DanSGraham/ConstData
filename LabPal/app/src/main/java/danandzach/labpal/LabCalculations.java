@@ -77,6 +77,7 @@ public class LabCalculations extends Fragment {
         EditText display_err = (EditText)getView().findViewById(R.id.display_err);
         EditText main_display = (EditText)getView().findViewById(R.id.display_value);
         TextView units_display = (TextView)getView().findViewById(R.id.display_units);
+        TextView recent_number = (TextView)getView().findViewById(R.id.recent_number);
         AutoCompleteTextView autocomplete = (AutoCompleteTextView)getView().findViewById(R.id.calculator_search);
         String preSelect = "";
         String postSelect = "";
@@ -98,6 +99,8 @@ public class LabCalculations extends Fragment {
                     main_display.setText("");
                     units_display.setText("");
                     autocomplete.setText("");
+                    recent_number.setText("0.0");
+                    operate = false;
                 break;
 
             case R.id.b0:
@@ -145,21 +148,115 @@ public class LabCalculations extends Fragment {
                 break;
 
             case R.id.power:
+                if(main_display.getText().toString().equalsIgnoreCase(""))
+                    break;
+                if(operate == false){
+                    result = Float.parseFloat(currModifyText.getText().toString());
+                    recent_number.setText(String.valueOf(result));
+                    operate = true;
+                }else{
+                    result = compute(Float.parseFloat(recent_number.getText().toString()),
+                            Float.parseFloat(main_display.getText().toString()), operator);
+                    recent_number.setText(String.valueOf(result));
+                    operate = true;
+                }
+                operator = "^";
+                main_display.setText("");
+                display_err.setText("");
+                units_display.setText("");
                 break;
 
             case R.id.b_div:
+                if(main_display.getText().toString().equalsIgnoreCase(""))
+                    break;
+                if(operate == false){
+                    result = Float.parseFloat(currModifyText.getText().toString());
+                    recent_number.setText(String.valueOf(result));
+                    operate = true;
+                }else{
+                    result = compute(Float.parseFloat(recent_number.getText().toString()),
+                            Float.parseFloat(main_display.getText().toString()), operator);
+                    recent_number.setText(String.valueOf(result));
+                    operate = true;
+                }
+                operator = "/";
+                main_display.setText("");
+                display_err.setText("");
+                units_display.setText("");
                 break;
 
             case R.id.b_star:
+                if(main_display.getText().toString().equalsIgnoreCase(""))
+                    break;
+                if(operate == false){
+                    result = Float.parseFloat(currModifyText.getText().toString());
+                    recent_number.setText(String.valueOf(result));
+                    operate = true;
+                }else{
+                    result = compute(Float.parseFloat(recent_number.getText().toString()),
+                            Float.parseFloat(main_display.getText().toString()), operator);
+                    recent_number.setText(String.valueOf(result));
+                    operate = true;
+                }
+                operator = "*";
+                main_display.setText("");
+                display_err.setText("");
+                units_display.setText("");
                 break;
 
             case R.id.b_plus:
+                if(main_display.getText().toString().equalsIgnoreCase(""))
+                    break;
+                if(operate == false){
+                    result = Float.parseFloat(currModifyText.getText().toString());
+                    recent_number.setText(String.valueOf(result));
+                    operate = true;
+                }else{
+                    result = compute(Float.parseFloat(recent_number.getText().toString()),
+                            Float.parseFloat(main_display.getText().toString()), operator);
+                    recent_number.setText(String.valueOf(result));
+                    operate = true;
+                }
+                operator = "+";
+                main_display.setText("");
+                display_err.setText("");
+                units_display.setText("");
                 break;
 
             case R.id.b_minus:
+                if(main_display.getText().toString().equalsIgnoreCase(""))
+                    break;
+                if(operate == false){
+                    result = Float.parseFloat(currModifyText.getText().toString());
+                    recent_number.setText(String.valueOf(result));
+                    operate = true;
+                }else{
+                    result = compute(Float.parseFloat(recent_number.getText().toString()),
+                            Float.parseFloat(main_display.getText().toString()), operator);
+                    recent_number.setText(String.valueOf(result));
+                    operate = true;
+                }
+                operator = "-";
+                main_display.setText("");
+                display_err.setText("");
+                units_display.setText("");
                 break;
 
             case R.id.b_equals:
+                if(main_display.getText().toString().equalsIgnoreCase(""))
+                    break;
+                if(operate == false){
+                    //do nothing
+                }else{
+                    result = compute(Float.parseFloat(recent_number.getText().toString()),
+                            Float.parseFloat(main_display.getText().toString()), operator);
+                    recent_number.setText(String.valueOf(result));
+                    operate = false;
+                }
+                operator = "";
+                main_display.setText(String.valueOf(result));
+                display_err.setText("");
+                units_display.setText("");
                 break;
 
             case R.id.b_err:
@@ -241,6 +338,7 @@ public class LabCalculations extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
+                        modifyDisplay((Button)v);
                         return true;
 
                 }
@@ -257,6 +355,7 @@ public class LabCalculations extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
+                        modifyDisplay((Button)v);
                         return true;
 
                 }
@@ -291,6 +390,7 @@ public class LabCalculations extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
+                        modifyDisplay((Button)v);
                         return true;
 
                 }
@@ -307,6 +407,7 @@ public class LabCalculations extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
+                        modifyDisplay((Button)v);
                         return true;
 
                 }
@@ -323,6 +424,7 @@ public class LabCalculations extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
+                        modifyDisplay((Button)v);
                         return true;
 
                 }
@@ -372,6 +474,7 @@ public class LabCalculations extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
+                        modifyDisplay((Button)v);
                         return true;
 
                 }
@@ -690,7 +793,7 @@ public class LabCalculations extends Fragment {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
 
-                if(hasFocus){
+                if(hasFocus) {
                     currModifyText = (EditText) v;
                 }
             }
@@ -725,6 +828,8 @@ public class LabCalculations extends Fragment {
             return result * value;
         else if (button == "/")
             return result / value;
+        else if(button == "^")
+            return (float) Math.pow(result, value);
 
         return 0.0f;
     }
