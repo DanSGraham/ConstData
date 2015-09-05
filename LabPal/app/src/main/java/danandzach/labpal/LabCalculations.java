@@ -530,7 +530,7 @@ public class LabCalculations extends Fragment {
                             if (Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).
                                     getJSONObject(i).optString("Quantity ").equalsIgnoreCase(constants_search.getText().toString())) {
                                 data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
-                                currModifyText.setText(data_constant.optString("Value"));
+                                currModifyText.setText(data_constant.optString("Value").replaceAll("\\s+", ""));
 
                             }
 
