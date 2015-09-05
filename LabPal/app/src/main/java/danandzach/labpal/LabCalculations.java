@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 
 import org.json.JSONException;
 
@@ -53,6 +54,10 @@ public class LabCalculations extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_lab_calculations, container, false);
+
+        //Set up the buttons
+        Button ac = (Button)v.findViewById(R.id.b_AC);
+
 
         AutoCompleteTextView constants_search = (AutoCompleteTextView)v.findViewById(R.id.calculator_search);
         try {
