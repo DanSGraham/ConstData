@@ -2,10 +2,12 @@ package danandzach.labpal;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -64,7 +66,7 @@ public class LabCalculations extends Fragment {
         //Set up the buttons
         Button ac = (Button)v.findViewById(R.id.b_AC);
         Button power = (Button)v.findViewById(R.id.b_10x);
-        Button slash = (Button)v.findViewById(R.id.b_slash);
+        Button b_div = (Button)v.findViewById(R.id.b_div);
         Button del = (Button)v.findViewById(R.id.b_del);
         Button b7 = (Button)v.findViewById(R.id.b7);
         Button b8 = (Button)v.findViewById(R.id.b8);
@@ -82,6 +84,473 @@ public class LabCalculations extends Fragment {
         Button b_dot = (Button)v.findViewById(R.id.b_dot);
         Button b_err = (Button)v.findViewById(R.id.b_err);
         Button b_equals = (Button)v.findViewById(R.id.b_equals);
+
+        //on click listeners
+        ac.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+
+        });
+
+        power.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b_div.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        del.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b_star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b_minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b_plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b_err.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b_dot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b_equals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        b0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        /*
+        This is for all the on touch events... Alot i know..
+         */
+
+        ac.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        power.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b_div.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        del.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b_star.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b_minus.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b_plus.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b_err.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b_dot.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b_equals.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b0.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b1.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b3.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b4.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b5.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b6.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b7.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b8.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        b9.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(Color.GRAY);
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(Color.parseColor("#19440c"));
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
 
 
         final AutoCompleteTextView constants_search = (AutoCompleteTextView)v.findViewById(R.id.calculator_search);
