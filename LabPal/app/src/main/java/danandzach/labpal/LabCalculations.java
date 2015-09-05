@@ -5,6 +5,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,7 +40,7 @@ public class LabCalculations extends Fragment {
      *
      * @return A new instance of fragment LabCalculations.
      */
-    
+
     public EditText currModifyText;
     private static JSONObject data_constant;
 
@@ -121,12 +124,12 @@ public class LabCalculations extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     try {
-                        for(int i = 0; i < Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).length(); i++){
-                        if(Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).
-                                getJSONObject(i).optString("Quantity ").equalsIgnoreCase(constants_search.getText().toString())){
-                            data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
+                        for (int i = 0; i < Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).length(); i++) {
+                            if (Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).
+                                    getJSONObject(i).optString("Quantity ").equalsIgnoreCase(constants_search.getText().toString())) {
+                                data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
 
-                        }
+                            }
 
                         }
                         InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -137,7 +140,7 @@ public class LabCalculations extends Fragment {
                 }
 
 
-                });
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -147,7 +150,38 @@ public class LabCalculations extends Fragment {
         EditText displayValue = (EditText) v.findViewById(R.id.display_value);
         currModifyText = displayValue;
 
-        EditText displayError = (EditText) v.findViewById(R.id.display_err);
+        final EditText displayError = (EditText) v.findViewById(R.id.display_err);
+
+        //Allow persistent () in the error display. -D
+        displayError.setText("()");
+        Selection.setSelection(displayError.getText(), 1);
+
+        displayError.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String errString = s.toString();
+                if(s.toString().charAt(0) != '('){
+                    errString = "(" + s.toString();
+                }
+                if(!s.toString().endsWith(")")){
+                    errString += ")";
+                }
+                displayError.setText(errString);
+                Selection.setSelection(displayError.getText(), (errString.length() - 1));
+            }
+        });
+
+
 
         //Prevents keyboard from coming up. -D
         displayValue.setOnTouchListener(new View.OnTouchListener() {
@@ -178,6 +212,7 @@ public class LabCalculations extends Fragment {
         displayError.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+
                 if(hasFocus){
                     currModifyText = (EditText) v;
                 }
