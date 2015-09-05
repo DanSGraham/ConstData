@@ -30,6 +30,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1211,6 +1213,12 @@ public class ChemistrySearch extends Fragment {
         resultsContainer.addView(contentContainer);
 
         return resultsContainer;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHasOptionsMenu(false);
     }
 
     public RelativeLayout generateIonizationTable(JSONObject dbContent){

@@ -4,9 +4,14 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/NavBar</item>
         <item name="actionBarStyle">@style/NavBar</item>
+        <item name="android:actionOverflowButtonStyle">@style/MyOverFlow</item>
     </style>
 
     <color name="action_bar_background">#19440C</color>
+
+    <style name="MyOverFlow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@android:drawable/ic_menu_share</item>
+    </style>
 
 
     <style name="NavBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">

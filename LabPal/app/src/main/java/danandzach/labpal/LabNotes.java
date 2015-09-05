@@ -2,14 +2,21 @@ package danandzach.labpal;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import java.util.Calendar;
 
 
 /**
@@ -42,7 +49,7 @@ public class LabNotes extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -93,4 +100,34 @@ public class LabNotes extends Fragment {
         notepad.setText(notes);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        SharedPreferences prefs = getActivity().getSharedPreferences("notes", Context.MODE_PRIVATE);
+        String notes = prefs.getString("notepad", "");
+        switch(item.getItemId()){
+            case R.id.action_SMS:
+                Intent smsIntent = new Intent(android.content.Intent.ACTION_VIEW);
+                smsIntent.setType("vnd.android-dir/mms-sms");
+                smsIntent.putExtra("address", "");
+                smsIntent.putExtra("sms_body", notes);
+                startActivity(smsIntent);
+                return true;
+            case R.id.action_EMAIL:
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("message/rfc822");
+                intent.putExtra(Intent.EXTRA_EMAIL, "");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "LabPal Notes");
+                intent.putExtra(Intent.EXTRA_TEXT, notes);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
