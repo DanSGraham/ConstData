@@ -19,18 +19,18 @@
         android:layout_below="@id/recent_number"
         android:orientation="horizontal"
         android:id="@+id/display_screen">
-        <TextView
+        <EditText
             android:layout_width= "wrap_content"
             android:layout_height="wrap_content"
-            android:text="Display number"
+            android:hint=""
             android:textSize="32sp"
             android:id="@+id/display_value"/>
 
-        <TextView
+        <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="32sp"
-            android:text="(err)"
+            android:hint="(err)"
             android:id="@+id/display_err"
             />
 

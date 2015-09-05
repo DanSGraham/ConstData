@@ -6,12 +6,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 
 import org.json.JSONException;
 
@@ -32,6 +34,8 @@ public class LabCalculations extends Fragment {
      *
      * @return A new instance of fragment LabCalculations.
      */
+
+    public EditText currModifyText;
 
     public static LabCalculations newInstance() {
         LabCalculations fragment = new LabCalculations();
@@ -79,6 +83,48 @@ public class LabCalculations extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+
+        //Setup Display -D
+        EditText displayValue = (EditText) v.findViewById(R.id.display_value);
+        currModifyText = displayValue;
+
+        EditText displayError = (EditText) v.findViewById(R.id.display_err);
+
+        //Prevents keyboard from coming up. -D
+        displayValue.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.requestFocus();
+                return true;
+            }
+        });
+
+        displayValue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    currModifyText = (EditText) v;
+                }
+            }
+        });
+
+        displayError.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.requestFocus();
+                return true;
+            }
+        });
+
+        displayError.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    currModifyText = (EditText) v;
+                }
+            }
+        });
 
         return v;
     }
