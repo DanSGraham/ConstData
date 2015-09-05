@@ -66,6 +66,7 @@
             android:layout_height="0dp"
             android:layout_weight=".2">
             <Button
+                android:id="@+id/b_AC"
                 android:text="AC"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -76,6 +77,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b_10x"
                 android:text="10^x"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -86,6 +88,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b_slash"
                 android:text="/"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -96,6 +99,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b_del"
                 android:text="del"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -111,6 +115,7 @@
             android:layout_height="0dp"
             android:layout_weight=".2">
             <Button
+                android:id="@+id/b7"
                 android:text="7"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -121,6 +126,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b8"
                 android:text="8"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -131,6 +137,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b9"
                 android:text="9"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -141,6 +148,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b_star"
                 android:text="*"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -156,6 +164,7 @@
             android:layout_height="0dp"
             android:layout_weight=".2">
             <Button
+                android:id="@+id/b4"
                 android:text = "4"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -166,6 +175,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b5"
                 android:text = "5"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -176,6 +186,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b6"
                 android:text="6"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -186,6 +197,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b_minus"
                 android:text="-"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -201,6 +213,7 @@
             android:layout_height="0dp"
             android:layout_weight=".2">
             <Button
+                android:id="@+id/b1"
                 android:text = "1"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -211,6 +224,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b2"
                 android:text="2"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -221,6 +235,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b3"
                 android:text="3"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -231,6 +246,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b_plus"
                 android:text="+"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -246,6 +262,7 @@
             android:layout_height="0dp"
             android:layout_weight=".2">
             <Button
+                android:id="@+id/b0"
                 android:text="0"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -256,6 +273,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b_dot"
                 android:text="."
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -266,6 +284,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b_err"
                 android:text="(err)"
                 android:layout_margin="1dp"
                 android:layout_width="0dp"
@@ -276,6 +295,7 @@
                 android:minHeight="0dp"
                 android:layout_height="fill_parent"/>
             <Button
+                android:id="@+id/b_equals"
                 android:text="="
                 android:layout_margin="1dp"
                 android:layout_width="0dp"

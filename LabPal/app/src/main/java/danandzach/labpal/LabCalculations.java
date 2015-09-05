@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.Button;
 
 import org.json.JSONException;
 
@@ -59,6 +60,29 @@ public class LabCalculations extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_lab_calculations, container, false);
+
+        //Set up the buttons
+        Button ac = (Button)v.findViewById(R.id.b_AC);
+        Button power = (Button)v.findViewById(R.id.b_10x);
+        Button slash = (Button)v.findViewById(R.id.b_slash);
+        Button del = (Button)v.findViewById(R.id.b_del);
+        Button b7 = (Button)v.findViewById(R.id.b7);
+        Button b8 = (Button)v.findViewById(R.id.b8);
+        Button b9 = (Button)v.findViewById(R.id.b9);
+        Button b_star = (Button)v.findViewById(R.id.b_star);
+        Button b4 = (Button)v.findViewById(R.id.b4);
+        Button b5 = (Button)v.findViewById(R.id.b5);
+        Button b6 = (Button)v.findViewById(R.id.b6);
+        Button b_minus = (Button)v.findViewById(R.id.b_minus);
+        Button b1 = (Button)v.findViewById(R.id.b1);
+        Button b2 = (Button)v.findViewById(R.id.b2);
+        Button b3 = (Button)v.findViewById(R.id.b3);
+        Button b_plus = (Button)v.findViewById(R.id.b_plus);
+        Button b0 = (Button)v.findViewById(R.id.b0);
+        Button b_dot = (Button)v.findViewById(R.id.b_dot);
+        Button b_err = (Button)v.findViewById(R.id.b_err);
+        Button b_equals = (Button)v.findViewById(R.id.b_equals);
+
 
         AutoCompleteTextView constants_search = (AutoCompleteTextView)v.findViewById(R.id.calculator_search);
 
