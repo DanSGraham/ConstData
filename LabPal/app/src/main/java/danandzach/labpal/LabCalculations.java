@@ -56,6 +56,69 @@ public class LabCalculations extends Fragment {
         // Required empty public constructor
     }
 
+
+    public void modifyDisplay(Button buttonPressed){
+        //A class to modify the display depending on which button is pressed. -D
+        String currDisplayString = currModifyText.getText().toString();
+        int insertLocation = currModifyText.getSelectionStart();
+        String preSelect = "";
+        String postSelect = "";
+        preSelect = currDisplayString.substring(0, insertLocation);
+        if(insertLocation < currDisplayString.length()){
+            postSelect = currDisplayString.substring(insertLocation);
+        }
+        switch(buttonPressed.getId()){
+            case R.id.b_del:
+                currModifyText.setText(preSelect.substring(0,preSelect.length() - 1));
+                break;
+
+            case R.id.b0:
+                currModifyText.setText(preSelect + "0" + postSelect);
+                break;
+            case R.id.b1:
+                currModifyText.setText(preSelect + "1" + postSelect);
+                break;
+
+            case R.id.b2:
+                currModifyText.setText(preSelect + "2" + postSelect);
+                break;
+
+            case R.id.b3:
+                currModifyText.setText(preSelect + "3" + postSelect);
+                break;
+
+            case R.id.b4:
+                currModifyText.setText(preSelect + "4" + postSelect);
+                break;
+
+            case R.id.b5:
+                currModifyText.setText(preSelect + "5" + postSelect);
+                break;
+
+            case R.id.b6:
+                currModifyText.setText(preSelect + "6" + postSelect);
+                break;
+
+            case R.id.b7:
+                currModifyText.setText(preSelect + "7" + postSelect);
+                break;
+
+            case R.id.b8:
+                currModifyText.setText(preSelect + "8" + postSelect);
+                break;
+
+            case R.id.b9:
+                currModifyText.setText(preSelect + "9" + postSelect);
+                break;
+        }
+        if(currModifyText.getId() == R.id.display_err){
+            Selection.setSelection(currModifyText.getText(), currModifyText.getText().length() - 1);
+        }
+        else {
+            Selection.setSelection(currModifyText.getText(), currModifyText.getText().length());
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,6 +212,7 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
+                        modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -261,6 +325,7 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
+                        modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -277,7 +342,7 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
-                        System.out.println(currModifyText.getText().toString());
+                        modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -294,6 +359,7 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
+                        modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -310,6 +376,7 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
+                        modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -326,6 +393,7 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
+                        modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -342,6 +410,7 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
+                        modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -358,6 +427,7 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
+                        modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -374,6 +444,7 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
+                        modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -390,6 +461,7 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
+                        modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -406,6 +478,7 @@ public class LabCalculations extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         v.setBackgroundColor(Color.GRAY);
+                        modifyDisplay((Button) v);
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
@@ -475,8 +548,8 @@ public class LabCalculations extends Fragment {
 
 
         //Setup Display -D
-        EditText displayValue = (EditText) v.findViewById(R.id.display_value);
-        displayValue.setText("TEST!");
+        final EditText displayValue = (EditText) v.findViewById(R.id.display_value);
+
         currModifyText = displayValue;
 
         final EditText displayError = (EditText) v.findViewById(R.id.display_err);
@@ -519,6 +592,9 @@ public class LabCalculations extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 v.requestFocus();
+                if(displayValue.getText().length() > 0){
+                    Selection.setSelection(displayValue.getText(),displayValue.getText().length());
+                }
                 return true;
             }
         });
