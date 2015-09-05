@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +45,18 @@ public class LabCalculations extends Fragment {
 
     public EditText currModifyText;
     private static JSONObject data_constant;
+
+
+    /*
+    Use the below values for computations
+     */
+
+    public static String operator;
+    public static boolean operate;
+    public static float result;
+    public static float value;
+
+
 
     public static LabCalculations newInstance() {
         LabCalculations fragment = new LabCalculations();
@@ -70,8 +83,15 @@ public class LabCalculations extends Fragment {
         switch(buttonPressed.getId()){
             case R.id.b_del:
 
-                if(currModifyText.getText().length() > 0)
+                if(currModifyText.getText().length() > 2)
                     currModifyText.setText(preSelect.substring(0,preSelect.length() - 1));
+                if((currModifyText.getText().length() == 2 || currModifyText.getText().length() == 1) && currModifyText.getText().toString().charAt(0) != '('){
+                    currModifyText.setText(preSelect.substring(0, preSelect.length() - 1));
+                }
+                break;
+
+            case R.id.b_AC:
+                currModifyText.setText("");
                 break;
 
             case R.id.b0:
@@ -111,6 +131,11 @@ public class LabCalculations extends Fragment {
 
             case R.id.b9:
                 currModifyText.setText(preSelect + "9" + postSelect);
+                break;
+
+            case R.id.b_dot:
+                if(!currModifyText.getText().toString().contains("."))
+                    currModifyText.setText(preSelect + "." + postSelect);
                 break;
         }
         if(currModifyText.getId() == R.id.display_err){
@@ -169,6 +194,7 @@ public class LabCalculations extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
+                        modifyDisplay((Button)v);
                         return true;
 
                 }
@@ -299,6 +325,7 @@ public class LabCalculations extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.setBackgroundColor(Color.parseColor("#19440c"));
+                        modifyDisplay((Button) v);
                         return true;
 
                 }
@@ -495,6 +522,8 @@ public class LabCalculations extends Fragment {
 
 
         final AutoCompleteTextView constants_search = (AutoCompleteTextView)v.findViewById(R.id.calculator_search);
+        final TextView units = (TextView)v.findViewById(R.id.display_units);
+        final EditText display_err = (EditText)v.findViewById(R.id.display_err);
 
         /*
         //Hide the keybaord when loses focus -D
@@ -534,6 +563,8 @@ public class LabCalculations extends Fragment {
                                 data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
                                 currModifyText.setText("" + data_constant.optString("Value").replaceAll("\\s+" + "", ""));
                                 currModifyText.requestFocus();
+                                units.setText(data_constant.optString("Unit"));
+                                display_err.setText(data_constant.optString("Uncertainty").replaceAll("\\s+" + "", ""));
 
                             }
 
