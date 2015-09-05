@@ -69,8 +69,9 @@ public class LabCalculations extends Fragment {
         }
         switch(buttonPressed.getId()){
             case R.id.b_del:
-                //Crashes when try to delete empty error value or display value -D
-                currModifyText.setText(preSelect.substring(0,preSelect.length() - 1));
+
+                if(currModifyText.getText().length() > 0)
+                    currModifyText.setText(preSelect.substring(0,preSelect.length() - 1));
                 break;
 
             case R.id.b0:
@@ -530,6 +531,7 @@ public class LabCalculations extends Fragment {
                             if (Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).
                                     getJSONObject(i).optString("Quantity ").equalsIgnoreCase(constants_search.getText().toString())) {
                                 data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
+                                currModifyText.setText(data_constant.optString("Value").replaceAll("\\s+", ""));
 
                             }
 
