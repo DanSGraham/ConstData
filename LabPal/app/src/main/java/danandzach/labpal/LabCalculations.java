@@ -335,14 +335,23 @@ public class LabCalculations extends Fragment {
                         recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
                     }
                 }else{
-                    resultArray = compute(recent_number.getText().toString(),
-                            main_display.getText().toString(),
-                            display_err.getText().toString(),
-                            operator);
+                    if(Integer.parseInt(main_display.getText().toString()) != 0){
+                        resultArray = compute(recent_number.getText().toString(),
+                                main_display.getText().toString(),
+                                display_err.getText().toString(),
+                                operator);
 
-                    result = resultArray[0];
-                    resultError = resultArray[1];
-                    recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
+                        result = resultArray[0];
+                        resultError = resultArray[1];
+                        recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
+                    }else{
+                        recent_number.setText("");
+                        main_display.setText("");
+                        setErrorDisplay(getString(R.string.plus_minus_sign));
+                        units_display.setText("DIV. BY 0 ERROR");
+                        break;
+                    }
+
                 }
                 operator = "/";
                 main_display.setText("");
@@ -455,6 +464,17 @@ public class LabCalculations extends Fragment {
             case R.id.b_equals:
 
                 if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
+                    break;
+                }
+
+                if(operator.equalsIgnoreCase("/") && Integer.parseInt(main_display.getText().toString()) == 0){
+                    main_display.setText("");
+                    recent_number.setText("");
+                    display_err.setText(getString(R.string.plus_minus_sign));
+                    units_display.setText("DIV. BY 0 ERROR");
+                    result = 0.0f;
+                    value = 0.0f;
+                    operate = false;
                     break;
                 }
 
