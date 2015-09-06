@@ -29,6 +29,9 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.DuplicateFormatFlagsException;
 
 
@@ -64,10 +67,10 @@ public class LabCalculations extends Fragment {
 
     public static String operator;
     public static boolean operate;
-    public float result;
-    public float resultError;
-    public float[] resultArray = new float[2];
-    public float value;
+    public BigDecimal result;
+    public BigDecimal resultError;
+    public BigDecimal[] resultArray = new BigDecimal[2];
+    public BigDecimal value;
 
 
 
@@ -86,7 +89,7 @@ public class LabCalculations extends Fragment {
         //Checks if the value in the input is valid. -D
 
         try{
-            Float.parseFloat(valueString);
+            new BigDecimal(valueString);
             return true;
         }
         catch(NumberFormatException e){
@@ -225,8 +228,9 @@ public class LabCalculations extends Fragment {
                     units_display.setText("");
                     autocomplete.setText("");
                     recent_number.setText("");
-                    result = 0.0f;
-                    value = 0.0f;
+                    result = BigDecimal.valueOf(0.0);
+                    value = BigDecimal.valueOf(0.0);
+                    resultError = BigDecimal.valueOf(0.0);
                     operate = false;
                 break;
 
@@ -287,15 +291,15 @@ public class LabCalculations extends Fragment {
                     break;
                 }
                 if(emptyRecent || operator == "="){
-                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+                    resultArray[0] = new BigDecimal(main_display.getText().toString());
 
                     if(emptyError){
-                        resultArray[1] = 0.0f;
-                        resultError = 0.0f;
+                        resultArray[1] = BigDecimal.valueOf(0.0);
+                        resultError = BigDecimal.valueOf(0.0);
                         recent_number.setText(String.valueOf(resultArray[0]));
                     }
                     else{
-                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
+                        resultArray[1] = new BigDecimal(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
                         result = resultArray[0];
                         resultError = resultArray[1];
                         recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
@@ -321,15 +325,15 @@ public class LabCalculations extends Fragment {
                     break;
                 }
                 if(emptyRecent || operator == "="){
-                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+                    resultArray[0] = new BigDecimal(main_display.getText().toString());
 
                     if(emptyError){
-                        resultArray[1] = 0.0f;
-                        resultError = 0.0f;
+                        resultArray[1] = BigDecimal.valueOf(0.0);
+                        resultError = BigDecimal.valueOf(0.0);
                         recent_number.setText(String.valueOf(resultArray[0]));
                     }
                     else{
-                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
+                        resultArray[1] = new BigDecimal(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
                         result = resultArray[0];
                         resultError = resultArray[1];
                         recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
@@ -355,15 +359,15 @@ public class LabCalculations extends Fragment {
                     break;
                 }
                 if(emptyRecent || operator == "="){
-                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+                    resultArray[0] = new BigDecimal(main_display.getText().toString());
 
                     if(emptyError){
-                        resultArray[1] = 0.0f;
-                        resultError = 0.0f;
+                        resultArray[1] = BigDecimal.valueOf(0.0);
+                        resultError = BigDecimal.valueOf(0.0);
                         recent_number.setText(String.valueOf(resultArray[0]));
                     }
                     else{
-                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
+                        resultArray[1] = new BigDecimal(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
                         result = resultArray[0];
                         resultError = resultArray[1];
                         recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
@@ -389,15 +393,15 @@ public class LabCalculations extends Fragment {
                     break;
                 }
                 if(emptyRecent || operator == "="){
-                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+                    resultArray[0] = new BigDecimal(main_display.getText().toString());
 
                     if(emptyError){
-                        resultArray[1] = 0.0f;
-                        resultError = 0.0f;
+                        resultArray[1] = BigDecimal.valueOf(0.0);
+                        resultError = BigDecimal.valueOf(0.0);
                         recent_number.setText(String.valueOf(resultArray[0]));
                     }
                     else{
-                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
+                        resultArray[1] = new BigDecimal(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
                         result = resultArray[0];
                         resultError = resultArray[1];
                         recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
@@ -423,15 +427,15 @@ public class LabCalculations extends Fragment {
                     break;
                 }
                 if(emptyRecent || operator == "="){
-                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+                    resultArray[0] = new BigDecimal(main_display.getText().toString());
 
                     if(emptyError){
-                        resultArray[1] = 0.0f;
-                        resultError = 0.0f;
+                        resultArray[1] = BigDecimal.valueOf(0.0);
+                        resultError = BigDecimal.valueOf(0.0);
                         recent_number.setText(String.valueOf(resultArray[0]));
                     }
                     else{
-                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
+                        resultArray[1] = new BigDecimal(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
                         result = resultArray[0];
                         resultError = resultArray[1];
                         recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
@@ -459,15 +463,16 @@ public class LabCalculations extends Fragment {
                 }
 
                 if(emptyRecent || operator == "="){
-                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+                    resultArray[0] = new BigDecimal(main_display.getText().toString());
+                    System.out.println(resultArray[0]);
+                    result = new BigDecimal(main_display.getText().toString());
                     if(display_err.getText().toString().length() <= 1){
-                        resultArray[1] = 0.0f;
-                        resultError = 0.0f;
+                        resultArray[1] = BigDecimal.valueOf(0.0);
+                        resultError =  BigDecimal.valueOf(0.0);
                         recent_number.setText(String.valueOf(resultArray[0]));
                     }
                     else{
-                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
-                        result = resultArray[0];
+                        resultArray[1] = new BigDecimal(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
                         resultError = resultArray[1];
                         recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
                     }
@@ -483,7 +488,7 @@ public class LabCalculations extends Fragment {
                 }
                 operator = "=";
                 main_display.setText(String.valueOf(result));
-                if (resultError != 0){
+                if (!resultError.equals(0)){
                     setErrorDisplay(String.valueOf(resultError));
                 }
                 else{
@@ -493,12 +498,12 @@ public class LabCalculations extends Fragment {
                 break;
 
             case R.id.b_neg:
-                float currDisplayVal;
+                BigDecimal currDisplayVal;
                 if(currModifyText.getId() == R.id.display_value){
                     if(properlyFormattedValue(main_display.getText().toString())){
-                        currDisplayVal = Float.parseFloat(main_display.getText().toString());
-                        currDisplayVal = currDisplayVal * -1;
-                        main_display.setText(Float.toString(currDisplayVal));
+                        currDisplayVal = new BigDecimal(main_display.getText().toString());
+                        currDisplayVal = currDisplayVal.multiply(BigDecimal.valueOf(-1));
+                        main_display.setText(String.valueOf(currDisplayVal));
                     }
                 }
                 break;
@@ -519,9 +524,9 @@ public class LabCalculations extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_lab_calculations, container, false);
 
-        result = 0.0f;
-        value = 0.0f;
-        resultError = 0.0f;
+        result = BigDecimal.valueOf(0.0);
+        value =BigDecimal.valueOf(0.0);
+        resultError = BigDecimal.valueOf(0.0);
 
         //Set up the buttons
         Button ac = (Button)v.findViewById(R.id.b_AC);
@@ -968,6 +973,7 @@ public class LabCalculations extends Fragment {
         final EditText displayValue = (EditText) v.findViewById(R.id.display_value);
 
         currModifyText = displayValue;
+        currModifyText.requestFocus();
 
         final EditText displayError = (EditText) v.findViewById(R.id.display_err);
 
@@ -1060,14 +1066,16 @@ public class LabCalculations extends Fragment {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Lab Calculator");
     }
 
-    public float[] compute(String result, String value, String valueErr, String button){
+    public BigDecimal[] compute(String result, String value, String valueErr, String button){
         //Divide by 0 error still problem -D
+
+        int roundingPrecision = 5;
 
         boolean resultExact = false;
         boolean valueExact = false;
 
         valueErr = valueErr.replace(getString(R.string.plus_minus_sign), "");
-        float[] returnArray = {0.0f, 0.0f};
+        BigDecimal[] returnArray = {BigDecimal.valueOf(0.0), BigDecimal.valueOf(0.0)};
 
         String[] resultArrayString = result.split(getString(R.string.plus_minus_sign));
         if(resultArrayString.length <= 1){
@@ -1078,65 +1086,71 @@ public class LabCalculations extends Fragment {
             valueExact = true;
         }
 
-        float[] resultsArray = {0.0f, 0.0f};
+        BigDecimal[] resultsArray = {BigDecimal.valueOf(0.0), BigDecimal.valueOf(0.0)};
         for(int i = 0; i < resultArrayString.length; i++){
-            resultsArray[i] = Float.parseFloat(resultArrayString[i]);
+            resultsArray[i] = new BigDecimal(resultArrayString[i]);
         }
-
-        float[] valueArray = {0.0f, 0.0f};
-        valueArray[0] = Float.parseFloat(value);
+        BigDecimal[] valueArray = {BigDecimal.valueOf(0.0), BigDecimal.valueOf(0.0)};
+        valueArray[0] = new BigDecimal(value);
         if(valueErr != ""){
-            valueArray[1] = Float.parseFloat(valueErr);
+            valueArray[1] = new BigDecimal(valueErr);
         }
 
 
         //Special constant Rules -D
         if(button == "+") {
-            returnArray[0] = resultsArray[0] + valueArray[0];
-            returnArray[1] = resultsArray[1] + valueArray[1];
+            returnArray[0] = resultsArray[0].add(valueArray[0]);
+            returnArray[1] = resultsArray[1].add(valueArray[1]);
         }
         else if (button == "-") {
-            returnArray[0] = resultsArray[0] - valueArray[0];
-            returnArray[1] = resultsArray[1] + valueArray[1];
+            returnArray[0] = resultsArray[0].subtract(valueArray[0]);
+            returnArray[1] = resultsArray[1].add(valueArray[1]);
         }
         else if (button == "*") {
-            returnArray[0] = resultsArray[0] * valueArray[0];
+            returnArray[0] = resultsArray[0].multiply(valueArray[0]);
             if(resultExact){
-                returnArray[1] = resultsArray[0] * valueArray[1];
+                returnArray[1] = resultsArray[0].multiply(valueArray[1]);
             }
             else if(valueExact){
-                returnArray[1] = valueArray[0] * resultsArray[1];
+                returnArray[1] = valueArray[0].multiply(resultsArray[1]);
             }
             else {
-                returnArray[1] = ((((resultsArray[1] / resultsArray[0]) * 100) + ((valueArray[1] / valueArray[0]) * 100)) / 100) * returnArray[0];
+                returnArray[1] = (((resultsArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).add(((valueArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100)))).divide(BigDecimal.valueOf(100), roundingPrecision, RoundingMode.HALF_UP)).multiply(returnArray[0]);
             }
         }
         else if (button == "/") {
-            if (valueArray[0] == 0.0) {
+            if (valueArray[0].equals(0.0)) {
                 System.out.println("THERE IS A PROBLEM");
             }
             else {
-                returnArray[0] = resultsArray[0] / valueArray[0];
+                returnArray[0] = resultsArray[0].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP);
                 if(resultExact && valueExact){
-                    returnArray[1] = 0.0f;
+                    returnArray[1] = BigDecimal.valueOf(0.0);
                 }
                 else if(resultExact){
-                    returnArray[1] = valueArray[1] / resultsArray[0];
+                    returnArray[1] = valueArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP);
                 }
                 else if(valueExact){
-                    returnArray[1] = resultsArray[1] / valueArray[0];
+                    returnArray[1] = resultsArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP);
                 }
                 else {
-                    returnArray[1] = ((((resultsArray[1] / resultsArray[0]) * 100) + ((valueArray[1] / valueArray[0]) * 100)) / 100) * returnArray[0];
+                    returnArray[1] = (((resultsArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).add(((valueArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100)))).divide(BigDecimal.valueOf(100), roundingPrecision, RoundingMode.HALF_UP)).multiply(returnArray[0]);
                 }
             }
         }
         else if(button == "^") {
-            returnArray[0] = (float) Math.pow(resultsArray[0], valueArray[0]);
-            returnArray[1] = 0.0f;
+            returnArray[0] = BigDecimal.valueOf(Math.exp(valueArray[0].multiply(BigDecimal.valueOf(Math.log(valueArray[1].doubleValue()))).doubleValue()));
+            returnArray[1] = (((resultsArray[1].divide(resultsArray[0])).multiply(BigDecimal.valueOf(100))).multiply(valueArray[0]).divide(BigDecimal.valueOf(100))).multiply(returnArray[0]);
+
         }
 
-        returnArray[1] = Math.abs(returnArray[1]);
+        else if(button == "="){
+            //If the equals is pressed twice.
+            returnArray[0] = valueArray[0];
+            returnArray[1] = valueArray[1];
+        }
+
+        returnArray[1] = returnArray[1].abs();
 
         return returnArray;
     }
