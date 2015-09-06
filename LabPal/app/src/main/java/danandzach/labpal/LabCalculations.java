@@ -40,7 +40,7 @@ import java.util.DuplicateFormatFlagsException;
  * create an instance of this fragment.
  */
 
-//ToDo: Standardize E, calculate error (for exponent only left), add icons.
+//ToDo: calculate error (for exponent only left), add icons, allow large enough area for units, handle edge cases example below.
     //Make sure doesnt crash (mag. constant). One way someone could break is by pasting into the edit texts.
 public class LabCalculations extends Fragment {
 
