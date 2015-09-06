@@ -65,8 +65,7 @@ public class LabCalculations extends Fragment {
     Use the below values for computations
      */
 
-    public static String operator;
-    public static boolean operate;
+    public static String operator = "";
     public BigDecimal result;
     public BigDecimal resultError;
     public BigDecimal[] resultArray = new BigDecimal[2];
@@ -231,7 +230,7 @@ public class LabCalculations extends Fragment {
                     result = BigDecimal.valueOf(0.0);
                     value = BigDecimal.valueOf(0.0);
                     resultError = BigDecimal.valueOf(0.0);
-                    operate = false;
+                    operator = "";
                 break;
 
 
@@ -290,6 +289,18 @@ public class LabCalculations extends Fragment {
                 if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
+
+                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
+                    main_display.setText("");
+                    recent_number.setText("");
+                    setErrorDisplay(getString(R.string.plus_minus_sign));
+                    units_display.setText("DIV. BY 0 ERROR");
+                    result = BigDecimal.valueOf(0.0);
+                    value = BigDecimal.valueOf(0.0);
+                    operator = "=";
+                    break;
+                }
+
                 if(emptyRecent || operator == "="){
                     resultArray[0] = new BigDecimal(main_display.getText().toString());
 
@@ -324,6 +335,18 @@ public class LabCalculations extends Fragment {
                 if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
+
+                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
+                    main_display.setText("");
+                    recent_number.setText("");
+                    setErrorDisplay(getString(R.string.plus_minus_sign));
+                    units_display.setText("DIV. BY 0 ERROR");
+                    result = BigDecimal.valueOf(0.0);
+                    value = BigDecimal.valueOf(0.0);
+                    operator = "=";
+                    break;
+                }
+
                 if(emptyRecent || operator == "="){
                     resultArray[0] = new BigDecimal(main_display.getText().toString());
 
@@ -339,7 +362,7 @@ public class LabCalculations extends Fragment {
                         recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
                     }
                 }else{
-                    if(Integer.parseInt(main_display.getText().toString()) != 0){
+                    if(!(new BigDecimal(main_display.getText().toString()).equals(0))){
                         resultArray = compute(recent_number.getText().toString(),
                                 main_display.getText().toString(),
                                 display_err.getText().toString(),
@@ -353,6 +376,7 @@ public class LabCalculations extends Fragment {
                         main_display.setText("");
                         setErrorDisplay(getString(R.string.plus_minus_sign));
                         units_display.setText("DIV. BY 0 ERROR");
+                        operator = "=";
                         break;
                     }
 
@@ -367,6 +391,18 @@ public class LabCalculations extends Fragment {
                 if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
+
+                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
+                    main_display.setText("");
+                    recent_number.setText("");
+                    setErrorDisplay(getString(R.string.plus_minus_sign));
+                    units_display.setText("DIV. BY 0 ERROR");
+                    result = BigDecimal.valueOf(0.0);
+                    value = BigDecimal.valueOf(0.0);
+                    operator = "=";
+                    break;
+                }
+
                 if(emptyRecent || operator == "="){
                     resultArray[0] = new BigDecimal(main_display.getText().toString());
 
@@ -401,6 +437,18 @@ public class LabCalculations extends Fragment {
                 if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
+
+                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
+                    main_display.setText("");
+                    recent_number.setText("");
+                    setErrorDisplay(getString(R.string.plus_minus_sign));
+                    units_display.setText("DIV. BY 0 ERROR");
+                    result = BigDecimal.valueOf(0.0);
+                    value = BigDecimal.valueOf(0.0);
+                    operator = "=";
+                    break;
+                }
+
                 if(emptyRecent || operator == "="){
                     resultArray[0] = new BigDecimal(main_display.getText().toString());
 
@@ -435,6 +483,18 @@ public class LabCalculations extends Fragment {
                 if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
+
+                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
+                    main_display.setText("");
+                    recent_number.setText("");
+                    setErrorDisplay(getString(R.string.plus_minus_sign));
+                    units_display.setText("DIV. BY 0 ERROR");
+                    result = BigDecimal.valueOf(0.0);
+                    value = BigDecimal.valueOf(0.0);
+                    operator = "=";
+                    break;
+                }
+
                 if(emptyRecent || operator == "="){
                     resultArray[0] = new BigDecimal(main_display.getText().toString());
 
@@ -471,14 +531,14 @@ public class LabCalculations extends Fragment {
                     break;
                 }
 
-                if(operator.equalsIgnoreCase("/") && Integer.parseInt(main_display.getText().toString()) == 0){
+                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
                     main_display.setText("");
                     recent_number.setText("");
-                    display_err.setText(getString(R.string.plus_minus_sign));
+                    setErrorDisplay(getString(R.string.plus_minus_sign));
                     units_display.setText("DIV. BY 0 ERROR");
-                    result = 0.0f;
-                    value = 0.0f;
-                    operate = false;
+                    result = BigDecimal.valueOf(0.0);
+                    value = BigDecimal.valueOf(0.0);
+                    operator = "=";
                     break;
                 }
 
