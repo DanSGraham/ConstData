@@ -12,6 +12,7 @@ import android.text.Selection;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -934,6 +935,9 @@ public class LabCalculations extends Fragment {
                                     getJSONObject(i).optString("Quantity ").equalsIgnoreCase(constants_search.getText().toString())) {
                                 data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
                                 main_display.setText("" + data_constant.optString("Value").replaceAll("\\s+" + "", "").replace("...",""));
+                                if(main_display.getText().length() > 12){
+                                    main_display.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+                                }
                                 units.setText(formatUnits(data_constant.optString("Unit")));
                                 if(data_constant.optString("Uncertainty").equalsIgnoreCase("(exact)")){
                                     //do nothing...
