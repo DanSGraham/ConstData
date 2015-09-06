@@ -98,7 +98,7 @@ public class LabCalculations extends Fragment {
 
         EditText display_err = (EditText)getView().findViewById(R.id.display_err);
         display_err.removeTextChangedListener(displayErrorWatcher);
-        display_err.setText(getString(R.string.plus_minus_sign) + toSet);
+        display_err.setText(getString(R.string.plus_minus_sign) + toSet.replace(getString(R.string.plus_minus_sign), ""));
         display_err.addTextChangedListener(displayErrorWatcher);
         return true;
     }
