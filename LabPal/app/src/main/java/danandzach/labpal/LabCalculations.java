@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Selection;
+import android.text.Spannable;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -38,7 +40,7 @@ import java.util.DuplicateFormatFlagsException;
  * create an instance of this fragment.
  */
 
-//ToDo: Standardize E, format units, calculate error, Stop delete bug, add icons.
+//ToDo: Standardize E, calculate error (for exponent only left), add icons.
     //Make sure doesnt crash (mag. constant). One way someone could break is by pasting into the edit texts.
 public class LabCalculations extends Fragment {
 
@@ -99,6 +101,71 @@ public class LabCalculations extends Fragment {
         display_err.setText(getString(R.string.plus_minus_sign) + toSet);
         display_err.addTextChangedListener(displayErrorWatcher);
         return true;
+    }
+
+    public Spanned formatUnits(String stringToFormat){
+
+        String htmlString = "";
+
+        boolean openSuperScript = false;
+        boolean openSubScript = false;
+        boolean openBracket = false;
+
+        for (int i = 0; i < stringToFormat.length(); i++){
+            if(stringToFormat.charAt(i) == '^'){
+                htmlString += "<sup>";
+                openSuperScript = true;
+            }
+            else if (stringToFormat.charAt(i) == '{'){
+                openBracket = true;
+            }
+            else if (stringToFormat.charAt(i) == '}' && openSuperScript){
+                htmlString += "</sup>";
+                openBracket = false;
+                openSuperScript = false;
+            }
+            else if (stringToFormat.charAt(i) == '}' && openSubScript){
+                htmlString += "</sub>";
+                openBracket = false;
+                openSubScript = false;
+            }
+            else if (stringToFormat.charAt(i) == '_'){
+                htmlString += "<sub>";
+                openSubScript = true;
+            }
+            else if(!openBracket && openSuperScript){
+                htmlString += stringToFormat.charAt(i);
+                htmlString += "</sup>";
+                openSuperScript = false;
+            }
+            else if(openBracket && openSuperScript){
+                htmlString += stringToFormat.charAt(i);
+            }
+            else if(!openBracket && openSubScript){
+                htmlString += stringToFormat.charAt(i);
+                htmlString += "</sub>";
+                openSubScript = false;
+            }
+            else if(openBracket && openSubScript){
+                htmlString += stringToFormat.charAt(i);
+            }
+            else{
+                htmlString += stringToFormat.charAt(i);
+            }
+        }
+        if (openSuperScript){
+            htmlString += "</sup>";
+            openSuperScript = false;
+        }
+        if(openSubScript){
+            htmlString += "</sub>";
+            openSubScript = false;
+        }
+
+        if(htmlString.length() <= 0 ){
+            htmlString = " ";
+        }
+        return Html.fromHtml(htmlString);
     }
 
     public void modifyDisplay(Button buttonPressed){
@@ -864,7 +931,7 @@ public class LabCalculations extends Fragment {
                                     getJSONObject(i).optString("Quantity ").equalsIgnoreCase(constants_search.getText().toString())) {
                                 data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
                                 main_display.setText("" + data_constant.optString("Value").replaceAll("\\s+" + "", ""));
-                                units.setText(data_constant.optString("Unit"));
+                                units.setText(formatUnits(data_constant.optString("Unit")));
                                 display_err.setText(data_constant.optString("Uncertainty").replaceAll("\\s+" + "", ""));
                                 currModifyText = main_display;
                                 main_display.requestFocus();
