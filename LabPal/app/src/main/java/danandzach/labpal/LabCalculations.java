@@ -1126,6 +1126,8 @@ public class LabCalculations extends Fragment {
             returnArray[1] = 0.0f;
         }
 
+        returnArray[1] = Math.abs(returnArray[1]);
+
         return returnArray;
     }
 
