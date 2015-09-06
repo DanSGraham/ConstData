@@ -44,8 +44,7 @@ import java.util.DuplicateFormatFlagsException;
  * create an instance of this fragment.
  */
 
-//ToDo: calculate error (for exponent only left), add icons, allow large enough area for units, handle edge cases example below.
-    //Make sure doesnt crash (mag. constant). One way someone could break is by pasting into the edit texts. <- Fixed
+//ToDo: Exponent calculate error is not available for uncertainty in the exponent, add icons.
 public class LabCalculations extends Fragment {
 
     /**

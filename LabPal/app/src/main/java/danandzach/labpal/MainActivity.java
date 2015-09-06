@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         android.support.v4.app.Fragment calc_frag = new LabCalculations();
         android.support.v7.app.ActionBar.Tab calc_tab = actionBar.newTab();
-        calc_tab.setText("Calcs");
+        calc_tab.setIcon(R.drawable.calculatoricon);
         calc_tab.setTabListener(new NavigationTabsListener(calc_frag));
         actionBar.addTab(calc_tab);
 
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         android.support.v4.app.Fragment labNotes = new LabNotes();
         android.support.v7.app.ActionBar.Tab notes_tab = actionBar.newTab();
-        notes_tab.setText("Notes");
+        notes_tab.setIcon(R.drawable.ic_create_white_24dp);
         notes_tab.setTabListener(new NavigationTabsListener(labNotes));
         actionBar.addTab(notes_tab);
         ((FrameLayout) findViewById(R.id.mainscreen)).getForeground().setAlpha(0);
