@@ -26,6 +26,8 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.DuplicateFormatFlagsException;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,7 +38,7 @@ import org.json.JSONObject;
  * create an instance of this fragment.
  */
 
-//ToDo: Standardize E, format units, calculate error, add negative sign, Stop delete bug, add icons.
+//ToDo: Standardize E, format units, calculate error, Stop delete bug, add icons.
     //Make sure doesnt crash (mag. constant). One way someone could break is by pasting into the edit texts.
 public class LabCalculations extends Fragment {
 
@@ -48,6 +50,8 @@ public class LabCalculations extends Fragment {
      */
 
     public EditText currModifyText;
+
+    public TextWatcher displayErrorWatcher;
     private static JSONObject data_constant;
 
 
@@ -59,6 +63,7 @@ public class LabCalculations extends Fragment {
     public static boolean operate;
     public static float result;
     public static float value;
+    public static int error;
 
 
 
@@ -73,33 +78,76 @@ public class LabCalculations extends Fragment {
         // Required empty public constructor
     }
 
+    public boolean properlyFormattedValue(String valueString){
+        //Checks if the value in the input is valid. -D
+
+        try{
+            Float.parseFloat(valueString);
+            return true;
+        }
+        catch(NumberFormatException e){
+            return false;
+        }
+    }
+
+    public boolean clearErrorDisplay(){
+        //Set text on display_err was causing crashes so I had to add this method -D
+
+        EditText display_err = (EditText)getView().findViewById(R.id.display_err);
+        display_err.removeTextChangedListener(displayErrorWatcher);
+        display_err.setText(getString(R.string.plus_minus_sign));
+        display_err.addTextChangedListener(displayErrorWatcher);
+        return true;
+    }
 
     public void modifyDisplay(Button buttonPressed){
         //A class to modify the display depending on which button is pressed. -D
+
         String currDisplayString = currModifyText.getText().toString();
         int insertLocation = currModifyText.getSelectionStart();
+
+        boolean emptyValue = false;
+        boolean emptyError = false;
+        boolean emptyRecent = false;
+
         EditText display_err = (EditText)getView().findViewById(R.id.display_err);
         EditText main_display = (EditText)getView().findViewById(R.id.display_value);
         TextView units_display = (TextView)getView().findViewById(R.id.display_units);
         TextView recent_number = (TextView)getView().findViewById(R.id.recent_number);
         AutoCompleteTextView autocomplete = (AutoCompleteTextView)getView().findViewById(R.id.calculator_search);
+
+        //Determines if this is the first calculation in a series. -D
+        if(recent_number.getText().toString().length() <= 0){
+            emptyRecent = true;
+        }
+
+        //Determines if the view is empty -D
+        if(main_display.getText().toString().length() <= 0){
+            emptyValue = true;
+        }
+
+        if(display_err.getText().toString().length() <= 1){
+            emptyError = true;
+        }
+
+        //Gets view string -D
         String preSelect = "";
         String postSelect = "";
         preSelect = currDisplayString.substring(0, insertLocation);
         if(insertLocation < currDisplayString.length()){
             postSelect = currDisplayString.substring(insertLocation);
         }
+
+        //Determine button actions -D
         switch(buttonPressed.getId()){
             case R.id.b_del:
-                if(currModifyText.getText().length() > 2)
-                    currModifyText.setText(preSelect.substring(0,preSelect.length() - 1));
-                if((currModifyText.getText().length() == 2 || currModifyText.getText().length() == 1) && currModifyText.getText().toString().charAt(0) != '('){
+                if ((currModifyText.getId() == R.id.display_value && !emptyValue) || (currModifyText.getId() == R.id.display_err && !emptyError)){
                     currModifyText.setText(preSelect.substring(0, preSelect.length() - 1));
                 }
                 break;
 
             case R.id.b_AC:
-                    display_err.setText("()");
+                    clearErrorDisplay();
                     main_display.setText("");
                     units_display.setText("");
                     autocomplete.setText("");
@@ -107,6 +155,8 @@ public class LabCalculations extends Fragment {
                     operate = false;
                 break;
 
+
+            //Number pad reaction -D
             case R.id.b0:
                 currModifyText.setText(preSelect + "0" + postSelect);
                 break;
@@ -146,132 +196,142 @@ public class LabCalculations extends Fragment {
                 currModifyText.setText(preSelect + "9" + postSelect);
                 break;
 
+
             case R.id.b_dot:
-                if(!currModifyText.getText().toString().contains("."))
+                //Check that currModifyText doesn't already have a . -D
+                if(!currModifyText.getText().toString().contains(".")) {
                     currModifyText.setText(preSelect + "." + postSelect);
+                }
                 break;
 
+
+            //Operations -D
+            //Operations still do not deal with error values.
             case R.id.power:
-                if(main_display.getText().toString().equalsIgnoreCase(""))
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
                     break;
-                if(operate == false){
-                    result = Float.parseFloat(currModifyText.getText().toString());
+                }
+                if(emptyRecent || operator == "="){
+                    result = Float.parseFloat(main_display.getText().toString());
                     recent_number.setText(String.valueOf(result));
-                    operate = true;
                 }else{
                     result = compute(Float.parseFloat(recent_number.getText().toString()),
                             Float.parseFloat(main_display.getText().toString()), operator);
                     recent_number.setText(String.valueOf(result));
-                    operate = true;
                 }
                 operator = "^";
                 main_display.setText("");
-                display_err.setText("");
+                clearErrorDisplay();
                 units_display.setText("");
                 break;
 
             case R.id.b_div:
-                if(main_display.getText().toString().equalsIgnoreCase(""))
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
                     break;
-                if(operate == false){
-                    result = Float.parseFloat(currModifyText.getText().toString());
+                }
+                if(emptyRecent || operator == "="){
+                    result = Float.parseFloat(main_display.getText().toString());
                     recent_number.setText(String.valueOf(result));
-                    operate = true;
                 }else{
                     result = compute(Float.parseFloat(recent_number.getText().toString()),
                             Float.parseFloat(main_display.getText().toString()), operator);
                     recent_number.setText(String.valueOf(result));
-                    operate = true;
                 }
                 operator = "/";
                 main_display.setText("");
-                display_err.setText("");
+                clearErrorDisplay();
                 units_display.setText("");
                 break;
 
             case R.id.b_star:
-                if(main_display.getText().toString().equalsIgnoreCase(""))
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
                     break;
-                if(operate == false){
-                    result = Float.parseFloat(currModifyText.getText().toString());
+                }
+                if(emptyRecent || operator == "="){
+                    result = Float.parseFloat(main_display.getText().toString());
                     recent_number.setText(String.valueOf(result));
-                    operate = true;
                 }else{
                     result = compute(Float.parseFloat(recent_number.getText().toString()),
                             Float.parseFloat(main_display.getText().toString()), operator);
                     recent_number.setText(String.valueOf(result));
-                    operate = true;
                 }
                 operator = "*";
                 main_display.setText("");
-                display_err.setText("");
+                clearErrorDisplay();
                 units_display.setText("");
                 break;
 
             case R.id.b_plus:
-                if(main_display.getText().toString().equalsIgnoreCase(""))
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
                     break;
-                if(operate == false){
-                    result = Float.parseFloat(currModifyText.getText().toString());
+                }
+                if(emptyRecent || operator == "="){
+                    result = Float.parseFloat(main_display.getText().toString());
                     recent_number.setText(String.valueOf(result));
-                    operate = true;
                 }else{
                     result = compute(Float.parseFloat(recent_number.getText().toString()),
                             Float.parseFloat(main_display.getText().toString()), operator);
                     recent_number.setText(String.valueOf(result));
-                    operate = true;
                 }
                 operator = "+";
                 main_display.setText("");
-                display_err.setText("");
+                clearErrorDisplay();
                 units_display.setText("");
                 break;
 
             case R.id.b_minus:
-                if(main_display.getText().toString().equalsIgnoreCase(""))
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
                     break;
-                if(operate == false){
-                    result = Float.parseFloat(currModifyText.getText().toString());
+                }
+                if(emptyRecent || operator == "="){
+                    result = Float.parseFloat(main_display.getText().toString());
                     recent_number.setText(String.valueOf(result));
-                    operate = true;
                 }else{
                     result = compute(Float.parseFloat(recent_number.getText().toString()),
                             Float.parseFloat(main_display.getText().toString()), operator);
                     recent_number.setText(String.valueOf(result));
-                    operate = true;
                 }
                 operator = "-";
                 main_display.setText("");
-                display_err.setText("");
+                clearErrorDisplay();
                 units_display.setText("");
                 break;
 
             case R.id.b_equals:
-                if(main_display.getText().toString().equalsIgnoreCase(""))
+
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
                     break;
-                if(operate == false){
-                    //do nothing
-                }else{
-                    result = compute(Float.parseFloat(recent_number.getText().toString()),
-                            Float.parseFloat(main_display.getText().toString()), operator);
-                    recent_number.setText(String.valueOf(result));
-                    operate = false;
                 }
-                operator = "";
+
+                if(emptyRecent){
+                    result = Float.parseFloat(main_display.getText().toString());
+                    recent_number.setText(String.valueOf(result));
+                }else if(operator == "") {
+                    break;
+                }else{
+                        result = compute(Float.parseFloat(recent_number.getText().toString()),
+                                Float.parseFloat(main_display.getText().toString()), operator);
+                        recent_number.setText(String.valueOf(result));
+                }
+                operator = "=";
                 main_display.setText(String.valueOf(result));
-                display_err.setText("");
+                clearErrorDisplay();
                 units_display.setText("");
                 break;
 
             case R.id.b_neg:
+                float currDisplayVal;
+                if(currModifyText.getId() == R.id.display_value){
+                    if(properlyFormattedValue(main_display.getText().toString())){
+                        currDisplayVal = Float.parseFloat(main_display.getText().toString());
+                        currDisplayVal = currDisplayVal * -1;
+                        main_display.setText(Float.toString(currDisplayVal));
+                    }
+                }
                 break;
         }
-        if(currModifyText.getId() == R.id.display_err){
-            Selection.setSelection(currModifyText.getText(), currModifyText.getText().length() - 1);
-        }
-        else {
-            Selection.setSelection(currModifyText.getText(), currModifyText.getText().length());
-        }
+
+        Selection.setSelection(currModifyText.getText(), currModifyText.getText().length());
     }
 
     @Override
@@ -735,7 +795,7 @@ public class LabCalculations extends Fragment {
         displayError.setText(R.string.plus_minus_sign);
         Selection.setSelection(displayError.getText(), 1);
 
-        displayError.addTextChangedListener(new TextWatcher() {
+        displayErrorWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -755,7 +815,8 @@ public class LabCalculations extends Fragment {
                     Selection.setSelection(displayError.getText(), errString.length());
                 }
             }
-        });
+        };
+        displayError.addTextChangedListener(displayErrorWatcher);
 
 
 
@@ -820,6 +881,7 @@ public class LabCalculations extends Fragment {
     }
 
     public float compute(float result, float value, String button){
+        //Divide by 0 error still problem -D
         if(button == "+")
             return result + value;
         else if (button == "-")
@@ -827,7 +889,12 @@ public class LabCalculations extends Fragment {
         else if (button == "*")
             return result * value;
         else if (button == "/")
-            return result / value;
+            if(value == 0.0){
+                System.out.println("THERE IS A PROBLEM");
+            }
+            else{
+                return result / value;
+            }
         else if(button == "^")
             return (float) Math.pow(result, value);
 
