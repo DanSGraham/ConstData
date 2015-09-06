@@ -1218,7 +1218,7 @@ public class LabCalculations extends Fragment {
             }
         }
         else if(button == "^") {
-            returnArray[0] = BigDecimal.valueOf(Math.exp(valueArray[0].multiply(BigDecimal.valueOf(Math.log(valueArray[1].doubleValue()))).doubleValue()));
+            returnArray[0] = BigDecimal.valueOf(Math.pow(resultsArray[0].doubleValue(), valueArray[0].doubleValue()));
             returnArray[1] = (((resultsArray[1].divide(resultsArray[0])).multiply(BigDecimal.valueOf(100))).multiply(valueArray[0]).divide(BigDecimal.valueOf(100))).multiply(returnArray[0]);
 
         }
