@@ -41,7 +41,7 @@ import java.util.DuplicateFormatFlagsException;
  */
 
 //ToDo: calculate error (for exponent only left), add icons, allow large enough area for units, handle edge cases example below.
-    //Make sure doesnt crash (mag. constant). One way someone could break is by pasting into the edit texts.
+    //Make sure doesnt crash (mag. constant). One way someone could break is by pasting into the edit texts. <- Fixed
 public class LabCalculations extends Fragment {
 
     /**
@@ -212,7 +212,8 @@ public class LabCalculations extends Fragment {
                 if(currModifyText.getId() == R.id.display_err && !emptyError){
                     setErrorDisplay(preSelect.substring(0, preSelect.length() - 1));
                 }
-                else if (currModifyText.getId() == R.id.display_value && !emptyValue){
+
+                if (currModifyText.getId() == R.id.display_value && !emptyValue){
                     currModifyText.setText(preSelect.substring(0, preSelect.length() - 1));
                 }
                 break;
@@ -223,6 +224,8 @@ public class LabCalculations extends Fragment {
                     units_display.setText("");
                     autocomplete.setText("");
                     recent_number.setText("");
+                    result = 0.0f;
+                    value = 0.0f;
                     operate = false;
                 break;
 
@@ -930,9 +933,12 @@ public class LabCalculations extends Fragment {
                             if (Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).
                                     getJSONObject(i).optString("Quantity ").equalsIgnoreCase(constants_search.getText().toString())) {
                                 data_constant = Data.getConstants_data().getJSONArray(Data.getConstants_array_name()).getJSONObject(i);
-                                main_display.setText("" + data_constant.optString("Value").replaceAll("\\s+" + "", ""));
+                                main_display.setText("" + data_constant.optString("Value").replaceAll("\\s+" + "", "").replace("...",""));
                                 units.setText(formatUnits(data_constant.optString("Unit")));
-                                display_err.setText(data_constant.optString("Uncertainty").replaceAll("\\s+" + "", ""));
+                                if(data_constant.optString("Uncertainty").equalsIgnoreCase("(exact)")){
+                                    //do nothing...
+                                }else
+                                    display_err.setText(data_constant.optString("Uncertainty").replaceAll("\\s+" + "", "").replace("...", ""));
                                 currModifyText = main_display;
                                 main_display.requestFocus();
                                 main_display.setSelection(currModifyText.getText().length());

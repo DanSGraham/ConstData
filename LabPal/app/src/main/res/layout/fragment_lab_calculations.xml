@@ -27,7 +27,8 @@
             android:singleLine="true"
             android:layout_weight="80"
             android:id="@+id/display_value"
-            android:gravity="right"/>
+            android:gravity="right"
+            android:longClickable="false"/>
 
 
         <TextView
@@ -57,7 +58,8 @@
             android:text=""
             android:textSize="20sp"
             android:singleLine="true"
-            android:id="@+id/display_err" />
+            android:id="@+id/display_err"
+            android:longClickable="false"/>
 
     </LinearLayout>
 
