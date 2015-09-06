@@ -61,9 +61,10 @@ public class LabCalculations extends Fragment {
 
     public static String operator;
     public static boolean operate;
-    public static float result;
-    public static float value;
-    public static int error;
+    public float result;
+    public float resultError;
+    public float[] resultArray = new float[2];
+    public float value;
 
 
 
@@ -90,12 +91,12 @@ public class LabCalculations extends Fragment {
         }
     }
 
-    public boolean clearErrorDisplay(){
+    public boolean setErrorDisplay(String toSet){
         //Set text on display_err was causing crashes so I had to add this method -D
 
         EditText display_err = (EditText)getView().findViewById(R.id.display_err);
         display_err.removeTextChangedListener(displayErrorWatcher);
-        display_err.setText(getString(R.string.plus_minus_sign));
+        display_err.setText(getString(R.string.plus_minus_sign) + toSet);
         display_err.addTextChangedListener(displayErrorWatcher);
         return true;
     }
@@ -141,13 +142,16 @@ public class LabCalculations extends Fragment {
         //Determine button actions -D
         switch(buttonPressed.getId()){
             case R.id.b_del:
-                if ((currModifyText.getId() == R.id.display_value && !emptyValue) || (currModifyText.getId() == R.id.display_err && !emptyError)){
+                if(currModifyText.getId() == R.id.display_err && !emptyError){
+                    setErrorDisplay(preSelect.substring(0, preSelect.length() - 1));
+                }
+                else if (currModifyText.getId() == R.id.display_value && !emptyValue){
                     currModifyText.setText(preSelect.substring(0, preSelect.length() - 1));
                 }
                 break;
 
             case R.id.b_AC:
-                    clearErrorDisplay();
+                    setErrorDisplay("");
                     main_display.setText("");
                     units_display.setText("");
                     autocomplete.setText("");
@@ -208,114 +212,212 @@ public class LabCalculations extends Fragment {
             //Operations -D
             //Operations still do not deal with error values.
             case R.id.power:
-                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
                 if(emptyRecent || operator == "="){
-                    result = Float.parseFloat(main_display.getText().toString());
-                    recent_number.setText(String.valueOf(result));
+                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+
+                    if(emptyError){
+                        resultArray[1] = 0.0f;
+                        resultError = 0.0f;
+                        recent_number.setText(String.valueOf(resultArray[0]));
+                    }
+                    else{
+                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
+                        result = resultArray[0];
+                        resultError = resultArray[1];
+                        recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
+                    }
                 }else{
-                    result = compute(Float.parseFloat(recent_number.getText().toString()),
-                            Float.parseFloat(main_display.getText().toString()), operator);
-                    recent_number.setText(String.valueOf(result));
+                    resultArray = compute(recent_number.getText().toString(),
+                            main_display.getText().toString(),
+                            display_err.getText().toString(),
+                            operator);
+
+                    result = resultArray[0];
+                    resultError = resultArray[1];
+                    recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
                 }
                 operator = "^";
                 main_display.setText("");
-                clearErrorDisplay();
+                setErrorDisplay("");
                 units_display.setText("");
                 break;
 
             case R.id.b_div:
-                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
                 if(emptyRecent || operator == "="){
-                    result = Float.parseFloat(main_display.getText().toString());
-                    recent_number.setText(String.valueOf(result));
+                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+
+                    if(emptyError){
+                        resultArray[1] = 0.0f;
+                        resultError = 0.0f;
+                        recent_number.setText(String.valueOf(resultArray[0]));
+                    }
+                    else{
+                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
+                        result = resultArray[0];
+                        resultError = resultArray[1];
+                        recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
+                    }
                 }else{
-                    result = compute(Float.parseFloat(recent_number.getText().toString()),
-                            Float.parseFloat(main_display.getText().toString()), operator);
-                    recent_number.setText(String.valueOf(result));
+                    resultArray = compute(recent_number.getText().toString(),
+                            main_display.getText().toString(),
+                            display_err.getText().toString(),
+                            operator);
+
+                    result = resultArray[0];
+                    resultError = resultArray[1];
+                    recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
                 }
                 operator = "/";
                 main_display.setText("");
-                clearErrorDisplay();
+                setErrorDisplay("");
                 units_display.setText("");
                 break;
 
             case R.id.b_star:
-                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
                 if(emptyRecent || operator == "="){
-                    result = Float.parseFloat(main_display.getText().toString());
-                    recent_number.setText(String.valueOf(result));
+                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+
+                    if(emptyError){
+                        resultArray[1] = 0.0f;
+                        resultError = 0.0f;
+                        recent_number.setText(String.valueOf(resultArray[0]));
+                    }
+                    else{
+                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
+                        result = resultArray[0];
+                        resultError = resultArray[1];
+                        recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
+                    }
                 }else{
-                    result = compute(Float.parseFloat(recent_number.getText().toString()),
-                            Float.parseFloat(main_display.getText().toString()), operator);
-                    recent_number.setText(String.valueOf(result));
+                    resultArray = compute(recent_number.getText().toString(),
+                            main_display.getText().toString(),
+                            display_err.getText().toString(),
+                            operator);
+
+                    result = resultArray[0];
+                    resultError = resultArray[1];
+                    recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
                 }
                 operator = "*";
                 main_display.setText("");
-                clearErrorDisplay();
+                setErrorDisplay("");
                 units_display.setText("");
                 break;
 
             case R.id.b_plus:
-                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
                 if(emptyRecent || operator == "="){
-                    result = Float.parseFloat(main_display.getText().toString());
-                    recent_number.setText(String.valueOf(result));
+                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+
+                    if(emptyError){
+                        resultArray[1] = 0.0f;
+                        resultError = 0.0f;
+                        recent_number.setText(String.valueOf(resultArray[0]));
+                    }
+                    else{
+                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
+                        result = resultArray[0];
+                        resultError = resultArray[1];
+                        recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
+                    }
                 }else{
-                    result = compute(Float.parseFloat(recent_number.getText().toString()),
-                            Float.parseFloat(main_display.getText().toString()), operator);
-                    recent_number.setText(String.valueOf(result));
+                    resultArray = compute(recent_number.getText().toString(),
+                            main_display.getText().toString(),
+                            display_err.getText().toString(),
+                            operator);
+
+                    result = resultArray[0];
+                    resultError = resultArray[1];
+                    recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
                 }
                 operator = "+";
                 main_display.setText("");
-                clearErrorDisplay();
+                setErrorDisplay("");
                 units_display.setText("");
                 break;
 
             case R.id.b_minus:
-                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
                 if(emptyRecent || operator == "="){
-                    result = Float.parseFloat(main_display.getText().toString());
-                    recent_number.setText(String.valueOf(result));
+                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+
+                    if(emptyError){
+                        resultArray[1] = 0.0f;
+                        resultError = 0.0f;
+                        recent_number.setText(String.valueOf(resultArray[0]));
+                    }
+                    else{
+                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
+                        result = resultArray[0];
+                        resultError = resultArray[1];
+                        recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
+                    }
                 }else{
-                    result = compute(Float.parseFloat(recent_number.getText().toString()),
-                            Float.parseFloat(main_display.getText().toString()), operator);
-                    recent_number.setText(String.valueOf(result));
+                    resultArray = compute(recent_number.getText().toString(),
+                            main_display.getText().toString(),
+                            display_err.getText().toString(),
+                            operator);
+
+                    result = resultArray[0];
+                    resultError = resultArray[1];
+                    recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
                 }
                 operator = "-";
                 main_display.setText("");
-                clearErrorDisplay();
+                setErrorDisplay("");
                 units_display.setText("");
                 break;
 
             case R.id.b_equals:
 
-                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString()) && !emptyError)) {
+                if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
 
-                if(emptyRecent){
-                    result = Float.parseFloat(main_display.getText().toString());
-                    recent_number.setText(String.valueOf(result));
-                }else if(operator == "") {
-                    break;
+                if(emptyRecent || operator == "="){
+                    resultArray[0] = Float.parseFloat(main_display.getText().toString());
+                    if(display_err.getText().toString().length() <= 1){
+                        resultArray[1] = 0.0f;
+                        resultError = 0.0f;
+                        recent_number.setText(String.valueOf(resultArray[0]));
+                    }
+                    else{
+                        resultArray[1] = Float.parseFloat(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), ""));
+                        result = resultArray[0];
+                        resultError = resultArray[1];
+                        recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
+                    }
+
                 }else{
-                        result = compute(Float.parseFloat(recent_number.getText().toString()),
-                                Float.parseFloat(main_display.getText().toString()), operator);
-                        recent_number.setText(String.valueOf(result));
+                    resultArray = compute(recent_number.getText().toString(),
+                            main_display.getText().toString(),
+                            display_err.getText().toString(),
+                            operator);
+                    result = resultArray[0];
+                    resultError = resultArray[1];
+                    recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
                 }
                 operator = "=";
                 main_display.setText(String.valueOf(result));
-                clearErrorDisplay();
+                if (resultError != 0){
+                    setErrorDisplay(String.valueOf(resultError));
+                }
+                else{
+                    setErrorDisplay("");
+                }
                 units_display.setText("");
                 break;
 
@@ -348,6 +450,7 @@ public class LabCalculations extends Fragment {
 
         result = 0.0f;
         value = 0.0f;
+        resultError = 0.0f;
 
         //Set up the buttons
         Button ac = (Button)v.findViewById(R.id.b_AC);
@@ -791,7 +894,7 @@ public class LabCalculations extends Fragment {
 
         final EditText displayError = (EditText) v.findViewById(R.id.display_err);
 
-        //Allow persistent () in the error display. -D
+        //Allow persistent plus minus in the error display. -D
         displayError.setText(R.string.plus_minus_sign);
         Selection.setSelection(displayError.getText(), 1);
 
@@ -826,7 +929,7 @@ public class LabCalculations extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 v.requestFocus();
                 if(displayValue.getText().length() > 0){
-                    Selection.setSelection(displayValue.getText(),displayValue.getText().length());
+                    Selection.setSelection(displayValue.getText(), displayValue.getText().length());
                 }
                 return true;
             }
@@ -845,7 +948,7 @@ public class LabCalculations extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 v.requestFocus();
-                Selection.setSelection(displayValue.getText(),displayValue.getText().length());
+                Selection.setSelection(displayError.getText(),displayError.getText().length());
                 return true;
             }
         });
@@ -880,25 +983,83 @@ public class LabCalculations extends Fragment {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Lab Calculator");
     }
 
-    public float compute(float result, float value, String button){
+    public float[] compute(String result, String value, String valueErr, String button){
         //Divide by 0 error still problem -D
-        if(button == "+")
-            return result + value;
-        else if (button == "-")
-            return result - value;
-        else if (button == "*")
-            return result * value;
-        else if (button == "/")
-            if(value == 0.0){
+
+        boolean resultExact = false;
+        boolean valueExact = false;
+
+        valueErr = valueErr.replace(getString(R.string.plus_minus_sign), "");
+        float[] returnArray = {0.0f, 0.0f};
+
+        String[] resultArrayString = result.split(getString(R.string.plus_minus_sign));
+        if(resultArrayString.length <= 1){
+            resultExact = true;
+        }
+
+        if(valueErr == "" || valueErr == "exact"){
+            valueExact = true;
+        }
+
+        float[] resultsArray = {0.0f, 0.0f};
+        for(int i = 0; i < resultArrayString.length; i++){
+            resultsArray[i] = Float.parseFloat(resultArrayString[i]);
+        }
+
+        float[] valueArray = {0.0f, 0.0f};
+        valueArray[0] = Float.parseFloat(value);
+        if(valueErr != ""){
+            valueArray[1] = Float.parseFloat(valueErr);
+        }
+
+
+        //Special constant Rules -D
+        if(button == "+") {
+            returnArray[0] = resultsArray[0] + valueArray[0];
+            returnArray[1] = resultsArray[1] + valueArray[1];
+        }
+        else if (button == "-") {
+            returnArray[0] = resultsArray[0] - valueArray[0];
+            returnArray[1] = resultsArray[1] + valueArray[1];
+        }
+        else if (button == "*") {
+            returnArray[0] = resultsArray[0] * valueArray[0];
+            if(resultExact){
+                returnArray[1] = resultsArray[0] * valueArray[1];
+            }
+            else if(valueExact){
+                returnArray[1] = valueArray[0] * resultsArray[1];
+            }
+            else {
+                returnArray[1] = ((((resultsArray[1] / resultsArray[0]) * 100) + ((valueArray[1] / valueArray[0]) * 100)) / 100) * returnArray[0];
+            }
+        }
+        else if (button == "/") {
+            if (valueArray[0] == 0.0) {
                 System.out.println("THERE IS A PROBLEM");
             }
-            else{
-                return result / value;
+            else {
+                returnArray[0] = resultsArray[0] / valueArray[0];
+                if(resultExact && valueExact){
+                    returnArray[1] = 0.0f;
+                }
+                else if(resultExact){
+                    returnArray[1] = valueArray[1] / resultsArray[0];
+                }
+                else if(valueExact){
+                    returnArray[1] = resultsArray[1] / valueArray[0];
+                }
+                else {
+                    returnArray[1] = ((((resultsArray[1] / resultsArray[0]) * 100) + ((valueArray[1] / valueArray[0]) * 100)) / 100) * returnArray[0];
+                }
             }
-        else if(button == "^")
-            return (float) Math.pow(result, value);
+        }
+        else if(button == "^") {
+            returnArray[0] = (float) Math.pow(resultsArray[0], valueArray[0]);
+            returnArray[1] = 0.0f;
+        }
 
-        return 0.0f;
+        return returnArray;
     }
 
 }
