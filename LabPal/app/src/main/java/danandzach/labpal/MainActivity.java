@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.FrameLayout;
 
+import com.github.mikephil.charting.charts.BarChart;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
