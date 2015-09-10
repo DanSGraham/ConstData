@@ -15,6 +15,8 @@
             android:id="@+id/search_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/element_search"
             android:hint="Element Search" />
 
         <LinearLayout
