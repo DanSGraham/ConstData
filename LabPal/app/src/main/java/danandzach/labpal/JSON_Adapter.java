@@ -42,7 +42,14 @@ public class JSON_Adapter {
         protected JSONObject doInBackground(URL... params) {
 
                 try {
-                    if(Data.getNetwork_connection() == true){
+                    /*
+                    Zach
+
+                    This is more or less to make it faster for the POC
+                     */
+                    boolean do_this_for_speed = true;
+
+                    if(Data.getNetwork_connection() == true && do_this_for_speed == false){
                         URL nist_data = new URL(params[0].toString());
                         final HttpURLConnection connection = (HttpURLConnection) nist_data.openConnection();
 

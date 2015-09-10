@@ -75,10 +75,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(ISOTOPE_DATABASE_NAME, Data.getAtomic_mass_data().toString());
-        outState.putString(IONIZATION_ENERGY_DATABASE_NAME, Data.getIonization_data().toString());
-        outState.putString(CONSTANTS_DATABASE_NAME, Data.getConstants_data().toString());
-        outState.putString(CCCBDB_DATABASE_NAME, Data.getCcc_data().toString());
+        if(Data.getAtomic_mass_data() != null){
+            outState.putString(ISOTOPE_DATABASE_NAME, Data.getAtomic_mass_data().toString());
+        }
+        if(Data.getIonization_data() != null){
+            outState.putString(IONIZATION_ENERGY_DATABASE_NAME, Data.getIonization_data().toString());
+        }
+        if(Data.getConstants_data() != null){
+            outState.putString(CONSTANTS_DATABASE_NAME, Data.getConstants_data().toString());
+        }
+        if(Data.getCcc_data() != null){
+            outState.putString(CCCBDB_DATABASE_NAME, Data.getCcc_data().toString());
+        }
     }
 
     @Override
