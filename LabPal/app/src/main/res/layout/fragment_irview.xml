@@ -8,7 +8,8 @@
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/ir_chart"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="300dp" />
+
 
     <AutoCompleteTextView
         android:id="@+id/ir_search_field"
