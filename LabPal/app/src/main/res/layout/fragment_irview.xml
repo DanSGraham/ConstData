@@ -1,9 +1,31 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="danandzach.labpal.IRView">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="danandzach.labpal.IRView">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="TEST3" />
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/ir_chart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-</FrameLayout>
+    <AutoCompleteTextView
+        android:id="@+id/ir_search_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@drawable/general_search"
+        android:hint="Molecule Search" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ir_molecule_selection_table">
+        <TableRow>
+            <TextView
+                android:text="test1"/>
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>
