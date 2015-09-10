@@ -1,6 +1,7 @@
 package danandzach.labpal;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -64,6 +65,7 @@ public class IRView extends Fragment {
         entries.add(new BarEntry(9f, 5));
 
         BarDataSet dataSet = new BarDataSet(entries, "JUST A TEST");
+        dataSet.setColor(Color.parseColor("#19440c"));
 
         ArrayList<String> labels = new ArrayList<>();
         labels.add("Jan");
@@ -75,6 +77,7 @@ public class IRView extends Fragment {
 
         BarData data = new BarData(labels, dataSet);
         display_chart.setData(data);
+
 
         display_chart.setDescription("Test for IR Viewer");
         return v;
