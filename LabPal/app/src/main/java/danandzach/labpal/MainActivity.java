@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private final String ISOTOPE_DATABASE_NAME = "Atomic Weights and Isotopes";
     private final String IONIZATION_ENERGY_DATABASE_NAME = "Ground Levels and Ionization Energy";
     private final String CONSTANTS_DATABASE_NAME = "Fundamental Physics Constants Database";
+    private final String CCCBDB_DATABASE_NAME = "Computational Chemistry Database";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(ISOTOPE_DATABASE_NAME, Data.getAtomic_mass_data().toString());
         outState.putString(IONIZATION_ENERGY_DATABASE_NAME, Data.getIonization_data().toString());
         outState.putString(CONSTANTS_DATABASE_NAME, Data.getConstants_data().toString());
+        outState.putString(CCCBDB_DATABASE_NAME, Data.getCcc_data().toString());
     }
 
     @Override
@@ -85,15 +87,18 @@ public class MainActivity extends AppCompatActivity {
         String temp_ionization_db = savedInstanceState.getString(IONIZATION_ENERGY_DATABASE_NAME);
         String temp_atomic_db = savedInstanceState.getString(ISOTOPE_DATABASE_NAME);
         String temp_constants_db = savedInstanceState.getString(CONSTANTS_DATABASE_NAME);
+        String temp_ccc_db = savedInstanceState.getString(CCCBDB_DATABASE_NAME);
 
         try {
             JSONObject restored_ionization_db = new JSONObject(temp_ionization_db);
             JSONObject restored_atomic_db = new JSONObject(temp_atomic_db);
             JSONObject restored_constants_db = new JSONObject(temp_constants_db);
+            JSONObject restored_ccc_db = new JSONObject(temp_ccc_db);
 
             Data.setIonization_data(restored_ionization_db);
             Data.setAtomic_mass_data(restored_atomic_db);
             Data.setConstants_data(restored_constants_db);
+            Data.setCcc_data(restored_ccc_db);
         } catch (JSONException e) {
             e.printStackTrace();
         }

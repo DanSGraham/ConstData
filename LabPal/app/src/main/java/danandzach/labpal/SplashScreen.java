@@ -9,7 +9,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -28,10 +27,13 @@ public class SplashScreen extends Activity {
             JSON_Adapter atomic_adapter = new JSON_Adapter();
             JSON_Adapter ion_adapter = new JSON_Adapter();
             JSON_Adapter const_adapter = new JSON_Adapter();
+            JSON_Adapter ccc_adapter = new JSON_Adapter();
 
             Data.constants_is = getResources().openRawResource(R.raw.constants);
             Data.ionization_is = getResources().openRawResource(R.raw.ionizations);
             Data.atomic_mass_is = getResources().openRawResource(R.raw.atomic_mass);
+            Data.ccc_is = getResources().openRawResource(R.raw.cccbdb);
+
             try {
                 if(isNetworkConnected()){
                     Data.setNetwork_connection(true);
@@ -43,6 +45,8 @@ public class SplashScreen extends Activity {
                 atomic_adapter.get_JSON_object(new URL(Data.getUrl_atomic_mass()));
                 ion_adapter.get_JSON_object(new URL(Data.getUrl_ionization()));
                 const_adapter.get_JSON_object(new URL(Data.getUrl_constants()));
+                ccc_adapter.get_JSON_object(new URL(Data.getUrl_ccc()));
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
