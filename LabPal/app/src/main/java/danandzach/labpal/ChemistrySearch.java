@@ -84,7 +84,6 @@ public class ChemistrySearch extends Fragment {
      * @return A new instance of fragment ChemistrySearch.
      */
 
-
     private static HashMap<String, JSONObject> search_results = new HashMap<String, JSONObject>();
 
     private final String ISOTOPE_DATABASE_NAME = "Atomic Weights and Isotopes";
