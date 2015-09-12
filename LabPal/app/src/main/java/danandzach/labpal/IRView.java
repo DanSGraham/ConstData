@@ -10,6 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.Entry;
+
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -33,6 +38,26 @@ public class IRView extends Fragment {
      *
      * @return A new instance of fragment IRView.
      */
+
+    public static final int GRAPH_MAX_X = 4000;
+    public static final int GRAPH_MIN_X = 0;
+    public static final double DELTA_X = 0.5;
+
+
+    public ArrayList<String> getGraphXAxis(){
+        ArrayList<String> xAxis = new ArrayList<String>();
+        double scaledX = GRAPH_MAX_X / DELTA_X;
+        for(int i = GRAPH_MIN_X; i <= scaledX; i++){
+            xAxis.add(i, String.valueOf(i * DELTA_X));
+        }
+        return xAxis;
+    }
+
+    /*public LineDataSet formatLineData(int inputValues){
+        //This will take the JSON object and format it into a dataset.
+        return 0;
+    }*/
+
     public static IRView newInstance() {
         IRView fragment = new IRView();
         Bundle args = new Bundle();
@@ -54,28 +79,27 @@ public class IRView extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_irview, container, false);
-        BarChart display_chart = (BarChart)v.findViewById(R.id.ir_chart);
+        LineChart display_chart = (LineChart) v.findViewById(R.id.ir_chart);
 
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(4f, 0));
-        entries.add(new BarEntry(8f, 1));
-        entries.add(new BarEntry(6f, 2));
-        entries.add(new BarEntry(12f, 3));
-        entries.add(new BarEntry(18f, 4));
-        entries.add(new BarEntry(9f, 5));
+        ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(100f, 0));
+        entries.add(new Entry(6.49f, 1167 * 2));
+        entries.add(new Entry(9.94f, 1249 * 2));
+        entries.add(new Entry(11.15f, 1500 * 2));
+        entries.add(new Entry(73.99f, 1746 * 2));
+        entries.add(new Entry(75.5f, 2782 * 2));
+        entries.add(new Entry(87.6f, 2843 * 2));
+        entries.add(new Entry(100f, 4000 * 2));
 
-        BarDataSet dataSet = new BarDataSet(entries, "JUST A TEST");
+
+        LineDataSet dataSet = new LineDataSet(entries, "JUST A TEST");
+        dataSet.setDrawCubic(true);
         dataSet.setColor(Color.parseColor("#19440c"));
 
-        ArrayList<String> labels = new ArrayList<>();
-        labels.add("Jan");
-        labels.add("Feb");
-        labels.add("Mar");
-        labels.add("April");
-        labels.add("June");
-        labels.add("July");
+        ArrayList<String> xVals = getGraphXAxis();
 
-        BarData data = new BarData(labels, dataSet);
+
+        LineData data = new LineData(xVals, dataSet);
         display_chart.setData(data);
 
 
