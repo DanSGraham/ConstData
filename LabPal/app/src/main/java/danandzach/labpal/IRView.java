@@ -211,7 +211,7 @@ public class IRView extends Fragment {
 
                     for (int q = 0; q < Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).length(); q++) {
                         if (Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(q).optString("casno").equalsIgnoreCase(temp_casno)) {
-                            if (Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(q).optString("Intensity") == null) {
+                            if (Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(q).getString("Intensity") == null) {
                                 break;
                             } else {
                                 boolean has_name = false;
