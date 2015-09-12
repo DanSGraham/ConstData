@@ -70,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
         actionBar.addTab(notes_tab);
         ((FrameLayout) findViewById(R.id.mainscreen)).getForeground().setAlpha(0);
 
-        actionBar.setIcon(R.mipmap.ic_launcher);
-
     }
 
 

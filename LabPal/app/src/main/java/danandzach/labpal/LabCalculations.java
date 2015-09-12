@@ -289,6 +289,11 @@ public class LabCalculations extends Fragment {
                     break;
                 }
 
+                if(main_display.getText().toString().equalsIgnoreCase("")){
+                    operator = "^";
+                    break;
+                }
+
                 if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
                     main_display.setText("");
                     recent_number.setText("");
@@ -331,7 +336,17 @@ public class LabCalculations extends Fragment {
                 break;
 
             case R.id.b_div:
+                if(main_display.getText().toString().equals("")){
+                    operator = "/";
+                    break;
+                }
+
                 if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
+                    break;
+                }
+
+                if(main_display.getText().toString().equalsIgnoreCase("")){
+                    operator = "/";
                     break;
                 }
 
@@ -387,7 +402,17 @@ public class LabCalculations extends Fragment {
                 break;
 
             case R.id.b_star:
+                if(main_display.getText().toString().equals("")){
+                    operator = "*";
+                    break;
+                }
+
                 if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
+                    break;
+                }
+
+                if(main_display.getText().toString().equalsIgnoreCase("")){
+                    operator = "*";
                     break;
                 }
 
@@ -433,7 +458,18 @@ public class LabCalculations extends Fragment {
                 break;
 
             case R.id.b_plus:
+
+                if(main_display.getText().toString().equals("")){
+                    operator = "+";
+                    break;
+                }
+
                 if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
+                    break;
+                }
+
+                if(main_display.getText().toString().equalsIgnoreCase("")){
+                    operator = "+";
                     break;
                 }
 
@@ -479,9 +515,16 @@ public class LabCalculations extends Fragment {
                 break;
 
             case R.id.b_minus:
+
+                if(main_display.getText().toString().equals("")){
+                    operator = "-";
+                    break;
+                }
+
                 if(emptyValue || !properlyFormattedValue(main_display.getText().toString()) || (!properlyFormattedValue(display_err.getText().toString().replace(getString(R.string.plus_minus_sign), "")) && !emptyError)) {
                     break;
                 }
+
 
                 if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
                     main_display.setText("");
