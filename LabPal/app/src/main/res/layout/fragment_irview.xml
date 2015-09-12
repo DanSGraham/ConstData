@@ -6,19 +6,21 @@
     tools:context="danandzach.labpal.IRView">
 
 
+    <AutoCompleteTextView
+        android:id="@+id/ir_search_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/general_search"
+        android:hint="Molecule Search" />
+
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/ir_chart"
         android:layout_width="match_parent"
         android:layout_height="300dp" />
 
 
-    <AutoCompleteTextView
-        android:id="@+id/ir_search_field"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:background="@drawable/general_search"
-        android:hint="Molecule Search" />
 
     <TableLayout
         android:layout_width="match_parent"
