@@ -87,6 +87,7 @@ public class IRView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View v = inflater.inflate(R.layout.fragment_irview, container, false);
         chosen_molecule = new ArrayList<>();
 

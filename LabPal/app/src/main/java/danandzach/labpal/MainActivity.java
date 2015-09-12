@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 
+
         //The following method of tabs is deprecated. In API 21 the correct way to use tab
         //navigation is TabLayout however there are not many devices on android 5 so I am
         //Using this backwards compatible method for now. -D
@@ -46,13 +47,13 @@ public class MainActivity extends AppCompatActivity {
 
         android.support.v4.app.Fragment chemSearch = new ChemistrySearch();
         android.support.v7.app.ActionBar.Tab mol_tab = actionBar.newTab();
-        mol_tab.setIcon(R.drawable.ic_search);
+        mol_tab.setIcon(R.drawable.ic_action_ic_search);
         mol_tab.setTabListener(new NavigationTabsListener(chemSearch));
         actionBar.addTab(mol_tab);
 
         android.support.v4.app.Fragment calc_frag = new LabCalculations();
         android.support.v7.app.ActionBar.Tab calc_tab = actionBar.newTab();
-        calc_tab.setIcon(R.drawable.calculatoricon);
+        calc_tab.setIcon(R.drawable.ic_action_calculatoricon);
         calc_tab.setTabListener(new NavigationTabsListener(calc_frag));
         actionBar.addTab(calc_tab);
 
@@ -68,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         notes_tab.setTabListener(new NavigationTabsListener(labNotes));
         actionBar.addTab(notes_tab);
         ((FrameLayout) findViewById(R.id.mainscreen)).getForeground().setAlpha(0);
+
+        actionBar.setIcon(R.mipmap.ic_launcher);
 
     }
 
