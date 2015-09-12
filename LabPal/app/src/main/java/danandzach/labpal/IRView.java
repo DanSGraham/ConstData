@@ -6,12 +6,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -135,6 +141,13 @@ public class IRView extends Fragment {
         resetCurrLine();
         updateMoleculeList();
         updateEntries();
+
+        TableLayout molecule_display = (TableLayout) getActivity().findViewById(R.id.ir_molecule_selection_table);
+        molecule_display.removeAllViews();
+        for(HashMap.Entry<String, ArrayList<JSONObject>> molecule_name: chosen_molecules.entrySet()){
+            addMoleculeToView(molecule_name.getKey());
+        }
+
         LineChart display_chart = ((LineChart) getActivity().findViewById(R.id.ir_chart));
 
         LineDataSet dataSet = new LineDataSet(currEntries, "IR Data");
@@ -152,6 +165,54 @@ public class IRView extends Fragment {
         return Math.round( (float) Math.floor(freq / DELTA_X));
     }
 
+    public void addMoleculeToView(String molecule_name){
+        //When the user selects a molecule to view, this will format the lower display to show wihch
+        //molecules and what relative inteisities they will be present on the graph -D
+
+
+        int SP_SIZE = 14;
+
+        TableLayout.LayoutParams rowParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+        TableRow rowToAdd = new TableRow(getActivity());
+
+
+        TextView removeMoleculeButton = new TextView(getActivity());
+        removeMoleculeButton.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+        removeMoleculeButton.setPadding(5, 0, 5, 0);
+        removeMoleculeButton.setText("-");
+        removeMoleculeButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE);
+        //removeMoleculeButton.setId();
+        //Here set an onclick listener to remove the molecule and the view from the display.
+
+
+        TextView moleculeName = new TextView(getActivity());
+        moleculeName.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        moleculeName.setText(molecule_name);
+        moleculeName.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE);
+
+
+        EditText relativeIntensity = new EditText(getActivity());
+        relativeIntensity.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+        relativeIntensity.setText("100");
+        relativeIntensity.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE);
+        //Here set on change listener to adjust the molecule.
+
+
+        TextView percentSign = new TextView(getActivity());
+        percentSign.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+        percentSign.setText("%");
+        percentSign.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE);
+
+        rowToAdd.addView(removeMoleculeButton);
+        rowToAdd.addView(moleculeName);
+        rowToAdd.addView(relativeIntensity);
+        rowToAdd.addView(percentSign);
+
+        TableLayout display_table = (TableLayout) getActivity().findViewById(R.id.ir_molecule_selection_table);
+        display_table.addView(rowToAdd);
+
+    }
+
     public void removeMoleculeFromList(){
 
     }
@@ -160,12 +221,6 @@ public class IRView extends Fragment {
 
     }
 
-
-
-    /*public LineDataSet formatLineData(int inputValues){
-        //This will take the JSON object and format it into a dataset.
-        return 0;
-    }*/
 
     public static IRView newInstance() {
         IRView fragment = new IRView();
