@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         android.support.v4.app.Fragment irView = new IRView();
         android.support.v7.app.ActionBar.Tab ir_tab = actionBar.newTab();
-        ir_tab.setIcon(R.drawable.ic_action_ir_logo);
+        ir_tab.setIcon(R.drawable.ic_action_new_ir_logo);
         ir_tab.setTabListener(new NavigationTabsListener(irView));
         actionBar.addTab(ir_tab);
 
