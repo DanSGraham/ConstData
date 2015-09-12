@@ -21,6 +21,7 @@ public class Data {
     private static JSONObject atomic_mass_data;
     private static JSONObject constants_data;
     private static JSONObject ccc_data;
+    private static JSONObject names_data;
 
     private static boolean network_connection = false;
 
@@ -29,11 +30,13 @@ public class Data {
     public static InputStream ionization_is;
     public static InputStream atomic_mass_is;
     public static InputStream ccc_is;
+    public static InputStream names_is;
 
     private static String atomic_mass_array_name = "data";
     private static String ionization_array_name = "ionization energies data";
     private static String constants_array_name = "constant";
     private static String ccc_array_name = "ExpVibrations";
+    private static String names_array_name = "Names";
 
     private static PeriodicTable periodicTable;
 
@@ -41,6 +44,7 @@ public class Data {
     private static String url_ionization = "http://www.nist.gov/srd/srd_data/srd111_NIST_Atomic_Ionization_Energies_Output.json";
     private static String url_constants = "http://www.nist.gov/srd/srd_data/srd121_allascii_2014.json";
     private static String url_ccc = "http://www.nist.gov/srd/srd_data/srd101_ExpVibrations.json";
+    private static String names_url = "http://www.nist.gov/srd/srd_data/srd101_Name.json";
 
     public static void initPeriodicTable(){
         periodicTable = new PeriodicTable();
@@ -64,6 +68,10 @@ public class Data {
         return ccc_data;
     }
 
+    public static JSONObject getNames_data(){
+        return names_data;
+    }
+
     public static void setIonization_data(JSONObject j){
         ionization_data = j;
     }
@@ -80,6 +88,10 @@ public class Data {
         ccc_data = j;
     }
 
+    public static void setNames_data(JSONObject j){
+        names_data = j;
+    }
+
     public static String getUrl_ionization(){
         return url_ionization;
     }
@@ -94,6 +106,10 @@ public class Data {
 
     public static String getUrl_ccc(){
         return url_ccc;
+    }
+
+    public static String getUrl_names(){
+        return names_url;
     }
 
     public static JSONArray get_array(JSONObject database, String identifier){
@@ -119,6 +135,10 @@ public class Data {
 
     public static String getCcc_array_name(){
         return ccc_array_name;
+    }
+
+    public static String getNames_array_name(){
+        return names_array_name;
     }
 
     public static void setNetwork_connection(boolean b){
