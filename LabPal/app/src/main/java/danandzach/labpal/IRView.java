@@ -56,7 +56,9 @@ public class IRView extends Fragment {
     public static final double STD_DEV = 55;
 
     public ArrayList<Entry> currEntries;
-    private static ArrayList<JSONObject> chosen_molecule;
+    private HashMap<String, ArrayList<JSONObject>> chosen_molecules;
+    public HashMap<String, HashMap<Integer, Double>> chosen_molecules_chart_data;
+
 
 
     public ArrayList<String> getGraphXAxis(){
@@ -77,6 +79,8 @@ public class IRView extends Fragment {
         }
     }
 
+
+
     public void addGaussianToCurrEntries(int mean, double stdDev, double intenseVal){
         //Mean and stdDev must be in units of index not actual units. To get units of index must
         //divide the current units by deltaX and floor the value so it is an integer.
@@ -90,17 +94,71 @@ public class IRView extends Fragment {
         }
     }
 
-    public void generateEntriesTest(){
-        resetCurrLine();
-        addGaussianToCurrEntries(1167 * 2, STD_DEV, 6.49);
-        addGaussianToCurrEntries(1249 * 2, STD_DEV, 9.94);
-        addGaussianToCurrEntries(1500 * 2, STD_DEV, 11.15);
-        addGaussianToCurrEntries(1746 * 2, STD_DEV, 73.99);
-        addGaussianToCurrEntries(2782 * 2, STD_DEV, 75.5);
-        addGaussianToCurrEntries(2843 * 2, STD_DEV, 87.6);
+    public void updateMoleculeList(){
+        //Converts from frequency values to index values here. -D
+
+        chosen_molecules_chart_data = new HashMap<>();
+        String molecule_name;
+        HashMap<Integer, Double> freqAndIntense;
+        for(HashMap.Entry<String, ArrayList<JSONObject>> entry : chosen_molecules.entrySet()){
+            molecule_name = entry.getKey();
+            chosen_molecules_chart_data.put(molecule_name, new HashMap<Integer, Double>());
+            for(JSONObject freq : entry.getValue()){
+                freqAndIntense = chosen_molecules_chart_data.get(molecule_name);
+                try{
+                    int freqVal = convertFreqToIndex(Double.valueOf(freq.optString("Frequency")));
+                    double intenseVal = Double.valueOf(freq.optString("Intensity"));
+                    freqAndIntense.put(freqVal, intenseVal);
+                }
+                catch(NumberFormatException e){
+                    Log.v("Can't convert Error", molecule_name);
+                    Log.v("Error Val", freq.optString("Intensity"));
+                    //e.printStackTrace();
+                }
+            }
+
+        }
     }
 
 
+    public void updateEntries(){
+        //Updates the entries based on the chosen_molecules_chart_data -D
+
+        for(HashMap.Entry<String, HashMap<Integer, Double>> entry : chosen_molecules_chart_data.entrySet()) {
+            for (HashMap.Entry<Integer, Double> molecule_entry : entry.getValue().entrySet()) {
+                addGaussianToCurrEntries(molecule_entry.getKey(), STD_DEV, molecule_entry.getValue());
+            }
+        }
+    }
+
+    public void updateDisplay(){
+        resetCurrLine();
+        updateMoleculeList();
+        updateEntries();
+        LineChart display_chart = ((LineChart) getActivity().findViewById(R.id.ir_chart));
+
+        LineDataSet dataSet = new LineDataSet(currEntries, "IR Data");
+        dataSet.setDrawCircles(false);
+        dataSet.setDrawValues(false);
+        dataSet.setColor(Color.parseColor("#19440c"));
+        ArrayList<String> xVals = getGraphXAxis();
+        LineData data = new LineData(xVals, dataSet);
+        display_chart.setData(data);
+        display_chart.invalidate();
+
+    }
+
+    public int convertFreqToIndex(double freq){
+        return Math.round( (float) Math.floor(freq / DELTA_X));
+    }
+
+    public void removeMoleculeFromList(){
+
+    }
+
+    public void changeIntensity(double percentIntensity, int indexOfArray){
+
+    }
 
 
 
@@ -133,7 +191,7 @@ public class IRView extends Fragment {
         // Inflate the layout for this fragment
 
         View v = inflater.inflate(R.layout.fragment_irview, container, false);
-        chosen_molecule = new ArrayList<>();
+        chosen_molecules = new HashMap<String, ArrayList<JSONObject>>();
         currEntries = new ArrayList<Entry>();
 
         /*
@@ -206,8 +264,11 @@ public class IRView extends Fragment {
                         if(casno.equalsIgnoreCase(Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(i)
                         .optString("casno"))){
                             temp_count = 1;
-                            chosen_molecule.add(Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(i));
-                            Log.v("CHOSEN", chosen_molecule.get(i).optString("Intensity"));
+                            if (!(chosen_molecules.containsKey(molecule))){
+                                chosen_molecules.put(molecule, new ArrayList<JSONObject>());
+                            }
+                            chosen_molecules.get(molecule).add(Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(i));
+
                         }
                         else{
                             if(temp_count == 1){
@@ -216,6 +277,9 @@ public class IRView extends Fragment {
                                 continue;
                         }
                     }
+
+                    updateDisplay();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -241,9 +305,6 @@ public class IRView extends Fragment {
         yAxisObjectRight.setSpaceBottom(0f);
         yAxisObjectRight.setDrawLabels(false);
         legendObject.setEnabled(false);
-
-
-        generateEntriesTest();
 
 
         LineDataSet dataSet = new LineDataSet(currEntries, "JUST A TEST");
