@@ -131,6 +131,7 @@ public class IRView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View v = inflater.inflate(R.layout.fragment_irview, container, false);
         chosen_molecule = new ArrayList<>();
         currEntries = new ArrayList<Entry>();
@@ -141,6 +142,7 @@ public class IRView extends Fragment {
         All this is necessary to map the CAS number to the molecule name. It is slightly slow now.
         We can consider moving this process off of the UI thread once we get it functioning how we want.
          */
+
         final AutoCompleteTextView search_field = (AutoCompleteTextView)v.findViewById(R.id.ir_search_field);
 
         final ArrayList<String> casno_mapping = new ArrayList<>();

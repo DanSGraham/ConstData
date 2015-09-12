@@ -20,8 +20,6 @@
         android:background="@drawable/general_search"
         android:hint="Molecule Search" />
 
-
-
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
