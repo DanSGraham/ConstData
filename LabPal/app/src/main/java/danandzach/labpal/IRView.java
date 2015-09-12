@@ -96,6 +96,7 @@ public class IRView extends Fragment {
         All this is necessary to map the CAS number to the molecule name. It is slightly slow now.
         We can consider moving this process off of the UI thread once we get it functioning how we want.
          */
+
         final AutoCompleteTextView search_field = (AutoCompleteTextView)v.findViewById(R.id.ir_search_field);
 
         final ArrayList<String> casno_mapping = new ArrayList<>();

@@ -5,15 +5,11 @@
     android:orientation="vertical"
     tools:context="danandzach.labpal.IRView">
 
-<<<<<<< HEAD
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/ir_chart"
         android:layout_width="match_parent"
         android:layout_height="300dp" />
 
-
-=======
->>>>>>> 88a5568da0ec9766eb9ea9dbe1b2ca8563bfc39b
     <AutoCompleteTextView
         android:id="@+id/ir_search_field"
         android:layout_width="match_parent"
@@ -21,12 +17,6 @@
         android:padding="5dp"
         android:background="@drawable/general_search"
         android:hint="Molecule Search" />
-
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/ir_chart"
-        android:layout_width="match_parent"
-        android:layout_height="300dp" />
-
 
     <TableLayout
         android:layout_width="match_parent"
