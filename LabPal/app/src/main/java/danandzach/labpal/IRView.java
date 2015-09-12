@@ -47,7 +47,7 @@ public class IRView extends Fragment {
         return fragment;
     }
 
-    private static JSONObject chosen_object;
+    private static ArrayList<JSONObject> chosen_molecule;
 
     public IRView() {
         // Required empty public constructor
@@ -63,9 +63,17 @@ public class IRView extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_irview, container, false);
+        chosen_molecule = new ArrayList<>();
+
+        /*
+        Zach
+
+        All this is necessary to map the CAS number to the molecule name. It is slightly slow now.
+        We can consider moving this process off of the UI thread once we get it functioning how we want.
+         */
         final AutoCompleteTextView search_field = (AutoCompleteTextView)v.findViewById(R.id.ir_search_field);
 
-        ArrayList<String> casno_mapping = new ArrayList<>();
+        final ArrayList<String> casno_mapping = new ArrayList<>();
         try {
             for(int i = 0; i < Data.getNames_data().getJSONArray(Data.getNames_array_name()).length(); i++){
                 String temp_casno = Data.getNames_data().getJSONArray(Data.getNames_array_name()).getJSONObject(i).optString("casno");
@@ -110,9 +118,43 @@ public class IRView extends Fragment {
         search_field.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.v("ITEM CLICKED", "CASNO MAPPED");
+                String molecule = search_field.getText().toString();
+                String casno = "";
+                try {
+                    for(int i = 0; i < Data.getNames_data().getJSONArray(Data.getNames_array_name()).length(); i++){
+                        if(molecule.equalsIgnoreCase(Data.getNames_data().getJSONArray(Data.getNames_array_name()).getJSONObject(i)
+                        .optString("Name"))){
+                            casno = Data.getNames_data().getJSONArray(Data.getNames_array_name()).getJSONObject(i)
+                                    .optString("casno");
+                            break;
+                        }
+                    }
+                    int temp_count = 0;
+                    for(int i = 0; i < Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).length(); i++){
+                        if(casno.equalsIgnoreCase(Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(i)
+                        .optString("casno"))){
+                            temp_count = 1;
+                            chosen_molecule.add(Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(i));
+                            Log.v("CHOSEN", chosen_molecule.get(i).optString("Intensity"));
+                        }
+                        else{
+                            if(temp_count == 1){
+                                break;
+                            }else
+                                continue;
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
+
+
+        /*
+        This is the end of the non-sense of the mapping of CAS number to molecule name.
+        Below sets up the chart.
+         */
 
         BarChart display_chart = (BarChart)v.findViewById(R.id.ir_chart);
 
