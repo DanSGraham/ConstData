@@ -15,6 +15,9 @@ import android.widget.AutoCompleteTextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.Entry;
@@ -27,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -49,6 +53,10 @@ public class IRView extends Fragment {
     public static final int GRAPH_MAX_X = 4000;
     public static final int GRAPH_MIN_X = 0;
     public static final double DELTA_X = 0.5;
+    public static final double STD_DEV = 55;
+
+    public ArrayList<Entry> currEntries;
+    private static ArrayList<JSONObject> chosen_molecule;
 
 
     public ArrayList<String> getGraphXAxis(){
@@ -56,9 +64,45 @@ public class IRView extends Fragment {
         double scaledX = GRAPH_MAX_X / DELTA_X;
         for(int i = GRAPH_MIN_X; i <= scaledX; i++){
             xAxis.add(i, String.valueOf(i * DELTA_X));
+
         }
         return xAxis;
     }
+
+    public void resetCurrLine(){
+        currEntries.clear();
+        double scaledX = GRAPH_MAX_X / DELTA_X;
+        for(int i = GRAPH_MIN_X; i <= scaledX; i++){
+            currEntries.add(new Entry(0f, i));
+        }
+    }
+
+    public void addGaussianToCurrEntries(int mean, double stdDev, double intenseVal){
+        //Mean and stdDev must be in units of index not actual units. To get units of index must
+        //divide the current units by deltaX and floor the value so it is an integer.
+
+        double gaussYVal = 0;
+        double currEntryVal = 0;
+        for(Entry dataPoint: currEntries){
+            gaussYVal = intenseVal * ((1 / (stdDev * Math.sqrt(2.0 * Math.PI))) * Math.exp(-((Math.pow((dataPoint.getXIndex() - mean), 2)) / (2 * Math.pow(stdDev, 2)))));
+            currEntryVal = dataPoint.getVal();
+            dataPoint.setVal((float) (currEntryVal + gaussYVal));
+        }
+    }
+
+    public void generateEntriesTest(){
+        resetCurrLine();
+        addGaussianToCurrEntries(1167 * 2, STD_DEV, 6.49);
+        addGaussianToCurrEntries(1249 * 2, STD_DEV, 9.94);
+        addGaussianToCurrEntries(1500 * 2, STD_DEV, 11.15);
+        addGaussianToCurrEntries(1746 * 2, STD_DEV, 73.99);
+        addGaussianToCurrEntries(2782 * 2, STD_DEV, 75.5);
+        addGaussianToCurrEntries(2843 * 2, STD_DEV, 87.6);
+    }
+
+
+
+
 
     /*public LineDataSet formatLineData(int inputValues){
         //This will take the JSON object and format it into a dataset.
@@ -72,7 +116,7 @@ public class IRView extends Fragment {
         return fragment;
     }
 
-    private static ArrayList<JSONObject> chosen_molecule;
+
 
     public IRView() {
         // Required empty public constructor
@@ -89,6 +133,7 @@ public class IRView extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_irview, container, false);
         chosen_molecule = new ArrayList<>();
+        currEntries = new ArrayList<Entry>();
 
         /*
         Zach
@@ -183,19 +228,25 @@ public class IRView extends Fragment {
 
         LineChart display_chart = (LineChart) v.findViewById(R.id.ir_chart);
 
-        ArrayList<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(100f, 0));
-        entries.add(new Entry(6.49f, 1167 * 2));
-        entries.add(new Entry(9.94f, 1249 * 2));
-        entries.add(new Entry(11.15f, 1500 * 2));
-        entries.add(new Entry(73.99f, 1746 * 2));
-        entries.add(new Entry(75.5f, 2782 * 2));
-        entries.add(new Entry(87.6f, 2843 * 2));
-        entries.add(new Entry(100f, 4000 * 2));
+        XAxis xAxisObject = display_chart.getXAxis();
+        YAxis yAxisObjectLeft = display_chart.getAxisLeft();
+        YAxis yAxisObjectRight = display_chart.getAxisRight();
+        Legend legendObject = display_chart.getLegend();
 
 
-        LineDataSet dataSet = new LineDataSet(entries, "JUST A TEST");
-        dataSet.setDrawCubic(true);
+        xAxisObject.setPosition(XAxis.XAxisPosition.BOTTOM);
+        yAxisObjectLeft.setSpaceBottom(0f);
+        yAxisObjectRight.setSpaceBottom(0f);
+        yAxisObjectRight.setDrawLabels(false);
+        legendObject.setEnabled(false);
+
+
+        generateEntriesTest();
+
+
+        LineDataSet dataSet = new LineDataSet(currEntries, "JUST A TEST");
+        dataSet.setDrawCircles(false);
+        dataSet.setDrawValues(false);
         dataSet.setColor(Color.parseColor("#19440c"));
 
         ArrayList<String> xVals = getGraphXAxis();
@@ -205,7 +256,7 @@ public class IRView extends Fragment {
         display_chart.setData(data);
 
 
-        display_chart.setDescription("Test for IR Viewer");
+        display_chart.setDescription("");
         return v;
     }
 
