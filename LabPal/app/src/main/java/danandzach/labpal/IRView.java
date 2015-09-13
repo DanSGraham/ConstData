@@ -21,6 +21,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -65,7 +67,7 @@ public class IRView extends Fragment {
     public static final int GRAPH_MAX_X = 4000;
     public static final int GRAPH_MIN_X = 0;
     public static final double DELTA_X = 0.5;
-    public static final double STD_DEV = 55;
+    public double STD_DEV = 55;
 
     public ArrayList<Entry> currEntries;
     private HashMap<String, ArrayList<JSONObject>> chosen_molecules;
@@ -204,9 +206,9 @@ public class IRView extends Fragment {
         TableLayout.LayoutParams rowParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
         TableRow rowToAdd = new TableRow(getActivity());
 
-        FrameLayout buttonLayout = new FrameLayout(getActivity());
+        RelativeLayout buttonLayout = new RelativeLayout(getActivity());
         TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-        buttonParams.setMargins(5,0,0,5);
+        buttonParams.setMargins(10,0,0,5);
         buttonParams.gravity = Gravity.CENTER_VERTICAL;
         buttonLayout.setLayoutParams(buttonParams);
         buttonLayout.setOnClickListener(new View.OnClickListener() {
@@ -223,6 +225,9 @@ public class IRView extends Fragment {
         removeMoleculeButton.setText("x");
         removeMoleculeButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE + 2);
         removeMoleculeButton.setTextColor(Color.BLACK);
+
+        RelativeLayout.LayoutParams textParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        textParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         buttonLayout.addView(removeMoleculeButton);
 
 
@@ -312,6 +317,7 @@ public class IRView extends Fragment {
         }
 
     }
+
 
 
     public static IRView newInstance() {
@@ -490,7 +496,7 @@ public class IRView extends Fragment {
         invertYAxisButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!(display_chart.getAxisLeft().isInverted())){
+                if (!(display_chart.getAxisLeft().isInverted())) {
                     display_chart.getAxisLeft().setInverted(true);
                     display_chart.getAxisRight().setInverted(true);
 
@@ -502,8 +508,7 @@ public class IRView extends Fragment {
                     LineData data = new LineData(xVals, dataSet);
                     display_chart.setData(data);
                     display_chart.invalidate();
-                }
-                else{
+                } else {
                     display_chart.getAxisLeft().setInverted(false);
                     display_chart.getAxisRight().setInverted(false);
 
@@ -519,8 +524,34 @@ public class IRView extends Fragment {
             }
         });
 
+        //Setup seek bar -D
+
+        SeekBar noise_bar = (SeekBar) v.findViewById(R.id.noise_bar);
+        noise_bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progress = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressVal, boolean fromUser) {
+                progress = progressVal + 35;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                STD_DEV = (double) progress;
+                updateDisplay();
+            }
+        });
+
         return v;
     }
+
+
+
 
 
     @Override
