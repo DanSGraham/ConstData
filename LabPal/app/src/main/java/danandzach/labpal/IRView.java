@@ -5,6 +5,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -137,6 +140,24 @@ public class IRView extends Fragment {
         }
     }
 
+    public void updateDisplayNoMoleculeReset(){
+        resetCurrLine();
+        updateEntries();
+
+
+
+        LineChart display_chart = ((LineChart) getActivity().findViewById(R.id.ir_chart));
+
+        LineDataSet dataSet = new LineDataSet(currEntries, "IR Data");
+        dataSet.setDrawCircles(false);
+        dataSet.setDrawValues(false);
+        dataSet.setColor(Color.parseColor("#19440c"));
+        ArrayList<String> xVals = getGraphXAxis();
+        LineData data = new LineData(xVals, dataSet);
+        display_chart.setData(data);
+        display_chart.invalidate();
+    }
+
     public void updateDisplay(){
         resetCurrLine();
         updateMoleculeList();
@@ -165,24 +186,35 @@ public class IRView extends Fragment {
         return Math.round( (float) Math.floor(freq / DELTA_X));
     }
 
-    public void addMoleculeToView(String molecule_name){
+    public void addMoleculeToView(final String molecule_name){
         //When the user selects a molecule to view, this will format the lower display to show wihch
         //molecules and what relative inteisities they will be present on the graph -D
 
 
-        int SP_SIZE = 14;
+        int SP_SIZE = 16;
 
         TableLayout.LayoutParams rowParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
         TableRow rowToAdd = new TableRow(getActivity());
 
+        FrameLayout buttonLayout = new FrameLayout(getActivity());
+        TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+        buttonParams.setMargins(5, 13, 5, 0);
+        buttonLayout.setLayoutParams(buttonParams);
+        buttonLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chosen_molecules.remove(molecule_name);
+                updateDisplay();
+            }
+        });
+
 
         TextView removeMoleculeButton = new TextView(getActivity());
-        removeMoleculeButton.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
         removeMoleculeButton.setPadding(5, 0, 5, 0);
-        removeMoleculeButton.setText("-");
-        removeMoleculeButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE);
-        //removeMoleculeButton.setId();
-        //Here set an onclick listener to remove the molecule and the view from the display.
+        removeMoleculeButton.setText("x");
+        removeMoleculeButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE + 2);
+        removeMoleculeButton.setTextColor(Color.BLACK);
+        buttonLayout.addView(removeMoleculeButton);
 
 
         TextView moleculeName = new TextView(getActivity());
@@ -195,6 +227,25 @@ public class IRView extends Fragment {
         relativeIntensity.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
         relativeIntensity.setText("100");
         relativeIntensity.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE);
+
+        relativeIntensity.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        relativeIntensity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                changeIntensity(molecule_name, Double.valueOf(s.toString()));
+            }
+        });
         //Here set on change listener to adjust the molecule.
 
 
@@ -203,7 +254,7 @@ public class IRView extends Fragment {
         percentSign.setText("%");
         percentSign.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE);
 
-        rowToAdd.addView(removeMoleculeButton);
+        rowToAdd.addView(buttonLayout);
         rowToAdd.addView(moleculeName);
         rowToAdd.addView(relativeIntensity);
         rowToAdd.addView(percentSign);
@@ -213,11 +264,27 @@ public class IRView extends Fragment {
 
     }
 
-    public void removeMoleculeFromList(){
 
-    }
+    public void changeIntensity(String molecule_name, double percentIntensity){
+        if(percentIntensity >= 0 && percentIntensity <= 100.0){
+            chosen_molecules_chart_data.remove(molecule_name);
+            ArrayList<JSONObject> moleculeJSON = chosen_molecules.get(molecule_name);
+            chosen_molecules_chart_data.put(molecule_name, new HashMap<Integer, Double>());
+            HashMap<Integer, Double> freqAndIntense;
 
-    public void changeIntensity(double percentIntensity, int indexOfArray){
+            for(JSONObject freq : moleculeJSON){
+                freqAndIntense = chosen_molecules_chart_data.get(molecule_name);
+                try{
+                    int freqVal = convertFreqToIndex(Double.valueOf(freq.optString("Frequency")));
+                    double intenseVal = Double.valueOf(freq.optString("Intensity")) * (percentIntensity / 100);
+                    freqAndIntense.put(freqVal, intenseVal);
+                }
+                catch(NumberFormatException e){
+                    e.printStackTrace();
+                }
+            }
+            updateDisplayNoMoleculeReset();
+        }
 
     }
 
