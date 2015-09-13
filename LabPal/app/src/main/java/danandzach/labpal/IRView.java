@@ -3,6 +3,7 @@ package danandzach.labpal;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.hardware.input.InputManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -21,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TableLayout;
@@ -338,6 +341,7 @@ public class IRView extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -346,6 +350,9 @@ public class IRView extends Fragment {
         View v = inflater.inflate(R.layout.fragment_irview, container, false);
         chosen_molecules = new HashMap<String, ArrayList<JSONObject>>();
         currEntries = new ArrayList<Entry>();
+
+
+
 
         /*
         Zach
@@ -362,8 +369,7 @@ public class IRView extends Fragment {
                 if (!hasFocus) {
                     try {
                         hideSoftKeyboard(getActivity());
-                    }
-                    catch(NullPointerException e){
+                    } catch (NullPointerException e) {
 
                     }
                 }
@@ -412,6 +418,12 @@ public class IRView extends Fragment {
         final ArrayAdapter<String> auto_complete = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, adapter_list);
         search_field.setAdapter(auto_complete);
         search_field.setThreshold(1);
+        search_field.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search_field.setText("");
+            }
+        });
         search_field.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -446,9 +458,7 @@ public class IRView extends Fragment {
                     }
 
                     updateDisplay();
-                    InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    in.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);
-
+                    hideSoftKeyboard(getActivity());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -569,5 +579,7 @@ public class IRView extends Fragment {
         super.onResume();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("IR Viewer");
     }
+
+
 
 }
