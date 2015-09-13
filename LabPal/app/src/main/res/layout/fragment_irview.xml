@@ -3,6 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context="danandzach.labpal.IRView">
 
 
@@ -18,12 +21,53 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/ir_chart"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="0dp"
+        android:layout_weight=".6"
+        android:focusable="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text = "@string/ir_xaxis_label"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Invert Y Axis"
+            android:layout_alignParentLeft="true"
+            android:padding="5dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/text_button_background"
+            android:id="@+id/invert_y"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Invert X Axis"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/text_button_background"
+            android:id="@+id/invert_x"/>
+
+    </RelativeLayout>
 
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight=".25"
+        android:focusable="true">
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

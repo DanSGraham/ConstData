@@ -71,6 +71,10 @@ public class LabCalculations extends Fragment {
     public BigDecimal value;
 
 
+    public static void hideSoftKeyboard(Activity activity){
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
 
     public static LabCalculations newInstance() {
         LabCalculations fragment = new LabCalculations();
@@ -1037,6 +1041,20 @@ public class LabCalculations extends Fragment {
             }
         });
         */
+
+        constants_search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    try {
+                        hideSoftKeyboard(getActivity());
+                    }
+                    catch(NullPointerException e){
+
+                    }
+                }
+            }
+        });
 
         constants_search.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,6 +1,7 @@
 package danandzach.labpal;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,9 +11,11 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -69,6 +72,11 @@ public class IRView extends Fragment {
     public HashMap<String, HashMap<Integer, Double>> chosen_molecules_chart_data;
 
 
+    public static void hideSoftKeyboard(Activity activity){
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
 
     public ArrayList<String> getGraphXAxis(){
         ArrayList<String> xAxis = new ArrayList<String>();
@@ -84,7 +92,7 @@ public class IRView extends Fragment {
         currEntries.clear();
         double scaledX = GRAPH_MAX_X / DELTA_X;
         for(int i = GRAPH_MIN_X; i <= scaledX; i++){
-            currEntries.add(new Entry(0f, i));
+            currEntries.add(new Entry(.05f, i));
         }
     }
 
@@ -198,7 +206,8 @@ public class IRView extends Fragment {
 
         FrameLayout buttonLayout = new FrameLayout(getActivity());
         TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-        buttonParams.setMargins(5, 13, 5, 0);
+        buttonParams.setMargins(5,0,0,5);
+        buttonParams.gravity = Gravity.CENTER_VERTICAL;
         buttonLayout.setLayoutParams(buttonParams);
         buttonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,10 +252,26 @@ public class IRView extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                changeIntensity(molecule_name, Double.valueOf(s.toString()));
+                if (s.length() > 0) {
+                    changeIntensity(molecule_name, Double.valueOf(s.toString()));
+                }
             }
         });
-        //Here set on change listener to adjust the molecule.
+
+
+        relativeIntensity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    try {
+                        hideSoftKeyboard(getActivity());
+                    }
+                    catch(NullPointerException e){
+
+                    }
+                }
+            }
+        });
 
 
         TextView percentSign = new TextView(getActivity());
@@ -325,6 +350,20 @@ public class IRView extends Fragment {
 
         final AutoCompleteTextView search_field = (AutoCompleteTextView)v.findViewById(R.id.ir_search_field);
 
+        search_field.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    try {
+                        hideSoftKeyboard(getActivity());
+                    }
+                    catch(NullPointerException e){
+
+                    }
+                }
+            }
+        });
+
         final ArrayList<String> casno_mapping = new ArrayList<>();
         try {
             for(int i = 0; i < Data.getNames_data().getJSONArray(Data.getNames_array_name()).length(); i++){
@@ -401,6 +440,8 @@ public class IRView extends Fragment {
                     }
 
                     updateDisplay();
+                    InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    in.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -414,7 +455,7 @@ public class IRView extends Fragment {
         Below sets up the chart.
          */
 
-        LineChart display_chart = (LineChart) v.findViewById(R.id.ir_chart);
+        final LineChart display_chart = (LineChart) v.findViewById(R.id.ir_chart);
 
         XAxis xAxisObject = display_chart.getXAxis();
         YAxis yAxisObjectLeft = display_chart.getAxisLeft();
@@ -429,7 +470,7 @@ public class IRView extends Fragment {
         legendObject.setEnabled(false);
 
 
-        LineDataSet dataSet = new LineDataSet(currEntries, "JUST A TEST");
+        LineDataSet dataSet = new LineDataSet(currEntries, "IR Dataset");
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
         dataSet.setColor(Color.parseColor("#19440c"));
@@ -442,6 +483,42 @@ public class IRView extends Fragment {
 
 
         display_chart.setDescription("");
+
+        //Setup invert axis buttons -D
+
+        TextView invertYAxisButton = (TextView) v.findViewById(R.id.invert_y);
+        invertYAxisButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!(display_chart.getAxisLeft().isInverted())){
+                    display_chart.getAxisLeft().setInverted(true);
+                    display_chart.getAxisRight().setInverted(true);
+
+                    LineDataSet dataSet = new LineDataSet(currEntries, "IR Data");
+                    dataSet.setDrawCircles(false);
+                    dataSet.setDrawValues(false);
+                    dataSet.setColor(Color.parseColor("#19440c"));
+                    ArrayList<String> xVals = getGraphXAxis();
+                    LineData data = new LineData(xVals, dataSet);
+                    display_chart.setData(data);
+                    display_chart.invalidate();
+                }
+                else{
+                    display_chart.getAxisLeft().setInverted(false);
+                    display_chart.getAxisRight().setInverted(false);
+
+                    LineDataSet dataSet = new LineDataSet(currEntries, "IR Data");
+                    dataSet.setDrawCircles(false);
+                    dataSet.setDrawValues(false);
+                    dataSet.setColor(Color.parseColor("#19440c"));
+                    ArrayList<String> xVals = getGraphXAxis();
+                    LineData data = new LineData(xVals, dataSet);
+                    display_chart.setData(data);
+                    display_chart.invalidate();
+                }
+            }
+        });
+
         return v;
     }
 

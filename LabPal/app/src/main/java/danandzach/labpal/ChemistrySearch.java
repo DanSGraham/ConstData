@@ -98,6 +98,11 @@ public class ChemistrySearch extends Fragment {
     private final int CONTENT_LINE_MARGIN_DIP = 2;
 
 
+    public static void hideSoftKeyboard(Activity activity){
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
     public static ChemistrySearch newInstance() {
         ChemistrySearch fragment = new ChemistrySearch();
         Bundle args = new Bundle();
@@ -1513,9 +1518,13 @@ public class ChemistrySearch extends Fragment {
         search_bar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    InputMethodManager imm = ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE));
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (!hasFocus) {
+                    try {
+                        hideSoftKeyboard(getActivity());
+                    }
+                    catch(NullPointerException e){
+
+                    }
                 }
             }
         });
