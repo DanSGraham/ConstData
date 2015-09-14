@@ -28,13 +28,11 @@ public class SplashScreen extends Activity {
             JSON_Adapter ion_adapter = new JSON_Adapter();
             JSON_Adapter const_adapter = new JSON_Adapter();
             JSON_Adapter ccc_adapter = new JSON_Adapter();
-            JSON_Adapter names_adapter = new JSON_Adapter();
 
             Data.constants_is = getResources().openRawResource(R.raw.constants);
             Data.ionization_is = getResources().openRawResource(R.raw.ionizations);
             Data.atomic_mass_is = getResources().openRawResource(R.raw.atomic_mass);
             Data.ccc_is = getResources().openRawResource(R.raw.cccbdb);
-            Data.names_is = getResources().openRawResource(R.raw.names_to_casno);
 
             try {
                 if(isNetworkConnected()){
@@ -48,7 +46,6 @@ public class SplashScreen extends Activity {
                 ion_adapter.get_JSON_object(new URL(Data.getUrl_ionization()));
                 const_adapter.get_JSON_object(new URL(Data.getUrl_constants()));
                 ccc_adapter.get_JSON_object(new URL(Data.getUrl_ccc()));
-                names_adapter.get_JSON_object(new URL(Data.getUrl_names()));
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();

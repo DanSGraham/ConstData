@@ -378,33 +378,9 @@ public class IRView extends Fragment {
 
         final ArrayList<String> casno_mapping = new ArrayList<>();
         try {
-            for(int i = 0; i < Data.getNames_data().getJSONArray(Data.getNames_array_name()).length(); i++){
-                String temp_casno = Data.getNames_data().getJSONArray(Data.getNames_array_name()).getJSONObject(i).optString("casno");
-                boolean has_intensity = false;
-
-                    for (int q = 0; q < Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).length(); q++) {
-                        if (Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(q).optString("casno").equalsIgnoreCase(temp_casno)) {
-                            if (Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(q).optString("Intensity").equals("")) {
-                                continue;
-                            } else {
-                                boolean has_name = false;
-                                for (int p = 0; p < casno_mapping.size(); p++) {
-                                    if (casno_mapping.get(p).equalsIgnoreCase(Data.getNames_data().getJSONArray(Data.getNames_array_name()).getJSONObject(q).optString("Name"))) {
-                                        has_name = true;
-                                    }
-                                }
-                                if (has_name == false) {
-                                    has_intensity = true;
-                                    break;
-                                } else
-                                    break;
-                            }
-                        }
-                    }
-                if(has_intensity == false)
-                    continue;
-                else
-                    casno_mapping.add(Data.getNames_data().getJSONArray(Data.getNames_array_name()).getJSONObject(i).optString("Name"));
+            for(int i = 0; i < Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).length(); i++){
+                if(!casno_mapping.contains(Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(i).getString("Name")))
+                    casno_mapping.add(Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(i).getString("Name"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -427,41 +403,23 @@ public class IRView extends Fragment {
         search_field.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String molecule = search_field.getText().toString();
-                String casno = "";
                 try {
-                    for(int i = 0; i < Data.getNames_data().getJSONArray(Data.getNames_array_name()).length(); i++){
-                        if(molecule.equalsIgnoreCase(Data.getNames_data().getJSONArray(Data.getNames_array_name()).getJSONObject(i)
-                        .optString("Name"))){
-                            casno = Data.getNames_data().getJSONArray(Data.getNames_array_name()).getJSONObject(i)
-                                    .optString("casno");
-                            break;
-                        }
-                    }
-                    int temp_count = 0;
-                    for(int i = 0; i < Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).length(); i++){
-                        if(casno.equalsIgnoreCase(Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(i)
-                        .optString("casno"))){
-                            temp_count = 1;
-                            if (!(chosen_molecules.containsKey(molecule))){
-                                chosen_molecules.put(molecule, new ArrayList<JSONObject>());
+                    for(int i = 0; i < Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).length(); i++) {
+                        if (search_field.getText().toString().equalsIgnoreCase(Data.getCcc_data().getJSONArray(
+                                Data.getCcc_array_name()).getJSONObject(i).optString("Name"))
+                                ) {
+                            if(!chosen_molecules.containsKey(search_field.getText().toString())){
+                                chosen_molecules.put(search_field.getText().toString(), new ArrayList<JSONObject>());
                             }
-                            chosen_molecules.get(molecule).add(Data.getCcc_data().getJSONArray(Data.getCcc_array_name()).getJSONObject(i));
-
-                        }
-                        else{
-                            if(temp_count == 1){
-                                break;
-                            }else
-                                continue;
+                            chosen_molecules.get(search_field.getText().toString()).add(Data.getCcc_data().getJSONArray(
+                                    Data.getCcc_array_name()).getJSONObject(i));
                         }
                     }
-
-                    updateDisplay();
-                    hideSoftKeyboard(getActivity());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                updateDisplay();
+                hideSoftKeyboard(getActivity());
             }
         });
 

@@ -83,8 +83,6 @@ public class JSON_Adapter {
                             is = Data.atomic_mass_is;
                         }else if(mUrl.equalsIgnoreCase(Data.getUrl_ccc())){
                             is = Data.ccc_is;
-                        }else if(mUrl.equalsIgnoreCase(Data.getUrl_names())){
-                            is = Data.names_is;
                         }
                         BufferedReader br = new BufferedReader(new InputStreamReader(is));
                         StringBuilder sb = new StringBuilder();
@@ -128,8 +126,6 @@ public class JSON_Adapter {
                     is = Data.atomic_mass_is;
                 }else if(mUrl.equalsIgnoreCase(Data.getUrl_ccc())){
                     is = Data.ccc_is;
-                }else if(mUrl.equalsIgnoreCase(Data.getUrl_names())){
-                    is = Data.names_is;
                 }
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 StringBuilder sb = new StringBuilder();
@@ -150,8 +146,6 @@ public class JSON_Adapter {
                         Data.setAtomic_mass_data(json_data);
                     }else if(mUrl.equalsIgnoreCase(Data.getUrl_ccc())){
                         Data.setCcc_data(json_data);
-                    }else if(mUrl.equalsIgnoreCase(Data.getUrl_names())){
-                        Data.setNames_data(json_data);
                     }
 
                 } catch (IOException e) {
@@ -173,9 +167,6 @@ public class JSON_Adapter {
                 }else if(mUrl.equalsIgnoreCase(Data.getUrl_ccc())){
                     Data.setCcc_data(jsonObject);
                     Log.v("DB_LOAD", "Computational Chemistry Database Loaded");
-                }else if(mUrl.equalsIgnoreCase(Data.getUrl_names())){
-                    Data.setNames_data(jsonObject);
-                    Log.v("DB_LOAD", "Names to Casno Database Loaded");
                 }
             }
 
