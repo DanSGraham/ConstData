@@ -418,6 +418,7 @@ public class IRView extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                search_field.setText("");
                 updateDisplay();
                 hideSoftKeyboard(getActivity());
             }

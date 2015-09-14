@@ -17,7 +17,7 @@
         android:padding="5dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/general_search"
-        android:hint="Add a molecule..." />
+        android:hint="Add molecule from the NIST SRD 101" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/ir_chart"

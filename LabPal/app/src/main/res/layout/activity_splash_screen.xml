@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="100dp"
         android:text="LabPal"
-        android:textSize="90dp"
+        android:textSize="80dp"
         android:layout_gravity="center_horizontal"
         android:textStyle="bold"
         android:typeface="monospace"
@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
+        android:layout_margin="20dp"
         android:textSize="20dp"/>
 
 </LinearLayout>
