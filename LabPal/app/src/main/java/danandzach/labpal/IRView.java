@@ -179,13 +179,6 @@ public class IRView extends Fragment {
             }
         }
         updateReverseEntries();
-
-        Log.v("Len of currEntries", String.valueOf(currEntries.size()));
-        Log.v("Len of currEntriesREV", String.valueOf(currEntriesReversed.size()));
-
-        for(Entry entry: currEntriesReversed){
-            Log.v("Len of currEntrieREVVAL", String.valueOf(entry.getXIndex()));
-        }
     }
 
     public void updateDisplayNoMoleculeReset(){
