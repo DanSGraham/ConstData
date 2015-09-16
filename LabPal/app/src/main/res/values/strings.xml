@@ -11,6 +11,6 @@
     <string name="ir_yaxis_label">km mol<sup>-1</sup></string>
     <string name="about">About</string>
     <string name="action_share">Share</string>
-    <string name="MPChartShoutout">The graphing UI for this application was created using MPAndroidCharts. \n\nMore information can be found at: \n<a href="https://github.com/PhilJay/MPAndroidChart">https://github.com/PhilJay/MPAndroidChart</a>\n\nMPAndroidCharts is licensed under the Apache License, Version 2.0.</string>
+    <string name="MPChartShoutout">The graphing UI for this application was created using MPAndroidCharts. \n\nMore information can be found at the MPAndroidCharts website.\n\nMPAndroidCharts is licensed under the Apache License, Version 2.0.</string>
 
 </resources>

@@ -7,6 +7,7 @@ package danandzach.labpal;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -665,7 +666,15 @@ public class IRView extends Fragment {
                 new AlertDialog.Builder(getActivity())
                         .setTitle(Html.fromHtml("<font color='#19440c'>Special Thanks</font>"))
                         .setMessage(R.string.MPChartShoutout)
-
+                        .setPositiveButton("Website", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String url = "https://github.com/PhilJay/MPAndroidChart";
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(url));
+                                startActivity(i);
+                            }
+                        })
                         .show();
                 return true;
         }
