@@ -76,6 +76,11 @@ public class IRView extends Fragment {
     private HashMap<String, ArrayList<JSONObject>> chosen_molecules;
     public HashMap<String, HashMap<Integer, Double>> chosen_molecules_chart_data;
 
+    public ArrayList<Entry> currEntriesReversed;
+
+    public boolean xAxisReversed = false;
+    public boolean yAxisReversed = false;
+
 
     public static void hideSoftKeyboard(Activity activity){
         InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -93,11 +98,33 @@ public class IRView extends Fragment {
         return xAxis;
     }
 
+    public ArrayList<String> getGraphXAxisRev(){
+        ArrayList<String> xAxis = new ArrayList<String>();
+        double scaledX = GRAPH_MAX_X / DELTA_X;
+        int scaledXInt = (int) Math.ceil(scaledX);
+        for(int i = scaledXInt; i >= GRAPH_MIN_X; i--){
+            xAxis.add((scaledXInt - i), String.valueOf(i * DELTA_X));
+        }
+        return xAxis;
+    }
+
+    public void updateReverseEntries(){
+
+        double scaledX = GRAPH_MAX_X / DELTA_X;
+        int scaledXInt = (int) Math.floor(scaledX);
+        for(Entry entry : currEntries){
+            Entry tempEntry = new Entry(entry.getVal(), scaledXInt - entry.getXIndex());
+            currEntriesReversed.set(scaledXInt - entry.getXIndex(), tempEntry);
+        }
+    }
+
     public void resetCurrLine(){
         currEntries.clear();
+        currEntriesReversed.clear();
         double scaledX = GRAPH_MAX_X / DELTA_X;
         for(int i = GRAPH_MIN_X; i <= scaledX; i++){
             currEntries.add(new Entry(.05f, i));
+            currEntriesReversed.add(new Entry(0.5f, i));
         }
     }
 
@@ -151,22 +178,49 @@ public class IRView extends Fragment {
                 addGaussianToCurrEntries(molecule_entry.getKey(), STD_DEV, molecule_entry.getValue());
             }
         }
+        updateReverseEntries();
+
+        Log.v("Len of currEntries", String.valueOf(currEntries.size()));
+        Log.v("Len of currEntriesREV", String.valueOf(currEntriesReversed.size()));
+
+        for(Entry entry: currEntriesReversed){
+            Log.v("Len of currEntrieREVVAL", String.valueOf(entry.getXIndex()));
+        }
     }
 
     public void updateDisplayNoMoleculeReset(){
         resetCurrLine();
         updateEntries();
 
-
+        LineDataSet dataSet;
+        ArrayList<String> xVals;
 
         LineChart display_chart = ((LineChart) getActivity().findViewById(R.id.ir_chart));
 
-        LineDataSet dataSet = new LineDataSet(currEntries, "IR Data");
+
+        if(xAxisReversed){
+            dataSet = new LineDataSet(currEntriesReversed, "IR Data");
+            xVals = getGraphXAxisRev();
+        }
+        else{
+            dataSet = new LineDataSet(currEntries, "IR Data");
+            xVals = getGraphXAxis();
+        }
+
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
         dataSet.setColor(Color.parseColor("#19440c"));
-        ArrayList<String> xVals = getGraphXAxis();
+
         LineData data = new LineData(xVals, dataSet);
+        if(yAxisReversed){
+            display_chart.getAxisRight().setInverted(true);
+            display_chart.getAxisLeft().setInverted(true);
+        }
+        else{
+            display_chart.getAxisRight().setInverted(false);
+            display_chart.getAxisLeft().setInverted(false);
+        }
+
         display_chart.setData(data);
         display_chart.invalidate();
     }
@@ -184,12 +238,32 @@ public class IRView extends Fragment {
 
         LineChart display_chart = ((LineChart) getActivity().findViewById(R.id.ir_chart));
 
-        LineDataSet dataSet = new LineDataSet(currEntries, "IR Data");
+        LineDataSet dataSet;
+        ArrayList<String> xVals;
+
+        if(xAxisReversed){
+            dataSet = new LineDataSet(currEntriesReversed, "IR Data");
+            xVals = getGraphXAxisRev();
+        }
+        else{
+            dataSet = new LineDataSet(currEntries, "IR Data");
+            xVals = getGraphXAxis();
+        }
+
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
         dataSet.setColor(Color.parseColor("#19440c"));
-        ArrayList<String> xVals = getGraphXAxis();
         LineData data = new LineData(xVals, dataSet);
+
+        if(yAxisReversed){
+            display_chart.getAxisRight().setInverted(true);
+            display_chart.getAxisLeft().setInverted(true);
+        }
+        else{
+            display_chart.getAxisRight().setInverted(false);
+            display_chart.getAxisLeft().setInverted(false);
+        }
+
         display_chart.setData(data);
         display_chart.invalidate();
 
@@ -350,6 +424,7 @@ public class IRView extends Fragment {
         View v = inflater.inflate(R.layout.fragment_irview, container, false);
         chosen_molecules = new HashMap<String, ArrayList<JSONObject>>();
         currEntries = new ArrayList<Entry>();
+        currEntriesReversed = new ArrayList<Entry>();
 
 
 
@@ -465,31 +540,26 @@ public class IRView extends Fragment {
         invertYAxisButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!(display_chart.getAxisLeft().isInverted())) {
-                    display_chart.getAxisLeft().setInverted(true);
-                    display_chart.getAxisRight().setInverted(true);
-
-                    LineDataSet dataSet = new LineDataSet(currEntries, "IR Data");
-                    dataSet.setDrawCircles(false);
-                    dataSet.setDrawValues(false);
-                    dataSet.setColor(Color.parseColor("#19440c"));
-                    ArrayList<String> xVals = getGraphXAxis();
-                    LineData data = new LineData(xVals, dataSet);
-                    display_chart.setData(data);
-                    display_chart.invalidate();
+                if (yAxisReversed) {
+                    yAxisReversed = false;
                 } else {
-                    display_chart.getAxisLeft().setInverted(false);
-                    display_chart.getAxisRight().setInverted(false);
-
-                    LineDataSet dataSet = new LineDataSet(currEntries, "IR Data");
-                    dataSet.setDrawCircles(false);
-                    dataSet.setDrawValues(false);
-                    dataSet.setColor(Color.parseColor("#19440c"));
-                    ArrayList<String> xVals = getGraphXAxis();
-                    LineData data = new LineData(xVals, dataSet);
-                    display_chart.setData(data);
-                    display_chart.invalidate();
+                    yAxisReversed = true;
                 }
+                updateDisplay();
+            }
+        });
+
+        TextView invertXAxisButton = (TextView) v.findViewById(R.id.invert_x);
+        invertXAxisButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(xAxisReversed){
+                    xAxisReversed = false;
+                }
+                else{
+                    xAxisReversed = true;
+                }
+                updateDisplay();
             }
         });
 
@@ -502,6 +572,7 @@ public class IRView extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressVal, boolean fromUser) {
                 progress = progressVal + 35;
+
             }
 
             @Override
@@ -515,7 +586,6 @@ public class IRView extends Fragment {
                 updateDisplay();
             }
         });
-
         return v;
     }
 

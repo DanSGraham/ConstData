@@ -19,12 +19,26 @@
         android:background="@drawable/general_search"
         android:hint="Add molecule from the NIST SRD 101" />
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/ir_chart"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".6"
-        android:focusable="true"/>
+        android:layout_weight="0.6"
+        android:orientation="horizontal">
+
+        <danandzach.labpal.VerticalTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ir_yaxis_label"
+            android:gravity="bottom"
+            android:layout_gravity="center_vertical" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/ir_chart"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"/>
+
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
