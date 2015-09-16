@@ -37,4 +37,12 @@
         android:layout_margin="20dp"
         android:textSize="20dp"/>
 
+    <TextView
+        android:text="Graphing UI utilizing MP AndroidCharts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_margin="20dp"
+        android:textSize="20dp"/>
+
 </LinearLayout>
