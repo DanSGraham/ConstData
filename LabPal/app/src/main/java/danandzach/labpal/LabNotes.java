@@ -109,10 +109,23 @@ public class LabNotes extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+
         SharedPreferences prefs = getActivity().getSharedPreferences("notes", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = prefs.edit();
+        EditText notepad = (EditText) getView().findViewById(R.id.notes_entry);
+        editor.putString("notepad", notepad.getText().toString());
+        editor.commit();
+
         String notes = prefs.getString("notepad", "");
         switch(item.getItemId()){
-            case R.id.action_SMS:
+            case R.id.action_share:
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT, notes);
+                intent.setType("text/plain");
+                startActivity(intent);
+                return true;
+                /*
                 Intent smsIntent = new Intent(android.content.Intent.ACTION_VIEW);
                 smsIntent.setType("vnd.android-dir/mms-sms");
                 smsIntent.putExtra("address", "");
@@ -120,6 +133,7 @@ public class LabNotes extends Fragment {
                 startActivity(smsIntent);
                 return true;
             case R.id.action_EMAIL:
+
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("message/rfc822");
                 intent.putExtra(Intent.EXTRA_EMAIL, "");
@@ -127,6 +141,9 @@ public class LabNotes extends Fragment {
                 intent.putExtra(Intent.EXTRA_TEXT, notes);
                 startActivity(intent);
                 return true;
+                */
+
+
         }
         return super.onOptionsItemSelected(item);
     }

@@ -9,5 +9,8 @@
     <string name="plus_minus_sign">±</string>
     <string name="ir_xaxis_label">Wavenumbers (cm<sup>-1</sup>)</string>
     <string name="ir_yaxis_label">km mol<sup>-1</sup></string>
+    <string name="about">About</string>
+    <string name="action_share">Share</string>
+    <string name="MPChartShoutout">The graphing UI for this application was created using MPAndroidCharts. \n\nMore information can be found at: \nhttps://github.com/PhilJay/MPAndroidChart</string>
 
 </resources>
