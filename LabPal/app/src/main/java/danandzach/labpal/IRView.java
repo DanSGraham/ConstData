@@ -78,8 +78,8 @@ public class IRView extends Fragment {
 
     public ArrayList<Entry> currEntriesReversed;
 
-    public boolean xAxisReversed = false;
-    public boolean yAxisReversed = false;
+    public boolean xAxisReversed;
+    public boolean yAxisReversed;
 
 
     public static void hideSoftKeyboard(Activity activity){
@@ -415,9 +415,15 @@ public class IRView extends Fragment {
         // Inflate the layout for this fragment
 
         View v = inflater.inflate(R.layout.fragment_irview, container, false);
+
+        //Initialize class variables here. -D
         chosen_molecules = new HashMap<String, ArrayList<JSONObject>>();
         currEntries = new ArrayList<Entry>();
         currEntriesReversed = new ArrayList<Entry>();
+
+
+        xAxisReversed = false;
+        yAxisReversed = false;
 
 
 
