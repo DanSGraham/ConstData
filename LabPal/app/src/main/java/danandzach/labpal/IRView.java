@@ -268,6 +268,48 @@ public class IRView extends Fragment {
 
     }
 
+    public void updateDisplay(View v) {
+        resetCurrLine();
+        updateMoleculeList();
+        updateEntries();
+
+        TableLayout molecule_display = (TableLayout) v.findViewById(R.id.ir_molecule_selection_table);
+        molecule_display.removeAllViews();
+        for (HashMap.Entry<String, ArrayList<JSONObject>> molecule_name : chosen_molecules.entrySet()) {
+            addMoleculeToView(molecule_name.getKey());
+        }
+
+        LineChart display_chart = ((LineChart) v.findViewById(R.id.ir_chart));
+
+        LineDataSet dataSet;
+        ArrayList<String> xVals;
+
+        if (xAxisReversed) {
+            dataSet = new LineDataSet(currEntriesReversed, "IR Data");
+            xVals = getGraphXAxisRev();
+        } else {
+            dataSet = new LineDataSet(currEntries, "IR Data");
+            xVals = getGraphXAxis();
+        }
+
+        dataSet.setDrawCircles(false);
+        dataSet.setDrawValues(false);
+        dataSet.setColor(Color.parseColor("#19440c"));
+        LineData data = new LineData(xVals, dataSet);
+
+        if (yAxisReversed) {
+            display_chart.getAxisRight().setInverted(true);
+            display_chart.getAxisLeft().setInverted(true);
+        } else {
+            display_chart.getAxisRight().setInverted(false);
+            display_chart.getAxisLeft().setInverted(false);
+        }
+
+        display_chart.setData(data);
+        display_chart.invalidate();
+
+    }
+
     public int convertFreqToIndex(double freq) {
         return Math.round((float) Math.floor(freq / DELTA_X));
     }
@@ -547,7 +589,7 @@ public class IRView extends Fragment {
                 } else {
                     yAxisReversed = true;
                 }
-                updateDisplay();
+                updateDisplayNoMoleculeReset();
             }
         });
 
@@ -560,7 +602,7 @@ public class IRView extends Fragment {
                 } else {
                     xAxisReversed = true;
                 }
-                updateDisplay();
+                updateDisplayNoMoleculeReset();
             }
         });
 
@@ -584,9 +626,10 @@ public class IRView extends Fragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 STD_DEV = (double) progress;
-                updateDisplay();
+                updateDisplayNoMoleculeReset();
             }
         });
+        updateDisplay(v);
         return v;
     }
 
