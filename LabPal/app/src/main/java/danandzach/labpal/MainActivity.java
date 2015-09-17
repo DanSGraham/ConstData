@@ -7,6 +7,8 @@ import android.widget.FrameLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private final String ISOTOPE_DATABASE_NAME = "Atomic Weights and Isotopes";
@@ -75,6 +77,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        int p = 0;
+        outState.putBoolean("x", Data.xAxisReversed);
+        outState.putBoolean("y", Data.yAxisReversed);
+        Bundle b = new Bundle();
+        for(String s:Data.chosen_molecules.keySet()){
+            String [] temp_arr = new String[Data.chosen_molecules.get(s).size()];
+            for(int i = 0; i < Data.chosen_molecules.get(s).size(); i++){
+                temp_arr[i] = Data.chosen_molecules.get(s).get(i).toString();
+            }
+            b.putStringArray(String.valueOf(p), temp_arr);
+            p++;
+        }
+        outState.putBundle("ir_data", b);
+
+
     }
 
     @Override
@@ -97,6 +114,30 @@ public class MainActivity extends AppCompatActivity {
             Data.setCcc_data(restored_ccc_db);
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        if(savedInstanceState != null){
+
+            Data.xAxisReversed = savedInstanceState.getBoolean("x");
+            Data.yAxisReversed = savedInstanceState.getBoolean("y");
+            Bundle b = savedInstanceState.getBundle("ir_data");
+            Data.chosen_molecules = null;
+            for(int i = 0; i < b.size(); i++){
+
+                String[] temp_arr = b.getStringArray(String.valueOf(i));
+                ArrayList<JSONObject> temp_json_list = new ArrayList<>();
+                for(int z = 0; z < temp_arr.length; z++){
+                    try {
+                        JSONObject temp_j = new JSONObject(temp_arr[z]);
+                        temp_json_list.add(temp_j);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                Data.chosen_molecules.put(temp_json_list.get(0).optString("Name"), temp_json_list);
+
+            }
         }
     }
 

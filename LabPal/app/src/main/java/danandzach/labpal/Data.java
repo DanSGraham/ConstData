@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ public class Data {
      */
     public static boolean xAxisReversed;
     public static boolean yAxisReversed;
+    public static HashMap<String, ArrayList<JSONObject>> chosen_molecules;
 
     //I'm using these as a means of accessing raw resources while outside of an activity
     public static InputStream constants_is;

@@ -652,8 +652,9 @@ public class IRView extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        //SharedPreferences prefs = getActivity().getSharedPreferences("IRData", Context.MODE_PRIVATE);
-
+        Data.xAxisReversed = xAxisReversed;
+        Data.yAxisReversed = yAxisReversed;
+        Data.chosen_molecules = chosen_molecules;
     }
 
     @Override
@@ -669,6 +670,13 @@ public class IRView extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        if(Data.chosen_molecules!=null) {
+            chosen_molecules = Data.chosen_molecules;
+            xAxisReversed = Data.xAxisReversed;
+            yAxisReversed = Data.yAxisReversed;
+            updateDisplay();
+        }
         if(((MainActivity) getActivity()).getSupportActionBar().getTitle() != "IR Viewer") {
             ((MainActivity) getActivity()).getSupportActionBar().setTitle("IR Viewer");
         }
