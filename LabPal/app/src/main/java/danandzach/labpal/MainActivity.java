@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -91,6 +92,21 @@ public class MainActivity extends AppCompatActivity {
         }
         outState.putBundle("ir_data", b);
 
+        Bundle b2 = new Bundle();
+        if(Data.intensity_percentages != null){
+            String[] temp_arr2 = new String[Data.intensity_percentages.size()];
+            String[] temp_arr3 = new String[Data.intensity_percentages.size()];
+            int t = 0;
+            for(String x:Data.intensity_percentages.keySet()){
+                temp_arr2[t] = Data.intensity_percentages.get(x).toString();
+                temp_arr3[t] = x;
+            }
+            b2.putStringArray("ir_percentages", temp_arr2);
+            b2.putStringArray("percent_keys", temp_arr3);
+        }
+        outState.putBundle("ir_data2",b2);
+
+
 
     }
 
@@ -137,6 +153,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Data.chosen_molecules.put(temp_json_list.get(0).optString("Name"), temp_json_list);
 
+            }
+            Bundle b2 = savedInstanceState.getBundle("ir_data2");
+            if(Data.intensity_percentages == null){
+                Data.intensity_percentages = new HashMap<>();
+            }
+            for(int z = 0; z < b2.getStringArray("ir_percentages").length; z++){
+                Data.intensity_percentages.put(b2.getStringArray("percent_keys")[z], Double.valueOf(b2.getStringArray("ir_percentages")[z]));
             }
         }
     }
