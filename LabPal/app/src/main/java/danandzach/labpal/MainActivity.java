@@ -1,23 +1,8 @@
 package danandzach.labpal;
 
-import android.app.ActionBar;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
-import android.app.Fragment;
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.Window;
 import android.widget.FrameLayout;
-
-import com.github.mikephil.charting.charts.BarChart;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,25 +32,25 @@ public class MainActivity extends AppCompatActivity {
 
         android.support.v4.app.Fragment chemSearch = new ChemistrySearch();
         android.support.v7.app.ActionBar.Tab mol_tab = actionBar.newTab();
-        mol_tab.setIcon(R.drawable.ic_action_ic_search);
+        mol_tab.setIcon(R.drawable.search_icon);
         mol_tab.setTabListener(new NavigationTabsListener(chemSearch));
         actionBar.addTab(mol_tab);
 
         android.support.v4.app.Fragment calc_frag = new LabCalculations();
         android.support.v7.app.ActionBar.Tab calc_tab = actionBar.newTab();
-        calc_tab.setIcon(R.drawable.ic_action_calculatoricon);
+        calc_tab.setIcon(R.drawable.calculator_icon);
         calc_tab.setTabListener(new NavigationTabsListener(calc_frag));
         actionBar.addTab(calc_tab);
 
         android.support.v4.app.Fragment irView = new IRView();
         android.support.v7.app.ActionBar.Tab ir_tab = actionBar.newTab();
-        ir_tab.setIcon(R.drawable.ic_action_new_ir_logo);
+        ir_tab.setIcon(R.drawable.ir_icon);
         ir_tab.setTabListener(new NavigationTabsListener(irView));
         actionBar.addTab(ir_tab);
 
         android.support.v4.app.Fragment labNotes = new LabNotes();
         android.support.v7.app.ActionBar.Tab notes_tab = actionBar.newTab();
-        notes_tab.setIcon(R.drawable.ic_create_white_24dp);
+        notes_tab.setIcon(R.drawable.notes_icon);
         notes_tab.setTabListener(new NavigationTabsListener(labNotes));
         actionBar.addTab(notes_tab);
         ((FrameLayout) findViewById(R.id.mainscreen)).getForeground().setAlpha(0);
