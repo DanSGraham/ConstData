@@ -363,6 +363,20 @@ public class IRView extends Fragment {
 
         relativeIntensity.setInputType(InputType.TYPE_CLASS_NUMBER);
 
+        relativeIntensity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    try {
+                        InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+                    catch(NullPointerException e){
+                    }
+                }
+            }
+        });
+
         relativeIntensity.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -488,9 +502,10 @@ public class IRView extends Fragment {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     try {
-                        hideSoftKeyboard(getActivity());
-                    } catch (NullPointerException e) {
-
+                        InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+                    catch(NullPointerException e){
                     }
                 }
             }
@@ -654,7 +669,9 @@ public class IRView extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("IR Viewer");
+        if(((MainActivity) getActivity()).getSupportActionBar().getTitle() != "IR Viewer") {
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("IR Viewer");
+        }
     }
 
     @Override

@@ -1520,10 +1520,10 @@ public class ChemistrySearch extends Fragment {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     try {
-                        hideSoftKeyboard(getActivity());
+                        InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     }
                     catch(NullPointerException e){
-
                     }
                 }
             }
@@ -1644,7 +1644,10 @@ public class ChemistrySearch extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Element Search");
+        if(((MainActivity) getActivity()).getSupportActionBar().getTitle() != "Element Search") {
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("Element Search");
+        }
+
     }
 
 

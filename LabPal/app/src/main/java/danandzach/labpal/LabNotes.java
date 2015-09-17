@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import java.util.Calendar;
@@ -56,7 +57,24 @@ public class LabNotes extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_lab_notes, container, false);
+
+        View v = inflater.inflate(R.layout.fragment_lab_notes, container, false);
+        EditText notes_section = (EditText) v.findViewById(R.id.notes_entry);
+        notes_section.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    try {
+                        InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+                    catch(NullPointerException e){
+                    }
+                }
+            }
+        });
+
+        return v;
     }
 
 
@@ -93,7 +111,9 @@ public class LabNotes extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Lab Notes");
+        if(((MainActivity) getActivity()).getSupportActionBar().getTitle() != "Lab Notes") {
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("Lab Notes");
+        }
         SharedPreferences prefs = getActivity().getSharedPreferences("notes", Context.MODE_PRIVATE);
         String notes = prefs.getString("notepad", "");
         EditText notepad = (EditText) getView().findViewById(R.id.notes_entry);

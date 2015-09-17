@@ -1047,10 +1047,10 @@ public class LabCalculations extends Fragment {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     try {
-                        hideSoftKeyboard(getActivity());
+                        InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     }
                     catch(NullPointerException e){
-
                     }
                 }
             }
@@ -1203,7 +1203,9 @@ public class LabCalculations extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Lab Calculator");
+        if(((MainActivity) getActivity()).getSupportActionBar().getTitle() != "Lab Calculator") {
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("Lab Calculator");
+        }
     }
 
     public BigDecimal[] compute(String result, String value, String valueErr, String button){

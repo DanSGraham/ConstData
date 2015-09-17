@@ -23,6 +23,9 @@
         android:layout_marginBottom="0dp"
         android:layout_below="@id/recent_number"
         android:orientation="horizontal"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:id="@+id/display_screen">
         <EditText
             android:layout_width= "0dp"
@@ -49,7 +52,10 @@
     <LinearLayout
         android:layout_below="@+id/display_screen"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <TextView
             android:text="ERROR: "
@@ -88,6 +94,9 @@
         android:layout_width="fill_parent"
         android:layout_below="@id/calculator_search"
         android:layout_alignParentBottom="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:id="@+id/button_pad">
         <TableRow
             android:layout_height="0dp"
