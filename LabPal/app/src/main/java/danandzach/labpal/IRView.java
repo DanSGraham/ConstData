@@ -6,12 +6,9 @@ package danandzach.labpal;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.hardware.input.InputManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,24 +23,19 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -51,10 +43,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.Entry;
-
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -358,7 +346,17 @@ public class IRView extends Fragment {
 
         EditText relativeIntensity = new EditText(getActivity());
         relativeIntensity.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-        relativeIntensity.setText("100");
+        if(Data.intensity_percentages != null){
+            if(Data.intensity_percentages.containsKey(molecule_name)){
+                String temp = Data.intensity_percentages.get(molecule_name).toString();
+                String sub_temp = temp.substring(0, temp.length()-2);
+                relativeIntensity.setText(sub_temp);
+            }else{
+                relativeIntensity.setText("100");
+            }
+        }else{
+            relativeIntensity.setText("100");
+        }
         relativeIntensity.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE);
 
         relativeIntensity.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -392,6 +390,10 @@ public class IRView extends Fragment {
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
                     changeIntensity(molecule_name, Double.valueOf(s.toString()));
+                    if(Data.intensity_percentages == null){
+                        Data.intensity_percentages = new HashMap<String, Double>();
+                    }
+                    Data.intensity_percentages.put(molecule_name, Double.valueOf(s.toString()));
                 }
             }
         });
@@ -676,6 +678,9 @@ public class IRView extends Fragment {
             xAxisReversed = Data.xAxisReversed;
             yAxisReversed = Data.yAxisReversed;
             updateDisplay();
+            for(String s:Data.intensity_percentages.keySet()){
+                changeIntensity(s, Data.intensity_percentages.get(s));
+            }
         }
         if(((MainActivity) getActivity()).getSupportActionBar().getTitle() != "IR Viewer") {
             ((MainActivity) getActivity()).getSupportActionBar().setTitle("IR Viewer");
