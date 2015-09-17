@@ -621,6 +621,7 @@ public class LabCalculations extends Fragment {
                     setErrorDisplay("");
                 }
                 units_display.setText("");
+                recent_number.setText("");
                 break;
 
             case R.id.b_neg:

@@ -7,6 +7,9 @@ import android.widget.FrameLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
 
     private final String ISOTOPE_DATABASE_NAME = "Atomic Weights and Isotopes";
@@ -75,6 +78,36 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        int p = 0;
+        outState.putBoolean("x", Data.xAxisReversed);
+        outState.putBoolean("y", Data.yAxisReversed);
+        Bundle b = new Bundle();
+        for(String s:Data.chosen_molecules.keySet()){
+            String [] temp_arr = new String[Data.chosen_molecules.get(s).size()];
+            for(int i = 0; i < Data.chosen_molecules.get(s).size(); i++){
+                temp_arr[i] = Data.chosen_molecules.get(s).get(i).toString();
+            }
+            b.putStringArray(String.valueOf(p), temp_arr);
+            p++;
+        }
+        outState.putBundle("ir_data", b);
+
+        Bundle b2 = new Bundle();
+        if(Data.intensity_percentages != null){
+            String[] temp_arr2 = new String[Data.intensity_percentages.size()];
+            String[] temp_arr3 = new String[Data.intensity_percentages.size()];
+            int t = 0;
+            for(String x:Data.intensity_percentages.keySet()){
+                temp_arr2[t] = Data.intensity_percentages.get(x).toString();
+                temp_arr3[t] = x;
+            }
+            b2.putStringArray("ir_percentages", temp_arr2);
+            b2.putStringArray("percent_keys", temp_arr3);
+        }
+        outState.putBundle("ir_data2",b2);
+
+
+
     }
 
     @Override
@@ -97,6 +130,37 @@ public class MainActivity extends AppCompatActivity {
             Data.setCcc_data(restored_ccc_db);
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        if(savedInstanceState != null){
+
+            Data.xAxisReversed = savedInstanceState.getBoolean("x");
+            Data.yAxisReversed = savedInstanceState.getBoolean("y");
+            Bundle b = savedInstanceState.getBundle("ir_data");
+            Data.chosen_molecules = null;
+            for(int i = 0; i < b.size(); i++){
+
+                String[] temp_arr = b.getStringArray(String.valueOf(i));
+                ArrayList<JSONObject> temp_json_list = new ArrayList<>();
+                for(int z = 0; z < temp_arr.length; z++){
+                    try {
+                        JSONObject temp_j = new JSONObject(temp_arr[z]);
+                        temp_json_list.add(temp_j);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                Data.chosen_molecules.put(temp_json_list.get(0).optString("Name"), temp_json_list);
+
+            }
+            Bundle b2 = savedInstanceState.getBundle("ir_data2");
+            if(Data.intensity_percentages == null){
+                Data.intensity_percentages = new HashMap<>();
+            }
+            for(int z = 0; z < b2.getStringArray("ir_percentages").length; z++){
+                Data.intensity_percentages.put(b2.getStringArray("percent_keys")[z], Double.valueOf(b2.getStringArray("ir_percentages")[z]));
+            }
         }
     }
 
