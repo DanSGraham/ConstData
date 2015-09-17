@@ -24,6 +24,12 @@ public class Data {
 
     private static boolean network_connection = false;
 
+    /*
+    Data to retain IR view state
+     */
+    public static boolean xAxisReversed;
+    public static boolean yAxisReversed;
+
     //I'm using these as a means of accessing raw resources while outside of an activity
     public static InputStream constants_is;
     public static InputStream ionization_is;

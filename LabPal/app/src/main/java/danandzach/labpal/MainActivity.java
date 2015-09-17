@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
         if(Data.getCcc_data() != null){
             outState.putString(CCCBDB_DATABASE_NAME, Data.getCcc_data().toString());
         }
+
+
     }
 
     @Override

@@ -634,6 +634,12 @@ public class IRView extends Fragment {
         return v;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        //SharedPreferences prefs = getActivity().getSharedPreferences("IRData", Context.MODE_PRIVATE);
+
+    }
 
     @Override
     public void onAttach(Activity activity) {
