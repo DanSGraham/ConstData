@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/action_share" android:title="@string/action_share"
         android:orderInCategory="100" app:showAsAction="always"
-        android:icon="@android:drawable/ic_menu_share"/>
+        android:icon="@drawable/share_icon"/>
   <!--  <item android:id="@+id/action_EMAIL" android:title="@string/action_EMAIL"
         android:orderInCategory="101" app:showAsAction="never" /> -->
 </menu>
