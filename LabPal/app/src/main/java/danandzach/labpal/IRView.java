@@ -561,7 +561,6 @@ public class IRView extends Fragment {
         });
 
 
-
         
         /*
         This is the end of the non-sense of the mapping of CAS number to molecule name.
