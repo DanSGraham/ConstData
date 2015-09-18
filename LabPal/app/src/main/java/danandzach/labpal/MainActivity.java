@@ -77,34 +77,36 @@ public class MainActivity extends AppCompatActivity {
             outState.putString(CCCBDB_DATABASE_NAME, Data.getCcc_data().toString());
         }
 
-
-        int p = 0;
-        outState.putBoolean("x", Data.xAxisReversed);
-        outState.putBoolean("y", Data.yAxisReversed);
-        Bundle b = new Bundle();
-        for(String s:Data.chosen_molecules.keySet()){
-            String [] temp_arr = new String[Data.chosen_molecules.get(s).size()];
-            for(int i = 0; i < Data.chosen_molecules.get(s).size(); i++){
-                temp_arr[i] = Data.chosen_molecules.get(s).get(i).toString();
+        if(Data.chosen_molecules != null){
+            int p = 0;
+            outState.putBoolean("x", Data.xAxisReversed);
+            outState.putBoolean("y", Data.yAxisReversed);
+            Bundle b = new Bundle();
+            for(String s:Data.chosen_molecules.keySet()){
+                String [] temp_arr = new String[Data.chosen_molecules.get(s).size()];
+                for(int i = 0; i < Data.chosen_molecules.get(s).size(); i++){
+                    temp_arr[i] = Data.chosen_molecules.get(s).get(i).toString();
+                }
+                b.putStringArray(String.valueOf(p), temp_arr);
+                p++;
             }
-            b.putStringArray(String.valueOf(p), temp_arr);
-            p++;
-        }
-        outState.putBundle("ir_data", b);
+            outState.putBundle("ir_data", b);
 
-        Bundle b2 = new Bundle();
-        if(Data.intensity_percentages != null){
-            String[] temp_arr2 = new String[Data.intensity_percentages.size()];
-            String[] temp_arr3 = new String[Data.intensity_percentages.size()];
-            int t = 0;
-            for(String x:Data.intensity_percentages.keySet()){
-                temp_arr2[t] = Data.intensity_percentages.get(x).toString();
-                temp_arr3[t] = x;
+            Bundle b2 = new Bundle();
+            if(Data.intensity_percentages != null){
+                String[] temp_arr2 = new String[Data.intensity_percentages.size()];
+                String[] temp_arr3 = new String[Data.intensity_percentages.size()];
+                int t = 0;
+                for(String x:Data.intensity_percentages.keySet()){
+                    temp_arr2[t] = Data.intensity_percentages.get(x).toString();
+                    temp_arr3[t] = x;
+                }
+                b2.putStringArray("ir_percentages", temp_arr2);
+                b2.putStringArray("percent_keys", temp_arr3);
             }
-            b2.putStringArray("ir_percentages", temp_arr2);
-            b2.putStringArray("percent_keys", temp_arr3);
+            outState.putBundle("ir_data2",b2);
         }
-        outState.putBundle("ir_data2",b2);
+
 
 
 
