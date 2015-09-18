@@ -562,6 +562,7 @@ public class IRView extends Fragment {
         });
 
 
+        
         /*
         This is the end of the non-sense of the mapping of CAS number to molecule name.
         Below sets up the chart.
@@ -700,7 +701,7 @@ public class IRView extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
+         switch (item.getItemId()) {
             case R.id.action_info:
                 new AlertDialog.Builder(getActivity())
                         .setTitle(Html.fromHtml("<font color='#19440c'>Special Thanks</font>"))
