@@ -184,6 +184,44 @@ public class IRView extends Fragment {
     }
 
 
+    public void updateDisplayIntense(){
+        resetCurrLine();
+        updateMoleculeList();
+        updateEntries();
+
+
+        LineChart display_chart = ((LineChart) getActivity().findViewById(R.id.ir_chart));
+
+        LineDataSet dataSet;
+        ArrayList<String> xVals;
+
+        if (xAxisReversed) {
+            dataSet = new LineDataSet(currEntriesReversed, "IR Data");
+            xVals = getGraphXAxisRev();
+        } else {
+            dataSet = new LineDataSet(currEntries, "IR Data");
+            xVals = getGraphXAxis();
+        }
+
+        dataSet.setDrawCircles(false);
+        dataSet.setDrawValues(false);
+        dataSet.setColor(Color.parseColor("#19440c"));
+        LineData data = new LineData(xVals, dataSet);
+
+        if (yAxisReversed) {
+            display_chart.getAxisRight().setInverted(true);
+            display_chart.getAxisLeft().setInverted(true);
+        } else {
+            display_chart.getAxisRight().setInverted(false);
+            display_chart.getAxisLeft().setInverted(false);
+        }
+
+        display_chart.setData(data);
+        display_chart.invalidate();
+
+    }
+
+
     public void updateDisplay() {
         resetCurrLine();
         updateMoleculeList();
@@ -323,8 +361,8 @@ public class IRView extends Fragment {
         relativeIntensity.setInputType(InputType.TYPE_CLASS_NUMBER);
 
 
-        //More trouble than its worth. -D
-        /*relativeIntensity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+        relativeIntensity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
@@ -336,7 +374,7 @@ public class IRView extends Fragment {
                     }
                 }
             }
-        });*/
+        });
 
         relativeIntensity.addTextChangedListener(new TextWatcher() {
             @Override
@@ -361,8 +399,7 @@ public class IRView extends Fragment {
                     catch(TypeNotPresentException e){
                         e.printStackTrace();
                     }
-                    updateDisplay();
-                    relativeIntensity.requestFocus();
+                    updateDisplayIntense();
                 }
             }
         });
