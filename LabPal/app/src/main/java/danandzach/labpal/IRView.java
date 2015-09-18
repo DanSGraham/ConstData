@@ -322,8 +322,12 @@ public class IRView extends Fragment {
 
         RelativeLayout buttonLayout = new RelativeLayout(getActivity());
         TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-        buttonParams.setMargins(10, 0, 0, 5);
-        buttonParams.gravity = Gravity.CENTER_VERTICAL;
+
+        //Convert pixels to dp -D
+        int dps = 7;
+        final float scale = getActivity().getResources().getDisplayMetrics().density;
+        int pixels = (int) (dps * scale + 0.5f);
+
         buttonLayout.setLayoutParams(buttonParams);
         buttonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -331,22 +335,23 @@ public class IRView extends Fragment {
                 chosen_molecules.remove(molecule_name);
                 molecule_intensity.remove(molecule_name);
                 updateDisplay();
-                if(chosen_molecules.isEmpty()){
+                if (chosen_molecules.isEmpty()) {
                     TextView ss = (TextView) getView().findViewById(R.id.signal_strength);
                     ss.setText("");
                 }
             }
         });
-
+        buttonLayout.setGravity(Gravity.CENTER_VERTICAL);
 
         TextView removeMoleculeButton = new TextView(getActivity());
-        removeMoleculeButton.setPadding(5, 0, 5, 0);
+        removeMoleculeButton.setPadding(0, pixels, pixels, 0);
         removeMoleculeButton.setText("x");
         removeMoleculeButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE + 2);
         removeMoleculeButton.setTextColor(Color.BLACK);
 
         RelativeLayout.LayoutParams textParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         textParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        removeMoleculeButton.setGravity(Gravity.CENTER_VERTICAL);
         buttonLayout.addView(removeMoleculeButton);
 
 
