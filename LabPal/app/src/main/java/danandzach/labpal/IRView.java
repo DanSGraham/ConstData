@@ -331,6 +331,10 @@ public class IRView extends Fragment {
                 chosen_molecules.remove(molecule_name);
                 molecule_intensity.remove(molecule_name);
                 updateDisplay();
+                if(chosen_molecules.isEmpty()){
+                    TextView ss = (TextView) getView().findViewById(R.id.signal_strength);
+                    ss.setText("");
+                }
             }
         });
 
@@ -531,6 +535,10 @@ public class IRView extends Fragment {
                 }
                 search_field.setText("");
                 updateDisplay();
+                if(!chosen_molecules.isEmpty()){
+                    TextView ss = (TextView) getView().findViewById(R.id.signal_strength);
+                    ss.setText("Signal Strength");
+                }
                 hideSoftKeyboard(getActivity());
             }
         });
@@ -648,7 +656,10 @@ public class IRView extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        TextView ss = (TextView)getView().findViewById(R.id.signal_strength);
+        if(Data.chosen_molecules == null){
+            ss.setText("");
+        }
         if(Data.chosen_molecules!=null) {
             chosen_molecules = Data.chosen_molecules;
             xAxisReversed = Data.xAxisReversed;
@@ -660,6 +671,7 @@ public class IRView extends Fragment {
                     changeIntensity(s, Data.intensity_percentages.get(s));
                 }
             }*/
+
             updateDisplay();
         }
         if(((MainActivity) getActivity()).getSupportActionBar().getTitle() != "IR Viewer") {
