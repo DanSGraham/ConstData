@@ -677,6 +677,7 @@ public class IRView extends Fragment {
             chosen_molecules = Data.chosen_molecules;
             xAxisReversed = Data.xAxisReversed;
             yAxisReversed = Data.yAxisReversed;
+
             if(Data.intensity_percentages != null){
                 for(String s:Data.intensity_percentages.keySet()){
                     changeIntensity(s, Data.intensity_percentages.get(s));
