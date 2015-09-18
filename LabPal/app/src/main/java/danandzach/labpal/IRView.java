@@ -677,10 +677,12 @@ public class IRView extends Fragment {
             chosen_molecules = Data.chosen_molecules;
             xAxisReversed = Data.xAxisReversed;
             yAxisReversed = Data.yAxisReversed;
-            updateDisplay();
-            for(String s:Data.intensity_percentages.keySet()){
-                changeIntensity(s, Data.intensity_percentages.get(s));
+            if(Data.intensity_percentages != null){
+                for(String s:Data.intensity_percentages.keySet()){
+                    changeIntensity(s, Data.intensity_percentages.get(s));
+                }
             }
+            updateDisplay();
         }
         if(((MainActivity) getActivity()).getSupportActionBar().getTitle() != "IR Viewer") {
             ((MainActivity) getActivity()).getSupportActionBar().setTitle("IR Viewer");
