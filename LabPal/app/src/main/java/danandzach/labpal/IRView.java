@@ -78,6 +78,7 @@ public class IRView extends Fragment {
     public ArrayList<Entry> currEntries;
     private HashMap<String, ArrayList<JSONObject>> chosen_molecules;
     public HashMap<String, HashMap<Integer, Double>> chosen_molecules_chart_data;
+    public HashMap<String, Double> molecule_intensity;
 
     public ArrayList<Entry> currEntriesReversed;
 
@@ -132,14 +133,14 @@ public class IRView extends Fragment {
     }
 
 
-    public void addGaussianToCurrEntries(int mean, double stdDev, double intenseVal) {
+    public void addGaussianToCurrEntries(String moleculeName, int mean, double stdDev, double intenseVal) {
         //Mean and stdDev must be in units of index not actual units. To get units of index must
         //divide the current units by deltaX and floor the value so it is an integer.
 
         double gaussYVal = 0;
         double currEntryVal = 0;
         for (Entry dataPoint : currEntries) {
-            gaussYVal = intenseVal * ((1 / (stdDev * Math.sqrt(2.0 * Math.PI))) * Math.exp(-((Math.pow((dataPoint.getXIndex() - mean), 2)) / (2 * Math.pow(stdDev, 2)))));
+            gaussYVal = intenseVal * ((1 / (stdDev * Math.sqrt(2.0 * Math.PI))) * Math.exp(-((Math.pow((dataPoint.getXIndex() - mean), 2)) / (2 * Math.pow(stdDev, 2))))) * (molecule_intensity.get(moleculeName) / 100.0);
             currEntryVal = dataPoint.getVal();
             dataPoint.setVal((float) (currEntryVal + gaussYVal));
         }
@@ -176,52 +177,16 @@ public class IRView extends Fragment {
 
         for (HashMap.Entry<String, HashMap<Integer, Double>> entry : chosen_molecules_chart_data.entrySet()) {
             for (HashMap.Entry<Integer, Double> molecule_entry : entry.getValue().entrySet()) {
-                addGaussianToCurrEntries(molecule_entry.getKey(), STD_DEV, molecule_entry.getValue());
+                addGaussianToCurrEntries(entry.getKey(), molecule_entry.getKey(), STD_DEV, molecule_entry.getValue());
             }
         }
         updateReverseEntries();
     }
 
-    public void updateDisplayNoMoleculeReset() {
-        resetCurrLine();
-        updateIntensities();
-        updateEntries();
-
-        LineDataSet dataSet;
-        ArrayList<String> xVals;
-
-        LineChart display_chart = ((LineChart) getActivity().findViewById(R.id.ir_chart));
-
-
-        if (xAxisReversed) {
-            dataSet = new LineDataSet(currEntriesReversed, "IR Data");
-            xVals = getGraphXAxisRev();
-        } else {
-            dataSet = new LineDataSet(currEntries, "IR Data");
-            xVals = getGraphXAxis();
-        }
-
-        dataSet.setDrawCircles(false);
-        dataSet.setDrawValues(false);
-        dataSet.setColor(Color.parseColor("#19440c"));
-
-        LineData data = new LineData(xVals, dataSet);
-        if (yAxisReversed) {
-            display_chart.getAxisRight().setInverted(true);
-            display_chart.getAxisLeft().setInverted(true);
-        } else {
-            display_chart.getAxisRight().setInverted(false);
-            display_chart.getAxisLeft().setInverted(false);
-        }
-
-        display_chart.setData(data);
-        display_chart.invalidate();
-    }
 
     public void updateDisplay() {
         resetCurrLine();
         updateMoleculeList();
-        updateIntensities();
         updateEntries();
 
         TableLayout molecule_display = (TableLayout) getActivity().findViewById(R.id.ir_molecule_selection_table);
@@ -264,7 +229,6 @@ public class IRView extends Fragment {
     public void updateDisplay(View v) {
         resetCurrLine();
         updateMoleculeList();
-        updateIntensities(v);
         updateEntries();
 
         TableLayout molecule_display = (TableLayout) v.findViewById(R.id.ir_molecule_selection_table);
@@ -327,6 +291,7 @@ public class IRView extends Fragment {
             @Override
             public void onClick(View v) {
                 chosen_molecules.remove(molecule_name);
+                molecule_intensity.remove(molecule_name);
                 updateDisplay();
             }
         });
@@ -349,24 +314,17 @@ public class IRView extends Fragment {
         moleculeName.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE);
 
 
-        EditText relativeIntensity = new EditText(getActivity());
+        final EditText relativeIntensity = new EditText(getActivity());
         relativeIntensity.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-        if(Data.intensity_percentages != null){
-            if(Data.intensity_percentages.containsKey(molecule_name)){
-                String temp = Data.intensity_percentages.get(molecule_name).toString();
-                String sub_temp = temp.substring(0, temp.length()-2);
-                relativeIntensity.setText(sub_temp);
-            }else{
-                relativeIntensity.setText("100");
-            }
-        }else{
-            relativeIntensity.setText("100");
-        }
+        relativeIntensity.setText(String.valueOf(molecule_intensity.get(molecule_name)));
+
         relativeIntensity.setTextSize(TypedValue.COMPLEX_UNIT_SP, SP_SIZE);
 
         relativeIntensity.setInputType(InputType.TYPE_CLASS_NUMBER);
 
-        relativeIntensity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+        //More trouble than its worth. -D
+        /*relativeIntensity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
@@ -378,7 +336,7 @@ public class IRView extends Fragment {
                     }
                 }
             }
-        });
+        });*/
 
         relativeIntensity.addTextChangedListener(new TextWatcher() {
             @Override
@@ -394,26 +352,17 @@ public class IRView extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
-                    changeIntensity(molecule_name, Double.valueOf(s.toString()));
-                    if(Data.intensity_percentages == null){
-                        Data.intensity_percentages = new HashMap<String, Double>();
+                    try{
+                        double intensityVal = Double.valueOf(s.toString());
+                        if(intensityVal >= 0 && intensityVal <= 100){
+                            molecule_intensity.put(molecule_name, intensityVal);
+                        }
                     }
-                    Data.intensity_percentages.put(molecule_name, Double.valueOf(s.toString()));
-                    updateDisplayNoMoleculeReset();
-                }
-            }
-        });
-
-
-        relativeIntensity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    try {
-                        hideSoftKeyboard(getActivity());
-                    } catch (NullPointerException e) {
-
+                    catch(TypeNotPresentException e){
+                        e.printStackTrace();
                     }
+                    updateDisplay();
+                    relativeIntensity.requestFocus();
                 }
             }
         });
@@ -435,70 +384,7 @@ public class IRView extends Fragment {
     }
 
 
-    public void changeIntensity(String molecule_name, double percentIntensity) {
-        if (percentIntensity >= 0 && percentIntensity <= 100.0) {
-            chosen_molecules_chart_data.remove(molecule_name);
-            ArrayList<JSONObject> moleculeJSON = chosen_molecules.get(molecule_name);
-            chosen_molecules_chart_data.put(molecule_name, new HashMap<Integer, Double>());
-            HashMap<Integer, Double> freqAndIntense;
 
-            for (JSONObject freq : moleculeJSON) {
-                freqAndIntense = chosen_molecules_chart_data.get(molecule_name);
-                try {
-                    int freqVal = convertFreqToIndex(Double.valueOf(freq.optString("Frequency")));
-                    double intenseVal = Double.valueOf(freq.optString("Intensity")) * (percentIntensity / 100);
-                    freqAndIntense.put(freqVal, intenseVal);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-    }
-
-    public void updateIntensities(){
-        //This value relies on the table row being set up properly.
-        TableLayout moleculeTable = (TableLayout) getActivity().findViewById(R.id.ir_molecule_selection_table);
-        Log.v("ERR", "MOLECULE TABLE IN");
-        if(moleculeTable != null) {
-            for (int i = 0; i < (((TableLayout) moleculeTable).getChildCount()); i++) {
-                TableRow tempRow = (TableRow) moleculeTable.getChildAt(i);
-                if ((tempRow.getChildCount() > 1)) {
-                    try {
-                        TextView molName = (TextView) tempRow.getChildAt(1);
-                        Log.v("update1", "TextViewCORR");
-                        EditText intensityVal = (EditText) tempRow.getChildAt(2);
-                        Log.v("update2", "EDITTEXTCORR");
-                        changeIntensity(molName.getText().toString(), Double.valueOf(intensityVal.getText().toString()));
-                        Log.v("update3", "TRY PASS");
-                    } catch (ClassCastException exc) {
-                        Log.v("update4", "TRY Fail");
-
-                    }
-                }
-            }
-        }
-    }
-
-    public void updateIntensities(View v){
-        TableLayout moleculeTable = (TableLayout) v.findViewById(R.id.ir_molecule_selection_table);
-        if(moleculeTable != null) {
-            for (int i = 0; i < (((TableLayout) moleculeTable).getChildCount()); i++) {
-                TableRow tempRow = (TableRow) moleculeTable.getChildAt(i);
-                if ((tempRow.getChildCount() > 1)) {
-                    try {
-                        TextView molName = (TextView) tempRow.getChildAt(1);
-                        EditText intensityVal = (EditText) tempRow.getChildAt(2);
-                        changeIntensity(molName.getText().toString(), Double.valueOf(intensityVal.getText().toString()));
-                        Log.v("update5", "TRY PASS");
-                    } catch (ClassCastException exc) {
-                        Log.v("update6", "TRY Fail");
-
-                    }
-                }
-            }
-        }
-    }
 
 
     public static IRView newInstance() {
@@ -531,6 +417,7 @@ public class IRView extends Fragment {
         chosen_molecules = new HashMap<String, ArrayList<JSONObject>>();
         currEntries = new ArrayList<Entry>();
         currEntriesReversed = new ArrayList<Entry>();
+        molecule_intensity = new HashMap<String, Double>();
 
 
         xAxisReversed = false;
@@ -596,6 +483,7 @@ public class IRView extends Fragment {
                                 ) {
                             if (!chosen_molecules.containsKey(search_field.getText().toString())) {
                                 chosen_molecules.put(search_field.getText().toString(), new ArrayList<JSONObject>());
+                                molecule_intensity.put(search_field.getText().toString(), 100.0);
                             }
                             chosen_molecules.get(search_field.getText().toString()).add(Data.getCcc_data().getJSONArray(
                                     Data.getCcc_array_name()).getJSONObject(i));
@@ -657,7 +545,7 @@ public class IRView extends Fragment {
                 } else {
                     yAxisReversed = true;
                 }
-                updateDisplayNoMoleculeReset();
+                updateDisplay();
             }
         });
 
@@ -670,7 +558,7 @@ public class IRView extends Fragment {
                 } else {
                     xAxisReversed = true;
                 }
-                updateDisplayNoMoleculeReset();
+                updateDisplay();
             }
         });
 
@@ -694,7 +582,7 @@ public class IRView extends Fragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 STD_DEV = (double) progress;
-                updateDisplayNoMoleculeReset();
+                updateDisplay();
             }
         });
         updateDisplay(v);
@@ -707,6 +595,7 @@ public class IRView extends Fragment {
         Data.xAxisReversed = xAxisReversed;
         Data.yAxisReversed = yAxisReversed;
         Data.chosen_molecules = chosen_molecules;
+        Data.intensity_percentages = molecule_intensity;
     }
 
     @Override
@@ -727,6 +616,7 @@ public class IRView extends Fragment {
             chosen_molecules = Data.chosen_molecules;
             xAxisReversed = Data.xAxisReversed;
             yAxisReversed = Data.yAxisReversed;
+            molecule_intensity = Data.intensity_percentages;
 
             /*if(Data.intensity_percentages != null){
                 for(String s:Data.intensity_percentages.keySet()){
