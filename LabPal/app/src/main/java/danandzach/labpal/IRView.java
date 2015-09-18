@@ -4,6 +4,7 @@ package danandzach.labpal;
 
 
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -46,6 +47,7 @@ import com.github.mikephil.charting.data.Entry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -182,6 +184,7 @@ public class IRView extends Fragment {
 
     public void updateDisplayNoMoleculeReset() {
         resetCurrLine();
+        updateIntensities();
         updateEntries();
 
         LineDataSet dataSet;
@@ -218,6 +221,7 @@ public class IRView extends Fragment {
     public void updateDisplay() {
         resetCurrLine();
         updateMoleculeList();
+        updateIntensities();
         updateEntries();
 
         TableLayout molecule_display = (TableLayout) getActivity().findViewById(R.id.ir_molecule_selection_table);
@@ -260,6 +264,7 @@ public class IRView extends Fragment {
     public void updateDisplay(View v) {
         resetCurrLine();
         updateMoleculeList();
+        updateIntensities(v);
         updateEntries();
 
         TableLayout molecule_display = (TableLayout) v.findViewById(R.id.ir_molecule_selection_table);
@@ -394,6 +399,7 @@ public class IRView extends Fragment {
                         Data.intensity_percentages = new HashMap<String, Double>();
                     }
                     Data.intensity_percentages.put(molecule_name, Double.valueOf(s.toString()));
+                    updateDisplayNoMoleculeReset();
                 }
             }
         });
@@ -446,9 +452,52 @@ public class IRView extends Fragment {
                     e.printStackTrace();
                 }
             }
-            updateDisplayNoMoleculeReset();
         }
 
+    }
+
+    public void updateIntensities(){
+        //This value relies on the table row being set up properly.
+        TableLayout moleculeTable = (TableLayout) getActivity().findViewById(R.id.ir_molecule_selection_table);
+        Log.v("ERR", "MOLECULE TABLE IN");
+        if(moleculeTable != null) {
+            for (int i = 0; i < (((TableLayout) moleculeTable).getChildCount()); i++) {
+                TableRow tempRow = (TableRow) moleculeTable.getChildAt(i);
+                if ((tempRow.getChildCount() > 1)) {
+                    try {
+                        TextView molName = (TextView) tempRow.getChildAt(1);
+                        Log.v("update1", "TextViewCORR");
+                        EditText intensityVal = (EditText) tempRow.getChildAt(2);
+                        Log.v("update2", "EDITTEXTCORR");
+                        changeIntensity(molName.getText().toString(), Double.valueOf(intensityVal.getText().toString()));
+                        Log.v("update3", "TRY PASS");
+                    } catch (ClassCastException exc) {
+                        Log.v("update4", "TRY Fail");
+
+                    }
+                }
+            }
+        }
+    }
+
+    public void updateIntensities(View v){
+        TableLayout moleculeTable = (TableLayout) v.findViewById(R.id.ir_molecule_selection_table);
+        if(moleculeTable != null) {
+            for (int i = 0; i < (((TableLayout) moleculeTable).getChildCount()); i++) {
+                TableRow tempRow = (TableRow) moleculeTable.getChildAt(i);
+                if ((tempRow.getChildCount() > 1)) {
+                    try {
+                        TextView molName = (TextView) tempRow.getChildAt(1);
+                        EditText intensityVal = (EditText) tempRow.getChildAt(2);
+                        changeIntensity(molName.getText().toString(), Double.valueOf(intensityVal.getText().toString()));
+                        Log.v("update5", "TRY PASS");
+                    } catch (ClassCastException exc) {
+                        Log.v("update6", "TRY Fail");
+
+                    }
+                }
+            }
+        }
     }
 
 
@@ -679,11 +728,11 @@ public class IRView extends Fragment {
             xAxisReversed = Data.xAxisReversed;
             yAxisReversed = Data.yAxisReversed;
 
-            if(Data.intensity_percentages != null){
+            /*if(Data.intensity_percentages != null){
                 for(String s:Data.intensity_percentages.keySet()){
                     changeIntensity(s, Data.intensity_percentages.get(s));
                 }
-            }
+            }*/
             updateDisplay();
         }
         if(((MainActivity) getActivity()).getSupportActionBar().getTitle() != "IR Viewer") {
