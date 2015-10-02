@@ -26,6 +26,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1256,23 +1257,46 @@ public class LabCalculations extends Fragment {
 
         //Special constant Rules -D
         if(button == "+") {
-            returnArray[0] = resultsArray[0].add(valueArray[0]);
-            returnArray[1] = resultsArray[1].add(valueArray[1]);
+            if(!Double.isInfinite(resultsArray[0].add(valueArray[0]).doubleValue()) && !Double.isNaN(resultsArray[0].add(valueArray[0]).doubleValue()))
+                returnArray[0] = resultsArray[0].add(valueArray[0]);
+            else
+                Toast.makeText(getActivity(), "Infinite Value", Toast.LENGTH_SHORT);
+
+            if(!Double.isInfinite(resultsArray[1].add(valueArray[1]).doubleValue()) && !Double.isNaN(resultsArray[1].add(valueArray[1]).doubleValue()))
+                returnArray[1] = resultsArray[1].add(valueArray[1]);
+            else
+                Toast.makeText(getActivity(), "Infinite Error Value", Toast.LENGTH_SHORT);
         }
         else if (button == "-") {
-            returnArray[0] = resultsArray[0].subtract(valueArray[0]);
-            returnArray[1] = resultsArray[1].add(valueArray[1]);
+            if(!Double.isInfinite(resultsArray[0].subtract(valueArray[0]).doubleValue()) && !Double.isNaN(resultsArray[0].subtract(valueArray[0]).doubleValue()))
+                returnArray[0] = resultsArray[0].subtract(valueArray[0]);
+            else
+                Toast.makeText(getActivity(), "Infinite Value", Toast.LENGTH_SHORT);
+            if(!Double.isInfinite(resultsArray[1].add(valueArray[1]).doubleValue()) && !Double.isNaN(resultsArray[1].add(valueArray[1]).doubleValue()))
+                returnArray[1] = resultsArray[1].add(valueArray[1]);
+            else
+                Toast.makeText(getActivity(), "Infinite Error Value", Toast.LENGTH_SHORT);
         }
         else if (button == "*") {
+            if(!Double.isNaN(resultsArray[0].multiply(valueArray[0]).doubleValue()) && !Double.isInfinite(resultsArray[0].multiply(valueArray[0]).doubleValue()))
             returnArray[0] = resultsArray[0].multiply(valueArray[0]);
             if(resultExact){
-                returnArray[1] = resultsArray[0].multiply(valueArray[1]);
+                if(!Double.isNaN(resultsArray[0].multiply(valueArray[1]).doubleValue()) && !Double.isInfinite(resultsArray[0].multiply(valueArray[1]).doubleValue()))
+                    returnArray[1] = resultsArray[0].multiply(valueArray[1]);
+                else
+                    Toast.makeText(getActivity(), "Infinite Value", Toast.LENGTH_SHORT);
             }
             else if(valueExact){
-                returnArray[1] = valueArray[0].multiply(resultsArray[1]);
+                if(!Double.isNaN(valueArray[0].multiply(resultsArray[1]).doubleValue()) && !Double.isInfinite(valueArray[0].multiply(resultsArray[1]).doubleValue()))
+                    returnArray[1] = valueArray[0].multiply(resultsArray[1]);
+                else
+                    Toast.makeText(getActivity(), "Infinite Value", Toast.LENGTH_SHORT);
             }
             else {
-                returnArray[1] = (((resultsArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).add(((valueArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100)))).divide(BigDecimal.valueOf(100), roundingPrecision, RoundingMode.HALF_UP)).multiply(returnArray[0]);
+                if(!Double.isNaN((((resultsArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).add(((valueArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100)))).divide(BigDecimal.valueOf(100), roundingPrecision, RoundingMode.HALF_UP)).multiply(returnArray[0]).doubleValue()) && !Double.isInfinite((((resultsArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).add(((valueArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100)))).divide(BigDecimal.valueOf(100), roundingPrecision, RoundingMode.HALF_UP)).multiply(returnArray[0]).doubleValue()))
+                    returnArray[1] = (((resultsArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).add(((valueArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100)))).divide(BigDecimal.valueOf(100), roundingPrecision, RoundingMode.HALF_UP)).multiply(returnArray[0]);
+                else
+                    Toast.makeText(getActivity(), "Infinite Value", Toast.LENGTH_SHORT);
             }
         }
         else if (button == "/") {
@@ -1280,25 +1304,47 @@ public class LabCalculations extends Fragment {
                 System.out.println("THERE IS A PROBLEM");
             }
             else {
-                returnArray[0] = resultsArray[0].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP);
+                if(!Double.isNaN(resultsArray[0].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP).doubleValue()) && !Double.isInfinite(resultsArray[0].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP).doubleValue()))
+                    returnArray[0] = resultsArray[0].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP);
+                else
+                    Toast.makeText(getActivity(), "Infinite Value", Toast.LENGTH_SHORT);
                 if(resultExact && valueExact){
                     returnArray[1] = BigDecimal.valueOf(0.0);
                 }
                 else if(resultExact){
-                    returnArray[1] = valueArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP);
+                    if(!Double.isNaN(valueArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP).doubleValue()) && !Double.isInfinite(valueArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP).doubleValue()))
+                        returnArray[1] = valueArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP);
+                    else
+                        Toast.makeText(getActivity(), "Infinite Value", Toast.LENGTH_SHORT);
                 }
                 else if(valueExact){
-                    returnArray[1] = resultsArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP);
+                    if(!Double.isNaN(resultsArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP).doubleValue()) && !Double.isInfinite(resultsArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP).doubleValue()))
+                        returnArray[1] = resultsArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP);
+                    else
+                        Toast.makeText(getActivity(), "Infinite Value", Toast.LENGTH_SHORT);
                 }
                 else {
-                    returnArray[1] = (((resultsArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).add(((valueArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100)))).divide(BigDecimal.valueOf(100), roundingPrecision, RoundingMode.HALF_UP)).multiply(returnArray[0]);
+                    if(!Double.isNaN((((resultsArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).add(((valueArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100)))).divide(BigDecimal.valueOf(100), roundingPrecision, RoundingMode.HALF_UP)).multiply(returnArray[0]).doubleValue()) && !Double.isInfinite((((resultsArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).add(((valueArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100)))).divide(BigDecimal.valueOf(100), roundingPrecision, RoundingMode.HALF_UP)).multiply(returnArray[0]).doubleValue()))
+                        returnArray[1] = (((resultsArray[1].divide(resultsArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).add(((valueArray[1].divide(valueArray[0], roundingPrecision, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100)))).divide(BigDecimal.valueOf(100), roundingPrecision, RoundingMode.HALF_UP)).multiply(returnArray[0]);
+                    else
+                        Toast.makeText(getActivity(), "Infinite Value", Toast.LENGTH_SHORT);
                 }
             }
         }
         else if(button == "^") {
-            returnArray[0] = BigDecimal.valueOf(Math.pow(resultsArray[0].doubleValue(), valueArray[0].doubleValue()));
-            returnArray[1] = (((resultsArray[1].divide(resultsArray[0])).multiply(BigDecimal.valueOf(100))).multiply(valueArray[0]).divide(BigDecimal.valueOf(100))).multiply(returnArray[0]);
-
+            if(!Double.isNaN(Math.pow(resultArray[0].doubleValue(), valueArray[0].doubleValue())) && !Double.isInfinite(Math.pow(resultArray[0].doubleValue(), valueArray[0].doubleValue()))){
+                returnArray[0] = BigDecimal.valueOf(Math.pow(resultsArray[0].doubleValue(), valueArray[0].doubleValue()));
+            }else{
+                Toast.makeText(getActivity(), "Infinite Value", Toast.LENGTH_SHORT).show();
+                returnArray[0] = resultArray[0];
+            }
+            if(!Double.isNaN((((resultsArray[1].divide(resultsArray[0], RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).multiply(valueArray[0]).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)).multiply(returnArray[0]).doubleValue()) &&
+                    !Double.isInfinite((((resultsArray[1].divide(resultsArray[0], RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).multiply(valueArray[0]).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)).multiply(returnArray[0]).doubleValue())){
+                returnArray[1] = (((resultsArray[1].divide(resultsArray[0], RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(100))).multiply(valueArray[0]).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)).multiply(returnArray[0]);
+            }else{
+                Toast.makeText(getActivity(), "Infinite Error Value", Toast.LENGTH_SHORT).show();
+                returnArray[1] = resultsArray[1];
+            }
         }
 
         else if(button == "="){
