@@ -17,7 +17,8 @@
         android:padding="5dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/general_search"
-        android:hint="Add molecule from the NIST SRD 101" />
+        android:hint="Add molecule from the NIST SRD 101"
+        android:maxLines="1"/>
 
     <LinearLayout
         android:layout_width="match_parent"

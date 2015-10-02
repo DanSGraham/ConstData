@@ -298,7 +298,7 @@ public class LabCalculations extends Fragment {
                     break;
                 }
 
-                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
+                if((operator.equalsIgnoreCase("/") && (new BigDecimal(main_display.getText().toString())).equals(new BigDecimal(0)))){
                     main_display.setText("");
                     recent_number.setText("");
                     setErrorDisplay(getString(R.string.plus_minus_sign));
@@ -354,7 +354,7 @@ public class LabCalculations extends Fragment {
                     break;
                 }
 
-                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
+                if((operator.equalsIgnoreCase("/") && (new BigDecimal(main_display.getText().toString())).equals(new BigDecimal(0)))){
                     main_display.setText("");
                     recent_number.setText("");
                     setErrorDisplay(getString(R.string.plus_minus_sign));
@@ -420,7 +420,7 @@ public class LabCalculations extends Fragment {
                     break;
                 }
 
-                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
+                if((operator.equalsIgnoreCase("/") && (new BigDecimal(main_display.getText().toString())).equals(new BigDecimal(0)))){
                     main_display.setText("");
                     recent_number.setText("");
                     setErrorDisplay(getString(R.string.plus_minus_sign));
@@ -477,7 +477,7 @@ public class LabCalculations extends Fragment {
                     break;
                 }
 
-                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
+                if((operator.equalsIgnoreCase("/") && (new BigDecimal(main_display.getText().toString())).equals(new BigDecimal(0)))){
                     main_display.setText("");
                     recent_number.setText("");
                     setErrorDisplay(getString(R.string.plus_minus_sign));
@@ -530,7 +530,7 @@ public class LabCalculations extends Fragment {
                 }
 
 
-                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
+                if((operator.equalsIgnoreCase("/") && (new BigDecimal(main_display.getText().toString())).equals(new BigDecimal(0)))){
                     main_display.setText("");
                     recent_number.setText("");
                     setErrorDisplay(getString(R.string.plus_minus_sign));
@@ -577,7 +577,7 @@ public class LabCalculations extends Fragment {
                     break;
                 }
 
-                if((operator.equalsIgnoreCase("/") && (Integer.parseInt(main_display.getText().toString())) == 0)){
+                if((operator.equalsIgnoreCase("/") && (new BigDecimal(main_display.getText().toString())).equals(new BigDecimal(0)))){
                     main_display.setText("");
                     recent_number.setText("");
                     setErrorDisplay(getString(R.string.plus_minus_sign));
