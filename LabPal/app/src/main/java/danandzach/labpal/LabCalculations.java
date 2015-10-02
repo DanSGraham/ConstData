@@ -12,6 +12,7 @@ import android.text.Selection;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -613,8 +614,21 @@ public class LabCalculations extends Fragment {
                     recent_number.setText(String.valueOf(resultArray[0]) + getString(R.string.plus_minus_sign) + String.valueOf(resultArray[1]));
                 }
                 operator = "=";
-                main_display.setText(String.valueOf(result));
-                if (!resultError.equals(0)){
+
+                if(result.toString().length() > 15){
+                    BigDecimal bd = new BigDecimal(String.valueOf(result));
+                    DecimalFormat df = new DecimalFormat("0.##########E00");
+                    main_display.setText(df.format(bd));
+                }else{
+                    main_display.setText(String.valueOf(result));
+                }
+
+                if(resultError.toString().length() > 18){
+                    BigDecimal bd = new BigDecimal(String.valueOf(resultError));
+                    DecimalFormat df = new DecimalFormat("0.##############E00");
+                    setErrorDisplay(df.format(bd));
+                }
+                else if(!resultError.equals(0)){
                     setErrorDisplay(String.valueOf(resultError));
                 }
                 else{
@@ -1152,7 +1166,7 @@ public class LabCalculations extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 v.requestFocus();
-                if(displayValue.getText().length() > 0){
+                if (displayValue.getText().length() > 0) {
                     Selection.setSelection(displayValue.getText(), displayValue.getText().length());
                 }
                 return true;
@@ -1172,7 +1186,7 @@ public class LabCalculations extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 v.requestFocus();
-                Selection.setSelection(displayError.getText(),displayError.getText().length());
+                Selection.setSelection(displayError.getText(), displayError.getText().length());
                 return true;
             }
         });
@@ -1181,7 +1195,7 @@ public class LabCalculations extends Fragment {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
 
-                if(hasFocus) {
+                if (hasFocus) {
                     currModifyText = (EditText) v;
                 }
             }
